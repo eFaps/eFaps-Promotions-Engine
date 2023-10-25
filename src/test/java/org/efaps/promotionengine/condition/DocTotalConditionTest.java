@@ -21,22 +21,19 @@ import java.math.BigDecimal;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class ProductsConditionTest
+public class DocTotalConditionTest
 {
-
     @Test
     public void equalsTest()
     {
-        final var obj1 = new ProductsCondition();
+        final var obj1 = new DocTotalCondition();
         Assert.assertTrue(obj1.equals(obj1));
         Assert.assertFalse(obj1.equals("different"));
 
-        Assert.assertTrue(obj1.equals(new ProductsCondition()));
+        Assert.assertTrue(obj1.equals(new DocTotalCondition()));
 
-        obj1.setEntryOperator(EntryOperator.INCLUDES_ALL)
-                        .setPositionQuantity(BigDecimal.ONE);
-        final var obj2 = new ProductsCondition().setEntryOperator(EntryOperator.INCLUDES_ALL)
-                        .setPositionQuantity(BigDecimal.ONE);
+        obj1.setTotal(BigDecimal.TEN);
+        final var obj2 = new DocTotalCondition().setTotal(BigDecimal.TEN);
         Assert.assertTrue(obj1.equals(obj2));
     }
 }

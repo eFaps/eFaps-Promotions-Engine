@@ -87,6 +87,8 @@ public class DocTotalCondition
             return false;
         }
         return Objects.equals(this.getOperator(), condition.getOperator())
-                        && this.total.compareTo(condition.total) == 0;
+                        && (this.total == null && condition.total == null
+                                        || this.total != null && condition.total != null
+                                                        && this.total.compareTo(condition.total) == 0);
     }
 }

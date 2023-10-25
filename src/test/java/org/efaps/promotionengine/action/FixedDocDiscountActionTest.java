@@ -14,29 +14,27 @@
  * limitations under the License.
  *
  */
-package org.efaps.promotionengine.condition;
+package org.efaps.promotionengine.action;
 
 import java.math.BigDecimal;
 
+import org.efaps.promotionengine.action.FixedDocDiscountAction;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class ProductsConditionTest
+public class FixedDocDiscountActionTest
 {
-
     @Test
     public void equalsTest()
     {
-        final var obj1 = new ProductsCondition();
+        final var obj1 = new FixedDocDiscountAction();
         Assert.assertTrue(obj1.equals(obj1));
         Assert.assertFalse(obj1.equals("different"));
 
-        Assert.assertTrue(obj1.equals(new ProductsCondition()));
+        Assert.assertTrue(obj1.equals(new FixedDocDiscountAction()));
 
-        obj1.setEntryOperator(EntryOperator.INCLUDES_ALL)
-                        .setPositionQuantity(BigDecimal.ONE);
-        final var obj2 = new ProductsCondition().setEntryOperator(EntryOperator.INCLUDES_ALL)
-                        .setPositionQuantity(BigDecimal.ONE);
+        obj1.setAmount(BigDecimal.ONE);
+        final var obj2 = new FixedDocDiscountAction().setAmount(BigDecimal.ONE);
         Assert.assertTrue(obj1.equals(obj2));
     }
 }
