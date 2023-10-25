@@ -165,6 +165,30 @@ public class BuyOneGetOneFreeTest
         Assert.assertTrue(new BigDecimal(0).compareTo(document.getPositions().get(1).getCrossTotal()) == 0);
     }
 
+    @Test
+    public void second25PercentOff() {
+        final var document = new Document()
+                        .addPosition(new Position()
+                                        .setQuantity(new BigDecimal(1))
+                                        .setProductOid(Promotions.PROD_BOGOF2)
+                                        .setCrossTotal(new BigDecimal(150)))
+                        .addPosition(new Position()
+                                        .setQuantity(new BigDecimal(1))
+                                        .setProductOid(Promotions.PROD_BOGOF2)
+                                        .setCrossTotal(new BigDecimal(250)))
+                        .addPosition(new Position()
+                                        .setQuantity(new BigDecimal(1))
+                                        .setProductOid(Promotions.PROD_BOGOF3)
+                                        .setCrossTotal(new BigDecimal(200)))
+
+                        ;
+        final var promotion = Promotions.second25PercentOff();
+        final var engine = new Engine();
+        engine.apply(document, Collections.singletonList(promotion.build()));
+        Assert.assertTrue(new BigDecimal(112.5).compareTo(document.getPositions().get(0).getCrossTotal()) == 0);
+        Assert.assertTrue(new BigDecimal(250).compareTo(document.getPositions().get(1).getCrossTotal()) == 0);
+        Assert.assertTrue(new BigDecimal(200).compareTo(document.getPositions().get(2).getCrossTotal()) == 0);
+    }
 
 
 }

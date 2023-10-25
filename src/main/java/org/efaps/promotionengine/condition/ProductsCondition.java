@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.promotionengine.ProcessData;
+import org.efaps.promotionengine.Step;
 import org.efaps.promotionengine.pojo.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,12 +95,14 @@ public class ProductsCondition
                     LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
                     process.registerConditionMet(position);
                     ret.add(position);
-                    if (quantity.compareTo(BigDecimal.ZERO) < 1) {
+                    // for source interrupt as soon as it is found
+                    if (quantity.compareTo(BigDecimal.ZERO) < 1 && process.getStep().equals(Step.SOURCECONDITION)) {
                         break;
                     }
                 }
             }
-            if (quantity.compareTo(BigDecimal.ZERO) < 1) {
+            // for source interrupt as soon as it is found
+            if (quantity.compareTo(BigDecimal.ZERO) < 1 && process.getStep().equals(Step.SOURCECONDITION)) {
                 break;
             }
         }

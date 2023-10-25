@@ -21,6 +21,9 @@ public class Promotions
 
     public static String PROD_50OFF_BOGOF = "PROD_50OFF_BOGOF";
 
+    public static String PROD_BOGOF2 = "PROD_BOGOF2";
+    public static String PROD_BOGOF3 = "PROD_BOGOF3";
+
     public static Promotion.Builder productsFiftyPercentOff()
     {
         // products are 50% off
@@ -71,6 +74,38 @@ public class Promotions
         return Promotion.builder()
                         .withOid("222.2")
                         .withName("Buy one get one free")
+                        .withDescription("This can be a long text")
+                        .withPriority(100)
+                        .withStartDateTime(OffsetDateTime.now().minusDays(5))
+                        .withEndDateTime(OffsetDateTime.now().plusDays(5))
+                        .withSourceConditions(sourceConditions)
+                        .withTargetConditions(targetConditions)
+                        .withActions(actions);
+    }
+
+    public static Promotion.Builder second25PercentOff()
+    {
+        final var sourceConditions = new ArrayList<ICondition>();
+        sourceConditions.add(new ProductsCondition()
+                        .setPositionQuantity(BigDecimal.ONE)
+                        .setEntryOperator(EntryOperator.INCLUDES_ANY)
+                        .addProduct(PROD_BOGOF2)
+                        .addProduct(PROD_BOGOF3));
+
+        final var targetConditions = new ArrayList<ICondition>();
+        targetConditions.add(new ProductsCondition()
+                        .setPositionQuantity(BigDecimal.ONE)
+                        .setEntryOperator(EntryOperator.INCLUDES_ANY)
+                        .addProduct(PROD_BOGOF2)
+                        .addProduct(PROD_BOGOF3));
+
+        final var actions = new ArrayList<IAction>();
+        final var action = new PercentageDiscountAction().setPercentage(new BigDecimal(25));
+        actions.add(action);
+
+        return Promotion.builder()
+                        .withOid("222.3")
+                        .withName("get second (cheaper one) 25% off")
                         .withDescription("This can be a long text")
                         .withPriority(100)
                         .withStartDateTime(OffsetDateTime.now().minusDays(5))
