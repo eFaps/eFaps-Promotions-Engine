@@ -1,4 +1,4 @@
-package org.efaps.promotionengine;
+package org.efaps.promotionengine.process;
 
 import java.util.Collections;
 import java.util.List;

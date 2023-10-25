@@ -2,8 +2,8 @@ package org.efaps.promotionengine.condition;
 
 import java.util.List;
 
-import org.efaps.promotionengine.ProcessData;
 import org.efaps.promotionengine.pojo.Position;
+import org.efaps.promotionengine.process.ProcessData;
 
 public interface ICondition
 {

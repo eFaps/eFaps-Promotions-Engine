@@ -3,9 +3,9 @@ package org.efaps.promotionengine.rule;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-import org.efaps.promotionengine.Engine;
 import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.pojo.Position;
+import org.efaps.promotionengine.process.Engine;
 import org.efaps.promotionengine.promotion.Promotion;
 import org.testng.Assert;
 import org.testng.annotations.Test;

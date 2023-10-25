@@ -7,9 +7,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.efaps.promotionengine.Engine;
-import org.efaps.promotionengine.ProcessData;
 import org.efaps.promotionengine.pojo.Position;
+import org.efaps.promotionengine.process.Engine;
+import org.efaps.promotionengine.process.ProcessData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

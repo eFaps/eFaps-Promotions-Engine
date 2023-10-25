@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.efaps.promotionengine.ProcessData;
-import org.efaps.promotionengine.Step;
 import org.efaps.promotionengine.pojo.Position;
+import org.efaps.promotionengine.process.ProcessData;
+import org.efaps.promotionengine.process.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

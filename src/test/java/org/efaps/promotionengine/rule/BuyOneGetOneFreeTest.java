@@ -5,7 +5,6 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.efaps.promotionengine.Engine;
 import org.efaps.promotionengine.action.IAction;
 import org.efaps.promotionengine.action.PercentageDiscountAction;
 import org.efaps.promotionengine.condition.EntryOperator;
@@ -13,6 +12,7 @@ import org.efaps.promotionengine.condition.ICondition;
 import org.efaps.promotionengine.condition.ProductsCondition;
 import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.pojo.Position;
+import org.efaps.promotionengine.process.Engine;
 import org.efaps.promotionengine.promotion.Promotion;
 import org.testng.Assert;
 import org.testng.annotations.Test;

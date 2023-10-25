@@ -1,4 +1,4 @@
-package org.efaps.promotionengine;
+package org.efaps.promotionengine.process;
 
 
 public enum Step

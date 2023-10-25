@@ -3,8 +3,8 @@ package org.efaps.promotionengine.condition;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.efaps.promotionengine.ProcessData;
 import org.efaps.promotionengine.pojo.Position;
+import org.efaps.promotionengine.process.ProcessData;
 
 public class DocTotalCondition extends AbstractCondition
 {
