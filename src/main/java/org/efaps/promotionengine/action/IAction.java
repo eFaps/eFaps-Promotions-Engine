@@ -26,7 +26,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = PercentageDiscountAction.class, name = "PercentageDiscountAction")
+    @JsonSubTypes.Type(value = PercentageDiscountAction.class, name = "PercentageDiscountAction"),
+    @JsonSubTypes.Type(value = PercentageDocDiscountAction.class, name = "PercentageDocDiscountAction"),
+    @JsonSubTypes.Type(value = FixedDocDiscountAction.class, name = "FixedDocDiscountAction")
 })
 public interface IAction
 {

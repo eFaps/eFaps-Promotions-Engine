@@ -19,6 +19,7 @@ package org.efaps.promotionengine.condition;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.efaps.promotionengine.pojo.Position;
 import org.efaps.promotionengine.process.ProcessData;
@@ -74,5 +75,18 @@ public class DocTotalCondition
     public boolean positionMet(final Position position)
     {
         return false;
+    }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof final DocTotalCondition condition)) {
+            return false;
+        }
+        return Objects.equals(this.getOperator(), condition.getOperator())
+                        && this.total.compareTo(condition.total) == 0;
     }
 }

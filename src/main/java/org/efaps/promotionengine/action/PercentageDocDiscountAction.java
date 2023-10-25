@@ -21,7 +21,8 @@ import java.util.List;
 import org.efaps.promotionengine.pojo.Position;
 import org.efaps.promotionengine.process.ProcessData;
 
-public class PercentageDocDiscountAction extends AbstractPercentageAction
+public class PercentageDocDiscountAction
+    extends AbstractPercentageAction
 {
 
     @Override
@@ -31,4 +32,21 @@ public class PercentageDocDiscountAction extends AbstractPercentageAction
         process.getDocument().setCrossTotal(calculate(process.getDocument().getCrossTotal()));
     }
 
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof final PercentageDocDiscountAction other)) {
+            return false;
+        }
+
+        if (this.getPercentage() == null && other.getPercentage() == null) {
+            return true;
+        }
+
+        return this.getPercentage() != null && other.getPercentage() != null
+                        && this.getPercentage().compareTo(other.getPercentage()) == 0;
+    }
 }

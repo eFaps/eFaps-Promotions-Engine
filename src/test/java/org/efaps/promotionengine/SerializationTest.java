@@ -33,7 +33,7 @@ public class SerializationTest
     private static final Logger LOG = LoggerFactory.getLogger(SerializationTest.class);
 
     @Test
-    public void toJsonAndBack()
+    public void toJsonAndBack1()
         throws JsonProcessingException
     {
         final var objectMapper = new ObjectMapper();
@@ -41,6 +41,74 @@ public class SerializationTest
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
         final var promotion = Promotions.productsFiftyPercentOff().build();
+        final var jsonStr = objectMapper.writeValueAsString(promotion);
+        LOG.info("toJson: \n{}", jsonStr);
+
+        final var deserializedPromotion = objectMapper.readValue(jsonStr, Promotion.class);
+        LOG.info("{}", deserializedPromotion);
+        Assert.assertEquals(promotion, deserializedPromotion);
+    }
+
+    @Test
+    public void toJsonAndBack2()
+        throws JsonProcessingException
+    {
+        final var objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        final var promotion = Promotions.buyOneGetOneFree().build();
+        final var jsonStr = objectMapper.writeValueAsString(promotion);
+        LOG.info("toJson: \n{}", jsonStr);
+
+        final var deserializedPromotion = objectMapper.readValue(jsonStr, Promotion.class);
+        LOG.info("{}", deserializedPromotion);
+        Assert.assertEquals(promotion, deserializedPromotion);
+    }
+
+    @Test
+    public void toJsonAndBack3()
+        throws JsonProcessingException
+    {
+        final var objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        final var promotion = Promotions.second25PercentOff().build();
+        final var jsonStr = objectMapper.writeValueAsString(promotion);
+        LOG.info("toJson: \n{}", jsonStr);
+
+        final var deserializedPromotion = objectMapper.readValue(jsonStr, Promotion.class);
+        LOG.info("{}", deserializedPromotion);
+        Assert.assertEquals(promotion, deserializedPromotion);
+    }
+
+    @Test
+    public void toJsonAndBack4()
+        throws JsonProcessingException
+    {
+        final var objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        final var promotion = Promotions.buyMoreThan100AndGet10PercentOff().build();
+        final var jsonStr = objectMapper.writeValueAsString(promotion);
+        LOG.info("toJson: \n{}", jsonStr);
+
+        final var deserializedPromotion = objectMapper.readValue(jsonStr, Promotion.class);
+        LOG.info("{}", deserializedPromotion);
+        Assert.assertEquals(promotion, deserializedPromotion);
+    }
+
+    @Test
+    public void toJsonAndBack5()
+        throws JsonProcessingException
+    {
+        final var objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        final var promotion = Promotions.buyMoreThan100AndGet20Off().build();
         final var jsonStr = objectMapper.writeValueAsString(promotion);
         LOG.info("toJson: \n{}", jsonStr);
 
