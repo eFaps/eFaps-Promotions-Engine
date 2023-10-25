@@ -5,5 +5,7 @@ public enum Operator
 {
    EQUAL,
    GREATER,
-   SMALLER
+   GREATEREQUAL,
+   SMALLER,
+   SMALLEREQUAL
 }

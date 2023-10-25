@@ -1,7 +1,19 @@
 package org.efaps.promotionengine.condition;
 
-
-public abstract class AbstractCondition implements ICondition
+public abstract class AbstractCondition
+    implements ICondition
 {
-    Operator operator;
+
+    private Operator operator;
+
+    public Operator getOperator()
+    {
+        return operator;
+    }
+
+    public AbstractCondition setOperator(Operator operator)
+    {
+        this.operator = operator;
+        return this;
+    }
 }

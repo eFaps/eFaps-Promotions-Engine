@@ -1,5 +1,6 @@
 package org.efaps.promotionengine.pojo;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Document
 {
+
+    private BigDecimal crossTotal;
 
     private List<Position> positions;
 
@@ -31,6 +34,17 @@ public class Document
             position.setIndex(positions.size() + 1);
         }
         positions.add(position);
+        return this;
+    }
+
+    public BigDecimal getCrossTotal()
+    {
+        return crossTotal;
+    }
+
+    public Document setCrossTotal(final BigDecimal crossTotal)
+    {
+        this.crossTotal = crossTotal;
         return this;
     }
 

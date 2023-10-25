@@ -80,7 +80,7 @@ public class Promotion
 
     public List<ICondition> getTargetConditions()
     {
-        return targetConditions;
+        return targetConditions.isEmpty() ? sourceConditions : targetConditions;
     }
 
     public boolean hasSource()

@@ -42,10 +42,8 @@ public class Engine
             for (final var condition : promotion.getTargetConditions()) {
                 final var positions = condition.evalPositions(process);
                 actionRun = actionRun || !positions.isEmpty();
-                if (!positions.isEmpty()) {
-                    for (final var action : promotion.getActions()) {
-                        action.run(process, positions);
-                    }
+                for (final var action : promotion.getActions()) {
+                    action.run(process, positions);
                 }
             }
             if (actionRun) {

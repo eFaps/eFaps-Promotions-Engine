@@ -6,8 +6,11 @@ import java.util.ArrayList;
 
 import org.efaps.promotionengine.action.IAction;
 import org.efaps.promotionengine.action.PercentageDiscountAction;
+import org.efaps.promotionengine.action.PercentageDocDiscountAction;
+import org.efaps.promotionengine.condition.DocTotalCondition;
 import org.efaps.promotionengine.condition.EntryOperator;
 import org.efaps.promotionengine.condition.ICondition;
+import org.efaps.promotionengine.condition.Operator;
 import org.efaps.promotionengine.condition.ProductsCondition;
 import org.efaps.promotionengine.promotion.Promotion;
 
@@ -112,6 +115,26 @@ public class Promotions
                         .withEndDateTime(OffsetDateTime.now().plusDays(5))
                         .withSourceConditions(sourceConditions)
                         .withTargetConditions(targetConditions)
+                        .withActions(actions);
+    }
+
+    public static Promotion.Builder buyMoreThan100AndGet10PercentOff() {
+        final var sourceConditions = new ArrayList<ICondition>();
+        sourceConditions.add(new DocTotalCondition()
+                       .setTotal(new BigDecimal(100)).setOperator(Operator.GREATEREQUAL));
+
+        final var actions = new ArrayList<IAction>();
+        final var action = new PercentageDocDiscountAction().setPercentage(new BigDecimal(25));
+        actions.add(action);
+
+        return Promotion.builder()
+                        .withOid("222.3")
+                        .withName("get second (cheaper one) 25% off")
+                        .withDescription("This can be a long text")
+                        .withPriority(100)
+                        .withStartDateTime(OffsetDateTime.now().minusDays(5))
+                        .withEndDateTime(OffsetDateTime.now().plusDays(5))
+                        .withSourceConditions(sourceConditions)
                         .withActions(actions);
     }
 
