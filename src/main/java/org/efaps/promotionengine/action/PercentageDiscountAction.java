@@ -35,6 +35,7 @@ public class PercentageDiscountAction
     {
         LOG.info("Applying action on positons: {}", positions);
         for (final var position : positions) {
+            position.setAppliedPromotionOid(process.getCurrentPromotion().getOid());
             position.setCrossTotal(calculate(position.getCrossTotal()));
             LOG.info("Applied action on positon: {}", position);
         }

@@ -21,12 +21,16 @@ public class Engine
     {
         process = new ProcessData(document);
         LOG.info("Applying Promotions: {} to Document: {}", promotions, document);
+        // sort that highest number first
         Collections.sort(promotions, (promotion0,
-                                      promotion1) -> promotion0.getPriority() - promotion1.getPriority());
+                                      promotion1) -> promotion1.getPriority() - promotion0.getPriority());
         for (final var promotion : promotions) {
+            process.setCurrentPromotion(promotion);
+            process.setStep(Step.SOURCECONDITION);
             if (!promotion.hasSource() || meetsConditions(promotion.getSourceConditions())) {
                 runActions(promotion);
             }
+            process.getPositionsUsedForSouce().clear();
         }
     }
 
@@ -34,20 +38,29 @@ public class Engine
     {
         process.setStep(Step.TARGETCONDITION);
         if (promotion.hasSource()) {
+            boolean actionRun = false;
             for (final var condition : promotion.getTargetConditions()) {
                 final var positions = condition.evalPositions(process);
+                actionRun = actionRun || !positions.isEmpty();
                 for (final var action : promotion.getActions()) {
                     action.run(process, positions);
                 }
             }
+            if (actionRun) {
+                process.getPositionsUsedForSouce().forEach(pos -> {
+                    pos.setAppliedPromotionOid(promotion.getOid());
+                });
+            }
         } else {
             for (final var position : process.getDocument().getPositions()) {
-                for (final var condition : promotion.getTargetConditions()) {
-                    if (condition.positionMet(position)) {
-                        for (final var action : promotion.getActions()) {
-                            action.run(process, Collections.singletonList(position));
+                if (!position.isBurned()) {
+                    for (final var condition : promotion.getTargetConditions()) {
+                        if (condition.positionMet(position)) {
+                            for (final var action : promotion.getActions()) {
+                                action.run(process, Collections.singletonList(position));
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             }

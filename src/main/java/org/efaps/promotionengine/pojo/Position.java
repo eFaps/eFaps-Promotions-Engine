@@ -16,6 +16,19 @@ public class Position
 
     private BigDecimal crossTotal;
 
+    private String appliedPromotionOid;
+
+    public String getAppliedPromotionOid()
+    {
+        return appliedPromotionOid;
+    }
+
+    public Position setAppliedPromotionOid(final String appliedPromotionOid)
+    {
+        this.appliedPromotionOid = appliedPromotionOid;
+        return this;
+    }
+
     public Integer getIndex()
     {
         return index;
@@ -58,6 +71,11 @@ public class Position
     {
         this.crossTotal = crossTotal;
         return this;
+    }
+
+    public boolean isBurned()
+    {
+        return this.appliedPromotionOid != null;
     }
 
     @Override
