@@ -21,6 +21,13 @@ import java.util.List;
 import org.efaps.promotionengine.pojo.Position;
 import org.efaps.promotionengine.process.ProcessData;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = PercentageDiscountAction.class, name = "PercentageDiscountAction")
+})
 public interface IAction
 {
 

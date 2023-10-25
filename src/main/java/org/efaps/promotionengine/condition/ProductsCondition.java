@@ -19,6 +19,7 @@ package org.efaps.promotionengine.condition;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -150,4 +151,19 @@ public class ProductsCondition
     {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof final ProductsCondition condition)) {
+            return false;
+        }
+        return Objects.equals(this.entryOperator, condition.entryOperator)
+                        && Objects.equals(this.positionQuantity, condition.positionQuantity)
+                        && Objects.equals(this.products, condition.products);
+    }
+
 }

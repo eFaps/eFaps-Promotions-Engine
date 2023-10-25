@@ -19,12 +19,16 @@ package org.efaps.promotionengine.promotion;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.promotionengine.action.IAction;
 import org.efaps.promotionengine.condition.ICondition;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(builder = Promotion.Builder.class)
 public class Promotion
 {
 
@@ -113,6 +117,21 @@ public class Promotion
     public String toString()
     {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof final Promotion promo)) {
+            return false;
+        }
+        return Objects.equals(this.oid, promo.oid)
+                        && Objects.equals(this.getActions(), promo.getActions())
+                        && Objects.equals(this.getSourceConditions(), promo.getSourceConditions())
+                        && Objects.equals(this.getTargetConditions(), promo.getTargetConditions());
     }
 
     public static Builder builder()

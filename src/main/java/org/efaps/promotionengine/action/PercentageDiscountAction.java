@@ -59,4 +59,22 @@ public class PercentageDiscountAction
         position.setCrossTotal(calculate(position.getCrossTotal()));
         LOG.info("Applied action on positon: {}", position);
     }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof final PercentageDiscountAction other)) {
+            return false;
+        }
+
+        if (this.getPercentage() == null && other.getPercentage() == null) {
+            return true;
+        }
+
+        return this.getPercentage() != null && other.getPercentage() != null
+                        && this.getPercentage().compareTo(other.getPercentage()) == 0;
+    }
 }

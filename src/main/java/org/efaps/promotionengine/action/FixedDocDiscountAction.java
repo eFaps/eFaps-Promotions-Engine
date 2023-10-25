@@ -17,6 +17,7 @@
 package org.efaps.promotionengine.action;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.efaps.promotionengine.pojo.Position;
 import org.efaps.promotionengine.process.ProcessData;
@@ -30,5 +31,17 @@ public class FixedDocDiscountAction
                     final List<Position> position)
     {
         process.getDocument().setCrossTotal(calculate(process.getDocument().getCrossTotal()));
+    }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof FixedDocDiscountAction)) {
+            return false;
+        }
+        return Objects.equals(this.getAmount(), ((FixedDocDiscountAction) obj).getAmount());
     }
 }
