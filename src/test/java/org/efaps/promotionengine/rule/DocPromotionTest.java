@@ -50,4 +50,28 @@ public class DocPromotionTest
         engine.apply(document, Collections.singletonList(promotion.build()));
         Assert.assertTrue(new BigDecimal(82.5).compareTo(document.getCrossTotal()) == 0);
     }
+
+    @Test
+    public void buyMoreThan100AndGet20Off() {
+        final var promotion = Promotions.buyMoreThan100AndGet20Off();
+
+        final var document = new Document()
+                        .setCrossTotal(new BigDecimal(110))
+                        .addPosition(new Position()
+                                        .setQuantity(BigDecimal.ONE)
+                                        .setProductOid("123.4")
+                                        .setCrossTotal(new BigDecimal(20)))
+                        .addPosition(new Position()
+                                        .setQuantity(BigDecimal.ONE)
+                                        .setProductOid("123.5")
+                                        .setCrossTotal(new BigDecimal(30)))
+                        .addPosition(new Position()
+                                        .setQuantity(BigDecimal.ONE)
+                                        .setProductOid("123.5")
+                                        .setCrossTotal(new BigDecimal(60)));
+
+        final var engine = new Engine();
+        engine.apply(document, Collections.singletonList(promotion.build()));
+        Assert.assertTrue(new BigDecimal(90).compareTo(document.getCrossTotal()) == 0);
+    }
 }

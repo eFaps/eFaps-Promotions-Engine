@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
+import org.efaps.promotionengine.action.FixedDocDiscountAction;
 import org.efaps.promotionengine.action.IAction;
 import org.efaps.promotionengine.action.PercentageDiscountAction;
 import org.efaps.promotionengine.action.PercentageDocDiscountAction;
@@ -146,6 +147,26 @@ public class Promotions
         return Promotion.builder()
                         .withOid("222.3")
                         .withName("get second (cheaper one) 25% off")
+                        .withDescription("This can be a long text")
+                        .withPriority(100)
+                        .withStartDateTime(OffsetDateTime.now().minusDays(5))
+                        .withEndDateTime(OffsetDateTime.now().plusDays(5))
+                        .withSourceConditions(sourceConditions)
+                        .withActions(actions);
+    }
+
+    public static Promotion.Builder buyMoreThan100AndGet20Off() {
+        final var sourceConditions = new ArrayList<ICondition>();
+        sourceConditions.add(new DocTotalCondition()
+                       .setTotal(new BigDecimal(100)).setOperator(Operator.GREATEREQUAL));
+
+        final var actions = new ArrayList<IAction>();
+        final var action = new FixedDocDiscountAction().setAmount(new BigDecimal(20));
+        actions.add(action);
+
+        return Promotion.builder()
+                        .withOid("222.3")
+                        .withName("get 20 off if you buy more than 100")
                         .withDescription("This can be a long text")
                         .withPriority(100)
                         .withStartDateTime(OffsetDateTime.now().minusDays(5))

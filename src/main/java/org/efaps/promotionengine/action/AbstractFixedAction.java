@@ -16,19 +16,27 @@
  */
 package org.efaps.promotionengine.action;
 
-import java.util.List;
+import java.math.BigDecimal;
 
-import org.efaps.promotionengine.pojo.Position;
-import org.efaps.promotionengine.process.ProcessData;
-
-public class FixedDocDiscountAction
-    extends AbstractFixedAction
+public abstract class AbstractFixedAction
+    extends AbstractAction
 {
 
-    @Override
-    public void run(final ProcessData process,
-                    final List<Position> position)
+    private BigDecimal amount;
+
+    public BigDecimal getAmount()
     {
-        process.getDocument().setCrossTotal(calculate(process.getDocument().getCrossTotal()));
+        return amount;
+    }
+
+    public AbstractAction setAmount(final BigDecimal amount)
+    {
+        this.amount = amount;
+        return this;
+    }
+
+    public BigDecimal calculate(final BigDecimal original)
+    {
+        return original.subtract(getAmount());
     }
 }
