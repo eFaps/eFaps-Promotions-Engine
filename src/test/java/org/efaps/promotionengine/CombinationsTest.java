@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package org.efaps.promotionengine.rule;
+package org.efaps.promotionengine;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
