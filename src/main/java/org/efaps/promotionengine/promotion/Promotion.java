@@ -17,7 +17,7 @@
 package org.efaps.promotionengine.promotion;
 
 import java.time.OffsetDateTime;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -148,9 +148,9 @@ public class Promotion
         private int priority;
         private OffsetDateTime startDateTime;
         private OffsetDateTime endDateTime;
-        private List<ICondition> sourceConditions = Collections.emptyList();
-        private List<ICondition> targetConditions = Collections.emptyList();
-        private List<IAction> actions = Collections.emptyList();
+        private List<ICondition> sourceConditions = new ArrayList<>();
+        private List<ICondition> targetConditions = new ArrayList<>();
+        private List<IAction> actions = new ArrayList<>();
 
         private Builder()
         {
@@ -198,15 +198,33 @@ public class Promotion
             return this;
         }
 
+        public Builder addSourceCondition(final ICondition sourceCondition)
+        {
+            this.sourceConditions.add(sourceCondition);
+            return this;
+        }
+
         public Builder withTargetConditions(List<ICondition> targetConditions)
         {
             this.targetConditions = targetConditions;
             return this;
         }
 
+        public Builder addTargetCondition(final ICondition targetCondition)
+        {
+            this.targetConditions.add(targetCondition);
+            return this;
+        }
+
         public Builder withActions(List<IAction> actions)
         {
             this.actions = actions;
+            return this;
+        }
+
+        public Builder addAction(final IAction action)
+        {
+            this.actions.add(action);
             return this;
         }
 
