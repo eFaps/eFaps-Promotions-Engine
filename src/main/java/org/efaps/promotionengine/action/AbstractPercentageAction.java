@@ -36,11 +36,10 @@ public abstract class AbstractPercentageAction
         return this;
     }
 
-    public BigDecimal calculate(final BigDecimal original)
+    public BigDecimal discount(final BigDecimal original)
     {
-        // discounted price = original price - (original price × discount / 100)
-        return original.subtract(
-                        original.multiply(
-                                        getPercentage().setScale(8).divide(new BigDecimal(100), RoundingMode.HALF_UP)));
+        // discount price = (original price × discount / 100)
+        return original.multiply(
+                        getPercentage().setScale(8).divide(new BigDecimal(100), RoundingMode.HALF_UP));
     }
 }

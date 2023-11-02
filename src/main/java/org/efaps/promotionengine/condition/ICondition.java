@@ -18,7 +18,7 @@ package org.efaps.promotionengine.condition;
 
 import java.util.List;
 
-import org.efaps.promotionengine.pojo.Position;
+import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -34,8 +34,8 @@ public interface ICondition
 
     boolean isMet(final ProcessData process);
 
-    List<Position> evalPositions(final ProcessData process);
+    List<IPosition> evalPositions(final ProcessData process);
 
-    boolean positionMet(final Position position);
+    boolean positionMet(final IPosition position);
 
 }

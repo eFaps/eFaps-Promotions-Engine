@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.efaps.promotionengine.pojo.Position;
+import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
 public class DocTotalCondition
@@ -66,13 +66,13 @@ public class DocTotalCondition
     }
 
     @Override
-    public List<Position> evalPositions(final ProcessData process)
+    public List<IPosition> evalPositions(final ProcessData process)
     {
         return Collections.emptyList();
     }
 
     @Override
-    public boolean positionMet(final Position position)
+    public boolean positionMet(final IPosition position)
     {
         return false;
     }

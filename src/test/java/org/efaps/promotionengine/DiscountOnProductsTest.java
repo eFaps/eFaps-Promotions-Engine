@@ -21,6 +21,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.efaps.abacus.pojo.Configuration;
 import org.efaps.promotionengine.action.IAction;
 import org.efaps.promotionengine.action.PercentageDiscountAction;
 import org.efaps.promotionengine.condition.EntryOperator;
@@ -28,7 +29,6 @@ import org.efaps.promotionengine.condition.ICondition;
 import org.efaps.promotionengine.condition.ProductsCondition;
 import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.pojo.Position;
-import org.efaps.promotionengine.process.Engine;
 import org.efaps.promotionengine.promotion.Promotion;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -62,29 +62,30 @@ public class DiscountOnProductsTest
                         .withActions(actions)
                         .build();
 
-        final var document = new Document()
+        final Document document = new Document()
                         .addPosition(new Position()
                                         .setQuantity(BigDecimal.ONE)
                                         .setProductOid("123.4")
-                                        .setCrossTotal(new BigDecimal(100)))
+                                        .setNetUnitPrice(new BigDecimal(100)))
                         .addPosition(new Position()
                                         .setQuantity(BigDecimal.ONE)
                                         .setProductOid("223.456")
-                                        .setCrossTotal(new BigDecimal(150)))
+                                        .setNetUnitPrice(new BigDecimal(150)))
                         .addPosition(new Position()
                                         .setQuantity(BigDecimal.ONE)
                                         .setProductOid("223.456")
-                                        .setCrossTotal(new BigDecimal(180)))
+                                        .setNetUnitPrice(new BigDecimal(180)))
                         .addPosition(new Position()
                                         .setQuantity(BigDecimal.ONE)
                                         .setProductOid("123.5")
-                                        .setCrossTotal(new BigDecimal(250)));
+                                        .setNetUnitPrice(new BigDecimal(250)));
 
-        final var engine = new Engine();
-        engine.apply(document, Collections.singletonList(promotion));
-        Assert.assertTrue(new BigDecimal(50).compareTo(document.getPositions().get(0).getCrossTotal()) == 0);
-        Assert.assertTrue(new BigDecimal(150).compareTo(document.getPositions().get(1).getCrossTotal()) == 0);
-        Assert.assertTrue(new BigDecimal(180).compareTo(document.getPositions().get(2).getCrossTotal()) == 0);
-        Assert.assertTrue(new BigDecimal(125).compareTo(document.getPositions().get(3).getCrossTotal()) == 0);
+        final var calculator = new Calculator(new Configuration());
+        calculator.calc(document, Collections.singletonList(promotion));
+
+        Assert.assertTrue(new BigDecimal(50).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(150).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(180).compareTo(document.getPositions().get(2).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(125).compareTo(document.getPositions().get(3).getNetPrice()) == 0);
     }
 }

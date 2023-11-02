@@ -1,73 +1,32 @@
-/*
- * Copyright 2003 - 2023 The eFaps Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 package org.efaps.promotionengine.pojo;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import org.efaps.abacus.pojo.CalcDocument;
+import org.efaps.promotionengine.api.IDocument;
+import org.efaps.promotionengine.api.IPosition;
 
 public class Document
+    extends CalcDocument
+    implements IDocument
 {
 
-    private BigDecimal crossTotal;
+    private BigDecimal discount;
 
-    private List<Position> positions;
-
-    public Document setPositions(final List<Position> positions)
+    public BigDecimal getDiscount()
     {
-        this.positions = positions;
-        return this;
-    }
-
-    public List<Position> getPositions()
-    {
-        return positions;
-    }
-
-    public Document addPosition(final Position position)
-    {
-        if (positions == null) {
-            positions = new ArrayList<>();
-        }
-        if (position.getIndex() == null) {
-            position.setIndex(positions.size() + 1);
-        }
-        positions.add(position);
-        return this;
-    }
-
-    public BigDecimal getCrossTotal()
-    {
-        return crossTotal;
-    }
-
-    public Document setCrossTotal(final BigDecimal crossTotal)
-    {
-        this.crossTotal = crossTotal;
-        return this;
+        return discount;
     }
 
     @Override
-    public String toString()
+    public void setDiscount(BigDecimal discount)
     {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        this.discount = discount;
+    }
+
+    public Document addPosition(IPosition position)
+    {
+        return (Document) super.addPosition(position);
     }
 
 }

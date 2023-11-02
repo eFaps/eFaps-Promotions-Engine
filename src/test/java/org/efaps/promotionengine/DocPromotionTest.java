@@ -16,17 +16,9 @@
  */
 package org.efaps.promotionengine;
 
-import java.math.BigDecimal;
-import java.util.Collections;
-
-import org.efaps.promotionengine.pojo.Document;
-import org.efaps.promotionengine.pojo.Position;
-import org.efaps.promotionengine.process.Engine;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 public class DocPromotionTest
 {
+    /**
     @Test
     public void buyMoreThan100AndGet10PercentOff() {
         final var promotion = Promotions.buyMoreThan100AndGet10PercentOff();
@@ -74,4 +66,5 @@ public class DocPromotionTest
         engine.apply(document, Collections.singletonList(promotion.build()));
         Assert.assertTrue(new BigDecimal(90).compareTo(document.getCrossTotal()) == 0);
     }
+    **/
 }

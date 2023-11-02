@@ -19,7 +19,7 @@ package org.efaps.promotionengine.action;
 import java.util.List;
 import java.util.Objects;
 
-import org.efaps.promotionengine.pojo.Position;
+import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
 public class FixedDocDiscountAction
@@ -28,9 +28,9 @@ public class FixedDocDiscountAction
 
     @Override
     public void run(final ProcessData process,
-                    final List<Position> position)
+                    final List<IPosition> position)
     {
-        process.getDocument().setCrossTotal(calculate(process.getDocument().getCrossTotal()));
+        process.getDocument().setDiscount(getAmount());
     }
 
     @Override

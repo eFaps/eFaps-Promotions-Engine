@@ -19,20 +19,20 @@ package org.efaps.promotionengine.process;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.efaps.promotionengine.pojo.Document;
-import org.efaps.promotionengine.pojo.Position;
+import org.efaps.promotionengine.api.IDocument;
+import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.promotion.Promotion;
 
 public class ProcessData
 {
 
-    private final Document document;
+    private final IDocument document;
     private Step step;
-    private final Set<Position> positionsUsedForSouce = new HashSet<>();
+    private final Set<IPosition> positionsUsedForSouce = new HashSet<>();
 
     private Promotion currentPromotion;
 
-    public ProcessData(final Document document)
+    public ProcessData(final IDocument document)
     {
         this.document = document;
         this.step = Step.SOURCECONDITION;
@@ -48,7 +48,7 @@ public class ProcessData
         this.currentPromotion = currentPromotion;
     }
 
-    public Document getDocument()
+    public IDocument getDocument()
     {
         return document;
     }
@@ -63,12 +63,12 @@ public class ProcessData
         this.step = step;
     }
 
-    public Set<Position> getPositionsUsedForSouce()
+    public Set<IPosition> getPositionsUsedForSouce()
     {
         return positionsUsedForSouce;
     }
 
-    public void registerConditionMet(Position position)
+    public void registerConditionMet(final IPosition position)
     {
         switch (step) {
             case SOURCECONDITION:

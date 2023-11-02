@@ -19,8 +19,9 @@ package org.efaps.promotionengine.process;
 import java.util.Collections;
 import java.util.List;
 
+import org.efaps.promotionengine.api.IDocument;
+import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.condition.ICondition;
-import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.promotion.Promotion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class Engine
 
     private ProcessData process;
 
-    public void apply(final Document document,
+    public void apply(final IDocument document,
                       final List<Promotion> promotions)
     {
         process = new ProcessData(document);
@@ -64,11 +65,12 @@ public class Engine
             }
             if (actionRun) {
                 process.getPositionsUsedForSouce().forEach(pos -> {
-                    pos.setAppliedPromotionOid(promotion.getOid());
+                    pos.setPromotionOid(promotion.getOid());
                 });
             }
         } else {
-            for (final var position : process.getDocument().getPositions()) {
+            for (final var calcPosition : process.getDocument().getPositions()) {
+                final var position = (IPosition) calcPosition;
                 if (!position.isBurned()) {
                     for (final var condition : promotion.getTargetConditions()) {
                         if (condition.positionMet(position)) {

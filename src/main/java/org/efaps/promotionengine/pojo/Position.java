@@ -1,102 +1,63 @@
-/*
- * Copyright 2003 - 2023 The eFaps Team
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 package org.efaps.promotionengine.pojo;
 
 import java.math.BigDecimal;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import org.efaps.abacus.pojo.CalcPosition;
+import org.efaps.promotionengine.api.IPosition;
 
 public class Position
+    extends CalcPosition
+    implements IPosition
 {
 
-    private Integer index;
+    private String promotionOid;
+    private BigDecimal discount;
 
-    private String productOid;
 
-    private BigDecimal quantity;
-
-    private BigDecimal crossTotal;
-
-    private String appliedPromotionOid;
-
-    public String getAppliedPromotionOid()
+    public BigDecimal getDiscount()
     {
-        return appliedPromotionOid;
-    }
-
-    public Position setAppliedPromotionOid(final String appliedPromotionOid)
-    {
-        this.appliedPromotionOid = appliedPromotionOid;
-        return this;
-    }
-
-    public Integer getIndex()
-    {
-        return index;
-    }
-
-    public Position setIndex(Integer index)
-    {
-        this.index = index;
-        return this;
-    }
-
-    public String getProductOid()
-    {
-        return productOid;
-    }
-
-    public Position setProductOid(String productOid)
-    {
-        this.productOid = productOid;
-        return this;
-    }
-
-    public BigDecimal getQuantity()
-    {
-        return quantity;
-    }
-
-    public Position setQuantity(BigDecimal quantity)
-    {
-        this.quantity = quantity;
-        return this;
-    }
-
-    public BigDecimal getCrossTotal()
-    {
-        return crossTotal;
-    }
-
-    public Position setCrossTotal(BigDecimal crossTotal)
-    {
-        this.crossTotal = crossTotal;
-        return this;
-    }
-
-    public boolean isBurned()
-    {
-        return this.appliedPromotionOid != null;
+        return discount;
     }
 
     @Override
-    public String toString()
+    public void setDiscount(BigDecimal discount)
     {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        this.discount = discount;
+    }
+
+    @Override
+    public void setPromotionOid(String oid)
+    {
+       this.promotionOid = oid;
+    }
+
+    @Override
+    public boolean isBurned()
+    {
+        return promotionOid != null;
+    }
+
+    @Override
+    public Position setNetUnitPrice(BigDecimal netUnitPrice)
+    {
+        return (Position) super.setNetUnitPrice(netUnitPrice);
+    }
+
+    @Override
+    public Position setQuantity(BigDecimal quantity)
+    {
+        return (Position) super.setQuantity(quantity);
+    }
+
+    @Override
+    public Position setProductOid(String productOid)
+    {
+        return (Position) super.setProductOid(productOid);
+    }
+
+    @Override
+    public BigDecimal getNetUnitPrice()
+    {
+        return getDiscount() != null ? super.getNetUnitPrice().subtract(discount) : super.getNetUnitPrice();
     }
 }

@@ -18,7 +18,7 @@ package org.efaps.promotionengine.action;
 
 import java.util.List;
 
-import org.efaps.promotionengine.pojo.Position;
+import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -33,6 +33,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 public interface IAction
 {
 
-    void run(final ProcessData process, final List<Position> position);
+    void run(final ProcessData process, final List<IPosition> position);
 
 }

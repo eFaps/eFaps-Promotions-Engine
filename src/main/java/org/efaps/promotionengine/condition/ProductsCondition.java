@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.efaps.promotionengine.pojo.Position;
+import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 import org.efaps.promotionengine.process.Step;
 import org.slf4j.Logger;
@@ -101,12 +101,13 @@ public class ProductsCondition
         return ret;
     }
 
-    private List<Position> includesAny(final ProcessData process)
+    private List<IPosition> includesAny(final ProcessData process)
     {
-        final var ret = new ArrayList<Position>();
+        final var ret = new ArrayList<IPosition>();
         for (final var product : products) {
             var quantity = positionQuantity;
-            for (final var position: process.getDocument().getPositions()) {
+            for (final var calcPosition: process.getDocument().getPositions()) {
+                final var position = (IPosition) calcPosition;
                 if (position.getProductOid().equals(product) && !process.getPositionsUsedForSouce().contains(position)) {
                     quantity = quantity.subtract(position.getQuantity());
                     LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
@@ -127,9 +128,9 @@ public class ProductsCondition
     }
 
     @Override
-    public List<Position> evalPositions(final ProcessData process)
+    public List<IPosition> evalPositions(final ProcessData process)
     {
-        List<Position> ret = new ArrayList<>();
+        List<IPosition> ret = new ArrayList<>();
         switch (getEntryOperator()) {
             case INCLUDES_ANY:
                 ret = includesAny(process);
@@ -141,7 +142,7 @@ public class ProductsCondition
     }
 
     @Override
-    public boolean positionMet(final Position position)
+    public boolean positionMet(final IPosition position)
     {
         return products.contains(position.getProductOid());
     }
