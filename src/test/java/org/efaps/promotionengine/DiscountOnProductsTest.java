@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.efaps.abacus.pojo.Configuration;
+import org.efaps.abacus.pojo.Tax;
 import org.efaps.promotionengine.action.IAction;
 import org.efaps.promotionengine.action.PercentageDiscountAction;
 import org.efaps.promotionengine.condition.EntryOperator;
@@ -66,19 +67,23 @@ public class DiscountOnProductsTest
                         .addPosition(new Position()
                                         .setQuantity(BigDecimal.ONE)
                                         .setProductOid("123.4")
-                                        .setNetUnitPrice(new BigDecimal(100)))
+                                        .setNetUnitPrice(new BigDecimal(100))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
                         .addPosition(new Position()
                                         .setQuantity(BigDecimal.ONE)
                                         .setProductOid("223.456")
-                                        .setNetUnitPrice(new BigDecimal(150)))
+                                        .setNetUnitPrice(new BigDecimal(150))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
                         .addPosition(new Position()
                                         .setQuantity(BigDecimal.ONE)
                                         .setProductOid("223.456")
-                                        .setNetUnitPrice(new BigDecimal(180)))
+                                        .setNetUnitPrice(new BigDecimal(180))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
                         .addPosition(new Position()
                                         .setQuantity(BigDecimal.ONE)
                                         .setProductOid("123.5")
-                                        .setNetUnitPrice(new BigDecimal(250)));
+                                        .setNetUnitPrice(new BigDecimal(250))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))));
 
         final var calculator = new Calculator(new Configuration());
         calculator.calc(document, Collections.singletonList(promotion));

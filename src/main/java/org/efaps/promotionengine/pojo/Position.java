@@ -1,8 +1,11 @@
 package org.efaps.promotionengine.pojo;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.efaps.abacus.pojo.CalcPosition;
+import org.efaps.abacus.pojo.Tax;
 import org.efaps.promotionengine.api.IPosition;
 
 public class Position
@@ -12,7 +15,7 @@ public class Position
 
     private String promotionOid;
     private BigDecimal discount;
-
+    private Object CollectionUtil;
 
     public BigDecimal getDiscount()
     {
@@ -28,7 +31,7 @@ public class Position
     @Override
     public void setPromotionOid(String oid)
     {
-       this.promotionOid = oid;
+        this.promotionOid = oid;
     }
 
     @Override
@@ -59,5 +62,14 @@ public class Position
     public BigDecimal getNetUnitPrice()
     {
         return getDiscount() != null ? super.getNetUnitPrice().subtract(discount) : super.getNetUnitPrice();
+    }
+
+    public Position addTax(final Tax tax)
+    {
+        if (CollectionUtils.isEmpty(getTaxes())) {
+            setTaxes(new ArrayList<>());
+        }
+        getTaxes().add(tax);
+        return this;
     }
 }
