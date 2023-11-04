@@ -18,6 +18,7 @@ package org.efaps.promotionengine;
 
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.efaps.abacus.api.IConfig;
 import org.efaps.promotionengine.api.IDocument;
 import org.efaps.promotionengine.process.Engine;
@@ -32,11 +33,19 @@ public class Calculator
         super(config);
     }
 
-    public void calc(final IDocument document, final List<Promotion> promotion)
+    public void calc(final IDocument document)
+    {
+        calc(document, null);
+    }
+
+    public void calc(final IDocument document,
+                     final List<Promotion> promotions)
     {
         super.calc(document);
-        final var engine = new Engine();
-        engine.apply(document, promotion);
-        super.calc(document);
+        if (CollectionUtils.isNotEmpty(promotions)) {
+            final var engine = new Engine();
+            engine.apply(document, promotions);
+            super.calc(document);
+        }
     }
 }
