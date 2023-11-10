@@ -38,6 +38,8 @@ public class Promotion
 
     private final String description;
 
+    private final String label;
+
     private final int priority;
 
     private final OffsetDateTime startDateTime;
@@ -55,6 +57,7 @@ public class Promotion
         this.oid = builder.oid;
         this.name = builder.name;
         this.description = builder.description;
+        this.label = builder.label;
         this.priority = builder.priority;
         this.startDateTime = builder.startDateTime;
         this.endDateTime = builder.endDateTime;
@@ -76,6 +79,11 @@ public class Promotion
     public String getDescription()
     {
         return description;
+    }
+
+    public String getLabel()
+    {
+        return label;
     }
 
     public int getPriority()
@@ -145,6 +153,7 @@ public class Promotion
         private String oid;
         private String name;
         private String description;
+        private String label;
         private int priority;
         private OffsetDateTime startDateTime;
         private OffsetDateTime endDateTime;
@@ -171,6 +180,12 @@ public class Promotion
         public Builder withDescription(String description)
         {
             this.description = description;
+            return this;
+        }
+
+        public Builder withLabel(String label)
+        {
+            this.label = label;
             return this;
         }
 
