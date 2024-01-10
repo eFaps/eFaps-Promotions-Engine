@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = ProductsCondition.class, name = "ProductsCondition"),
+    @JsonSubTypes.Type(value = ProductFamilyCondition.class, name = "ProductFamilyCondition"),
     @JsonSubTypes.Type(value = DocTotalCondition.class, name = "DocTotalCondition")
 })
 public interface ICondition
