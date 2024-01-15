@@ -21,24 +21,27 @@ import java.util.List;
 import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({
-    @JsonSubTypes.Type(value = ProductsCondition.class, name = "ProductsCondition"),
-    @JsonSubTypes.Type(value = ProductFamilyCondition.class, name = "ProductFamilyCondition"),
-    @JsonSubTypes.Type(value = DocTotalCondition.class, name = "DocTotalCondition"),
-    @JsonSubTypes.Type(value = StoreCondition.class, name = "StoreCondition"),
-
-})
-public interface ICondition
+public class StoreCondition
+    extends AbstractKeyValueCondition
 {
+    public static String KEY = "StoreCondition-Identifier";
 
-    boolean isMet(final ProcessData process);
+    @Override
+    public List<IPosition> evalPositions(final ProcessData process)
+    {
+        return null;
+    }
 
-    List<IPosition> evalPositions(final ProcessData process);
+    @Override
+    public boolean positionMet(final IPosition position)
+    {
+        return false;
+    }
 
-    boolean positionMet(final IPosition position);
+    public StoreCondition addIdentifier(final String identifier)
+    {
+        this.addKeyValue(KEY, identifier);
+        return this;
+    }
 
 }

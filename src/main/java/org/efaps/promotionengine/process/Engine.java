@@ -31,51 +31,50 @@ public class Engine
 
     private static final Logger LOG = LoggerFactory.getLogger(Engine.class);
 
-    private ProcessData process;
+    private ProcessData processData;
 
     public void apply(final IDocument document,
                       final List<Promotion> promotions)
     {
-        process = new ProcessData(document);
         LOG.info("Applying Promotions: {} to Document: {}", promotions, document);
         // sort that highest number first
         Collections.sort(promotions, (promotion0,
                                       promotion1) -> promotion1.getPriority() - promotion0.getPriority());
         for (final var promotion : promotions) {
-            process.setCurrentPromotion(promotion);
-            process.setStep(Step.SOURCECONDITION);
+            getProcessData().setCurrentPromotion(promotion);
+            getProcessData().setStep(Step.SOURCECONDITION);
             if (!promotion.hasSource() || meetsConditions(promotion.getSourceConditions())) {
                 runActions(promotion);
             }
-            process.getPositionsUsedForSouce().clear();
+            getProcessData().getPositionsUsedForSouce().clear();
         }
     }
 
     public void runActions(final Promotion promotion)
     {
-        process.setStep(Step.TARGETCONDITION);
+        getProcessData().setStep(Step.TARGETCONDITION);
         if (promotion.hasSource()) {
             boolean actionRun = false;
             for (final var condition : promotion.getTargetConditions()) {
-                final var positions = condition.evalPositions(process);
+                final var positions = condition.evalPositions(getProcessData());
                 actionRun = actionRun || !positions.isEmpty();
                 for (final var action : promotion.getActions()) {
-                    action.run(process, positions);
+                    action.run(processData, positions);
                 }
             }
             if (actionRun) {
-                process.getPositionsUsedForSouce().forEach(pos -> {
+                getProcessData().getPositionsUsedForSouce().forEach(pos -> {
                     pos.setPromotionOid(promotion.getOid());
                 });
             }
         } else {
-            for (final var calcPosition : process.getDocument().getPositions()) {
+            for (final var calcPosition : processData.getDocument().getPositions()) {
                 final var position = (IPosition) calcPosition;
                 if (!position.isBurned()) {
                     for (final var condition : promotion.getTargetConditions()) {
                         if (condition.positionMet(position)) {
                             for (final var action : promotion.getActions()) {
-                                action.run(process, Collections.singletonList(position));
+                                action.run(processData, Collections.singletonList(position));
                             }
                             break;
                         }
@@ -96,7 +95,18 @@ public class Engine
 
     public boolean meetsCondition(final ICondition condition)
     {
-        return condition.isMet(process);
+        return condition.isMet(getProcessData());
     }
 
+
+    public ProcessData getProcessData()
+    {
+        return processData;
+    }
+
+    public Engine withProcessData(final ProcessData processData)
+    {
+        this.processData = processData;
+        return this;
+    }
 }

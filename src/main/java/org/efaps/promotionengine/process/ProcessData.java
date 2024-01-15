@@ -16,7 +16,9 @@
  */
 package org.efaps.promotionengine.process;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.efaps.promotionengine.api.IDocument;
@@ -27,14 +29,20 @@ public class ProcessData
 {
 
     private final IDocument document;
+
+    private final Map<String, Object> data;
+
     private Step step;
+
     private final Set<IPosition> positionsUsedForSouce = new HashSet<>();
 
     private Promotion currentPromotion;
 
-    public ProcessData(final IDocument document)
+    public ProcessData(final IDocument document,
+                       final Map<String, Object> data)
     {
         this.document = document;
+        this.data = data == null ? new HashMap<>() : data;
         this.step = Step.SOURCECONDITION;
     }
 
@@ -43,9 +51,10 @@ public class ProcessData
         return currentPromotion;
     }
 
-    public void setCurrentPromotion(Promotion currentPromotion)
+    public ProcessData setCurrentPromotion(Promotion currentPromotion)
     {
         this.currentPromotion = currentPromotion;
+        return this;
     }
 
     public IDocument getDocument()
@@ -58,9 +67,10 @@ public class ProcessData
         return step;
     }
 
-    public void setStep(Step step)
+    public ProcessData setStep(Step step)
     {
         this.step = step;
+        return this;
     }
 
     public Set<IPosition> getPositionsUsedForSouce()
@@ -80,6 +90,29 @@ public class ProcessData
                 throw new IllegalArgumentException("Unexpected value: " + step);
         }
 
+    }
+
+    public Map<String, Object> getData()
+    {
+        return data;
+    }
+
+    public Object getData(final String key)
+    {
+        return getData().get(key);
+    }
+
+    public boolean containstData(final String key)
+    {
+        return getData().containsKey(key);
+    }
+
+
+    public ProcessData addData(final String key,
+                               final Object object)
+    {
+        getData().put(key, object);
+        return this;
     }
 
 }

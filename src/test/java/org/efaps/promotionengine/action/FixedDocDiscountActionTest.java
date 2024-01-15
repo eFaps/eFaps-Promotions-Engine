@@ -18,7 +18,6 @@ package org.efaps.promotionengine.action;
 
 import java.math.BigDecimal;
 
-import org.efaps.promotionengine.action.FixedDocDiscountAction;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
