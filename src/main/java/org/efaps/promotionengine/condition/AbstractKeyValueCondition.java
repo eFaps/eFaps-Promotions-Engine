@@ -20,17 +20,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.efaps.promotionengine.process.ProcessData;
 
-public abstract class AbstractKeyValueCondition<T>
+public abstract class AbstractKeyValueCondition<T, S>
     extends AbstractCondition
 {
 
     private EntryOperator entryOperator = EntryOperator.INCLUDES_ANY;
 
-    private final List<Pair<String, Object>> pairs = new ArrayList<>();
+    private final List<KeyValueEntry<S>> entries = new ArrayList<>();
+
+    public List<KeyValueEntry<S>> getEntries()
+    {
+        return entries;
+    }
 
     public EntryOperator getEntryOperator()
     {
@@ -49,25 +52,25 @@ public abstract class AbstractKeyValueCondition<T>
     {
         switch (entryOperator) {
             case INCLUDES_ANY: {
-                for (final var pair : pairs) {
-                    if (process.containstData(pair.getKey())
-                                    && Objects.equals(process.getData(pair.getKey()), pair.getValue())) {
+                for (final var entry : entries) {
+                    if (process.containstData(entry.getKey())
+                                    && Objects.equals(process.getData(entry.getKey()), entry.getValue())) {
                         return true;
                     }
                 }
             }
             case INCLUDES_ALL: {
                 boolean ret = true;
-                for (final var pair : pairs) {
-                    ret = process.containstData(pair.getKey())
-                                    && Objects.equals(process.getData(pair.getKey()), pair.getValue());
+                for (final var entry : entries) {
+                    ret = process.containstData(entry.getKey())
+                                    && Objects.equals(process.getData(entry.getKey()), entry.getValue());
                 }
                 return ret;
             }
             case EXCLUDES: {
-                for (final var pair : pairs) {
-                    if (process.containstData(pair.getKey())
-                                    && Objects.equals(process.getData(pair.getKey()), pair.getValue())) {
+                for (final var entry : entries) {
+                    if (process.containstData(entry.getKey())
+                                    && Objects.equals(process.getData(entry.getKey()), entry.getValue())) {
                         return false;
                     }
                 }
@@ -79,8 +82,8 @@ public abstract class AbstractKeyValueCondition<T>
     }
 
     protected void addKeyValue(final String key,
-                               final Object object)
+                               final S value)
     {
-        this.pairs.add(new ImmutablePair<>(key, object));
+        this.entries.add(new KeyValueEntry<S>().setKey(key).setValue(value));
     }
 }

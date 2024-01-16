@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2023 The eFaps Team
+ * Copyright 2003 - 2024 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,34 +16,37 @@
  */
 package org.efaps.promotionengine.condition;
 
-import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.efaps.promotionengine.api.IPosition;
-import org.efaps.promotionengine.process.ProcessData;
 
-public class StoreCondition
-    extends AbstractKeyValueCondition<StoreCondition, String>
+public class KeyValueEntry<T>
 {
-    public static String KEY = "StoreCondition-Identifier";
 
-    @Override
-    public List<IPosition> evalPositions(final ProcessData process)
+    private String key;
+
+    private T value;
+
+    public String getKey()
     {
-        return null;
+        return key;
     }
 
-    @Override
-    public boolean positionMet(final IPosition position)
+    public KeyValueEntry<T> setKey(String key)
     {
-        return false;
+        this.key = key;
+        return this;
     }
 
-    public StoreCondition addIdentifier(final String identifier)
+    public Object getValue()
     {
-        this.addKeyValue(KEY, identifier);
+        return value;
+    }
+
+    public KeyValueEntry<T> setValue(T value)
+    {
+        this.value = value;
         return this;
     }
 
@@ -59,10 +62,10 @@ public class StoreCondition
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof final StoreCondition condition)) {
+        if (!(obj instanceof final KeyValueEntry keyValue)) {
             return false;
         }
-        return Objects.equals(this.getEntryOperator(), condition.getEntryOperator())
-                        && Objects.equals(this.getEntries(), condition.getEntries());
+        return Objects.equals(this.getKey(), keyValue.getKey())
+                        && Objects.equals(this.getValue(), keyValue.getValue());
     }
 }

@@ -20,6 +20,7 @@ import org.efaps.promotionengine.promotion.Promotion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -32,15 +33,20 @@ public class SerializationTest
 
     private static final Logger LOG = LoggerFactory.getLogger(SerializationTest.class);
 
-    @Test
-    public void toJsonAndBack1()
-        throws JsonProcessingException
+    protected ObjectMapper getObjectMapper()
     {
         final var objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+        return objectMapper;
+    }
 
-        final var promotion = Promotions.productsFiftyPercentOff().build();
+    @Test(dataProvider = "promotions")
+    public void toJsonAndBack(Promotion promotion)
+        throws JsonProcessingException
+    {
+        final var objectMapper = getObjectMapper();
         final var jsonStr = objectMapper.writeValueAsString(promotion);
         LOG.info("toJson: \n{}", jsonStr);
 
@@ -49,71 +55,16 @@ public class SerializationTest
         Assert.assertEquals(promotion, deserializedPromotion);
     }
 
-    @Test
-    public void toJsonAndBack2()
-        throws JsonProcessingException
+    @DataProvider(name = "promotions")
+    public static Object[] createData()
     {
-        final var objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
-        final var promotion = Promotions.buyOneGetOneFree().build();
-        final var jsonStr = objectMapper.writeValueAsString(promotion);
-        LOG.info("toJson: \n{}", jsonStr);
-
-        final var deserializedPromotion = objectMapper.readValue(jsonStr, Promotion.class);
-        LOG.info("{}", deserializedPromotion);
-        Assert.assertEquals(promotion, deserializedPromotion);
-    }
-
-    @Test
-    public void toJsonAndBack3()
-        throws JsonProcessingException
-    {
-        final var objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
-        final var promotion = Promotions.second25PercentOff().build();
-        final var jsonStr = objectMapper.writeValueAsString(promotion);
-        LOG.info("toJson: \n{}", jsonStr);
-
-        final var deserializedPromotion = objectMapper.readValue(jsonStr, Promotion.class);
-        LOG.info("{}", deserializedPromotion);
-        Assert.assertEquals(promotion, deserializedPromotion);
-    }
-
-    @Test
-    public void toJsonAndBack4()
-        throws JsonProcessingException
-    {
-        final var objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
-        final var promotion = Promotions.buyMoreThan100AndGet10PercentOff().build();
-        final var jsonStr = objectMapper.writeValueAsString(promotion);
-        LOG.info("toJson: \n{}", jsonStr);
-
-        final var deserializedPromotion = objectMapper.readValue(jsonStr, Promotion.class);
-        LOG.info("{}", deserializedPromotion);
-        Assert.assertEquals(promotion, deserializedPromotion);
-    }
-
-    @Test
-    public void toJsonAndBack5()
-        throws JsonProcessingException
-    {
-        final var objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
-        final var promotion = Promotions.buyMoreThan100AndGet20Off().build();
-        final var jsonStr = objectMapper.writeValueAsString(promotion);
-        LOG.info("toJson: \n{}", jsonStr);
-
-        final var deserializedPromotion = objectMapper.readValue(jsonStr, Promotion.class);
-        LOG.info("{}", deserializedPromotion);
-        Assert.assertEquals(promotion, deserializedPromotion);
+        return new Object[] {
+                        Promotions.productsFiftyPercentOff().build(),
+                        Promotions.buyOneGetOneFree().build(),
+                        Promotions.second25PercentOff().build(),
+                        Promotions.buyMoreThan100AndGet10PercentOff().build(),
+                        Promotions.buyMoreThan100AndGet20Off().build(),
+                        Promotions.storeHas20PercentageOff().build()
+        };
     }
 }
