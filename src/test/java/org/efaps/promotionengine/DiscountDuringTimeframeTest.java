@@ -17,6 +17,8 @@
 package org.efaps.promotionengine;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import org.efaps.promotionengine.condition.EntryOperator;
 import org.efaps.promotionengine.condition.ICondition;
 import org.efaps.promotionengine.condition.ProductsCondition;
 import org.efaps.promotionengine.condition.TimeCondition;
+import org.efaps.promotionengine.condition.WeekdayCondition;
 import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.pojo.Position;
 import org.efaps.promotionengine.promotion.Promotion;
@@ -68,6 +71,47 @@ public class DiscountDuringTimeframeTest
                         .withActions(actions)
                         .build();
 
+        final var document = new Document()
+                        .addPosition(new Position()
+                                        .setQuantity(BigDecimal.ONE)
+                                        .setProductOid("123.456")
+                                        .setNetUnitPrice(new BigDecimal(100))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))));
+
+        final var calculator = new Calculator(new Configuration());
+        calculator.calc(document, Collections.singletonList(promotion));
+        Assert.assertTrue(new BigDecimal(80).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal("94.4").compareTo(document.getPositions().get(0).getCrossPrice()) == 0);
+    }
+
+
+    @Test
+    public void everySpecificWeekday20PercentageOff() {
+        final var sourceConditions = new ArrayList<ICondition>();
+        sourceConditions.add(new WeekdayCondition().addDay(DayOfWeek.from(LocalDate.now())));
+
+        final var targetConditions = new ArrayList<ICondition>();
+        targetConditions.add(new ProductsCondition()
+                        .setPositionQuantity(BigDecimal.ONE)
+                        .setEntryOperator(EntryOperator.INCLUDES_ANY)
+                        .addProduct("123.456"));
+
+        // apply twenty percent off
+        final var actions = new ArrayList<IAction>();
+        final var action = new PercentageDiscountAction().setPercentage(new BigDecimal(20));
+        actions.add(action);
+
+        final var promotion = Promotion.builder()
+                        .withOid("123.456")
+                        .withName("Apply twenty percent off")
+                        .withDescription("This can be a long text")
+                        .withPriority(1)
+                        .withStartDateTime(OffsetDateTime.now().minusDays(5))
+                        .withEndDateTime(OffsetDateTime.now().plusDays(5))
+                        .withSourceConditions(sourceConditions)
+                        .withTargetConditions(targetConditions)
+                        .withActions(actions)
+                        .build();
 
         final var document = new Document()
                         .addPosition(new Position()
