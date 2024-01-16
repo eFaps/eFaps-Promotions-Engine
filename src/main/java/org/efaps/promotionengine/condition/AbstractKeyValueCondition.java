@@ -28,7 +28,12 @@ public abstract class AbstractKeyValueCondition<T, S>
 
     private EntryOperator entryOperator = EntryOperator.INCLUDES_ANY;
 
-    private final List<KeyValueEntry<S>> entries = new ArrayList<>();
+    private List<KeyValueEntry<S>> entries = new ArrayList<>();
+
+    public void setEntries(final List<KeyValueEntry<S>> entries)
+    {
+        this.entries = entries;
+    }
 
     public List<KeyValueEntry<S>> getEntries()
     {
