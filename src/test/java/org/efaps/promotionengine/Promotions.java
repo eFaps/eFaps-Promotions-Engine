@@ -18,6 +18,7 @@ package org.efaps.promotionengine;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.util.ArrayList;
 
 import org.efaps.promotionengine.action.FixedDocDiscountAction;
@@ -30,6 +31,7 @@ import org.efaps.promotionengine.condition.ICondition;
 import org.efaps.promotionengine.condition.Operator;
 import org.efaps.promotionengine.condition.ProductsCondition;
 import org.efaps.promotionengine.condition.StoreCondition;
+import org.efaps.promotionengine.condition.TimeCondition;
 import org.efaps.promotionengine.promotion.Promotion;
 
 public class Promotions
@@ -136,10 +138,11 @@ public class Promotions
                         .withActions(actions);
     }
 
-    public static Promotion.Builder buyMoreThan100AndGet10PercentOff() {
+    public static Promotion.Builder buyMoreThan100AndGet10PercentOff()
+    {
         final var sourceConditions = new ArrayList<ICondition>();
         sourceConditions.add(new DocTotalCondition()
-                       .setTotal(new BigDecimal(100)).setOperator(Operator.GREATEREQUAL));
+                        .setTotal(new BigDecimal(100)).setOperator(Operator.GREATEREQUAL));
 
         final var actions = new ArrayList<IAction>();
         final var action = new PercentageDocDiscountAction().setPercentage(new BigDecimal(25));
@@ -156,10 +159,11 @@ public class Promotions
                         .withActions(actions);
     }
 
-    public static Promotion.Builder buyMoreThan100AndGet20Off() {
+    public static Promotion.Builder buyMoreThan100AndGet20Off()
+    {
         final var sourceConditions = new ArrayList<ICondition>();
         sourceConditions.add(new DocTotalCondition()
-                       .setTotal(new BigDecimal(100)).setOperator(Operator.GREATEREQUAL));
+                        .setTotal(new BigDecimal(100)).setOperator(Operator.GREATEREQUAL));
 
         final var actions = new ArrayList<IAction>();
         final var action = new FixedDocDiscountAction().setAmount(new BigDecimal(20));
@@ -176,9 +180,39 @@ public class Promotions
                         .withActions(actions);
     }
 
-    public static Promotion.Builder storeHas20PercentageOff() {
+    public static Promotion.Builder storeHas20PercentageOff()
+    {
         final var sourceConditions = new ArrayList<ICondition>();
         sourceConditions.add(new StoreCondition().addIdentifier("XYZ"));
+
+        final var targetConditions = new ArrayList<ICondition>();
+        targetConditions.add(new ProductsCondition()
+                        .setPositionQuantity(BigDecimal.ONE)
+                        .setEntryOperator(EntryOperator.INCLUDES_ANY)
+                        .addProduct("123.456"));
+
+        final var actions = new ArrayList<IAction>();
+        final var action = new PercentageDiscountAction().setPercentage(new BigDecimal(20));
+        actions.add(action);
+
+        return Promotion.builder()
+                        .withOid("123.456")
+                        .withName("Apply twenty percent off")
+                        .withDescription("This can be a long text")
+                        .withPriority(1)
+                        .withStartDateTime(OffsetDateTime.now().minusDays(5))
+                        .withEndDateTime(OffsetDateTime.now().plusDays(5))
+                        .withSourceConditions(sourceConditions)
+                        .withTargetConditions(targetConditions)
+                        .withActions(actions);
+    }
+
+    public static Promotion.Builder from4pmTo7pm20PercentageOff()
+    {
+        final var sourceConditions = new ArrayList<ICondition>();
+        sourceConditions.add(
+                        new TimeCondition().addRange(OffsetTime.now().minusHours(3).withSecond(0).withNano(0),
+                                        OffsetTime.now().plusHours(1).withSecond(0).withNano(0)));
 
         final var targetConditions = new ArrayList<ICondition>();
         targetConditions.add(new ProductsCondition()

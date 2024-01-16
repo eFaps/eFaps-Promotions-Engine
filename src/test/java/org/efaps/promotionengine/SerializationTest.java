@@ -64,7 +64,8 @@ public class SerializationTest
                         Promotions.second25PercentOff().build(),
                         Promotions.buyMoreThan100AndGet10PercentOff().build(),
                         Promotions.buyMoreThan100AndGet20Off().build(),
-                        Promotions.storeHas20PercentageOff().build()
+                        Promotions.storeHas20PercentageOff().build(),
+                        Promotions.from4pmTo7pm20PercentageOff().build()
         };
     }
 }
