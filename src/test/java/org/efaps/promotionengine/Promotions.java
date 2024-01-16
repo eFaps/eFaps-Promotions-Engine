@@ -18,6 +18,7 @@ package org.efaps.promotionengine;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import org.efaps.promotionengine.action.FixedDocDiscountAction;
 import org.efaps.promotionengine.action.IAction;
 import org.efaps.promotionengine.action.PercentageDiscountAction;
 import org.efaps.promotionengine.action.PercentageDocDiscountAction;
+import org.efaps.promotionengine.condition.DateCondition;
 import org.efaps.promotionengine.condition.DocTotalCondition;
 import org.efaps.promotionengine.condition.EntryOperator;
 import org.efaps.promotionengine.condition.ICondition;
@@ -264,5 +266,33 @@ public class Promotions
                         .withTargetConditions(targetConditions)
                         .withActions(actions);
     }
+
+    public static Promotion.Builder cyberWow20PercentageOff()
+    {
+        final var sourceConditions = new ArrayList<ICondition>();
+        sourceConditions.add(new DateCondition().addRange(LocalDate.now().minusDays(1), LocalDate.now().plusDays(3)));
+
+        final var targetConditions = new ArrayList<ICondition>();
+        targetConditions.add(new ProductsCondition()
+                        .setPositionQuantity(BigDecimal.ONE)
+                        .setEntryOperator(EntryOperator.INCLUDES_ANY)
+                        .addProduct("123.456"));
+
+        final var actions = new ArrayList<IAction>();
+        final var action = new PercentageDiscountAction().setPercentage(new BigDecimal(20));
+        actions.add(action);
+
+        return Promotion.builder()
+                        .withOid("123.456")
+                        .withName("Apply twenty percent off")
+                        .withDescription("This can be a long text")
+                        .withPriority(1)
+                        .withStartDateTime(OffsetDateTime.now().minusDays(5))
+                        .withEndDateTime(OffsetDateTime.now().plusDays(5))
+                        .withSourceConditions(sourceConditions)
+                        .withTargetConditions(targetConditions)
+                        .withActions(actions);
+    }
+
 
 }
