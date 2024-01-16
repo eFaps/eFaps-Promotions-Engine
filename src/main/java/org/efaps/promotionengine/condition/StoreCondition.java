@@ -22,7 +22,7 @@ import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
 public class StoreCondition
-    extends AbstractKeyValueCondition
+    extends AbstractKeyValueCondition<StoreCondition>
 {
     public static String KEY = "StoreCondition-Identifier";
 

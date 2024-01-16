@@ -24,13 +24,25 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.efaps.promotionengine.process.ProcessData;
 
-public abstract class AbstractKeyValueCondition
+public abstract class AbstractKeyValueCondition<T>
     extends AbstractCondition
 {
 
-    private final EntryOperator entryOperator = EntryOperator.INCLUDES_ANY;
+    private EntryOperator entryOperator = EntryOperator.INCLUDES_ANY;
 
     private final List<Pair<String, Object>> pairs = new ArrayList<>();
+
+    public EntryOperator getEntryOperator()
+    {
+        return entryOperator;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T setEntryOperator(final EntryOperator entryOperator)
+    {
+        this.entryOperator = entryOperator;
+        return (T) this;
+    }
 
     @Override
     public boolean isMet(final ProcessData process)
