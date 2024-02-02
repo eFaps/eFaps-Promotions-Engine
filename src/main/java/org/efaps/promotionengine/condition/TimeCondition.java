@@ -56,7 +56,7 @@ public class TimeCondition
     @Override
     public List<IPosition> evalPositions(ProcessData process)
     {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

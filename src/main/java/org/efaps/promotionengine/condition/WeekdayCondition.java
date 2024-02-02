@@ -57,7 +57,7 @@ public class WeekdayCondition
     @Override
     public List<IPosition> evalPositions(final ProcessData process)
     {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

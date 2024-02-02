@@ -15,6 +15,7 @@
  */
 package org.efaps.promotionengine.condition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +32,7 @@ public class StoreCondition
     @Override
     public List<IPosition> evalPositions(final ProcessData process)
     {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
