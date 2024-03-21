@@ -26,7 +26,7 @@ import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
 public class TimeCondition
-    implements ICondition
+    extends AbstractCondition
 {
 
     private List<TimeConditionRange> ranges;

@@ -13,34 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.efaps.promotionengine.action;
+package org.efaps.promotionengine.api;
 
-public abstract class AbstractAction
-    implements IAction
+
+public interface IAnnotated
 {
-
-    private Strategy strategy = Strategy.CHEAPEST;
-    private String note;
-
-    public Strategy getStrategy()
-    {
-        return strategy;
-    }
-
-    public void setStrategy(Strategy strategy)
-    {
-        this.strategy = strategy;
-    }
-
-    public AbstractAction setNote(final String note)
-    {
-        this.note = note;
-        return this;
-    }
-
-    @Override
-    public String getNote()
-    {
-        return note;
+    default String getNote() {
+        return null;
     }
 }

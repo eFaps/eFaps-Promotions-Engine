@@ -17,6 +17,7 @@ package org.efaps.promotionengine.condition;
 
 import java.util.List;
 
+import org.efaps.promotionengine.api.IAnnotated;
 import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = DateCondition.class, name = "DateCondition")
 })
 public interface ICondition
+    extends IAnnotated
 {
 
     boolean isMet(final ProcessData process);

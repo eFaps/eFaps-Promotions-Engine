@@ -19,16 +19,17 @@ public abstract class AbstractCondition
     implements ICondition
 {
 
-    private Operator operator;
+    private String note;
 
-    public Operator getOperator()
+    public AbstractCondition setNote(final String note)
     {
-        return operator;
+        this.note = note;
+        return this;
     }
 
-    public AbstractCondition setOperator(Operator operator)
+    @Override
+    public String getNote()
     {
-        this.operator = operator;
-        return this;
+        return note;
     }
 }

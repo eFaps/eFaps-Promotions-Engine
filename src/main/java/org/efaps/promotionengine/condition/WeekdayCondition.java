@@ -27,7 +27,7 @@ import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
 public class WeekdayCondition
-    implements ICondition
+    extends AbstractCondition
 {
 
     private List<DayOfWeek> days;

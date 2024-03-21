@@ -29,7 +29,7 @@ import org.efaps.promotionengine.process.ProcessData;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class DateCondition
-    implements ICondition
+    extends AbstractCondition
 {
 
     private List<DateConditionRange> ranges;

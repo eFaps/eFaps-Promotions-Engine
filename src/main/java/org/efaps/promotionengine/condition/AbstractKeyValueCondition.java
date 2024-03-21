@@ -22,7 +22,7 @@ import java.util.Objects;
 import org.efaps.promotionengine.process.ProcessData;
 
 public abstract class AbstractKeyValueCondition<T, S>
-    extends AbstractCondition
+    extends AbstractOperatorCondition
 {
 
     private EntryOperator entryOperator = EntryOperator.INCLUDES_ANY;

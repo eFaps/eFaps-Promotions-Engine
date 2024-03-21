@@ -13,34 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.efaps.promotionengine.action;
+package org.efaps.promotionengine.condition;
 
-public abstract class AbstractAction
-    implements IAction
+public abstract class AbstractOperatorCondition
+    extends AbstractCondition
 {
 
-    private Strategy strategy = Strategy.CHEAPEST;
-    private String note;
+    private Operator operator;
 
-    public Strategy getStrategy()
+    public Operator getOperator()
     {
-        return strategy;
+        return operator;
     }
 
-    public void setStrategy(Strategy strategy)
+    public AbstractOperatorCondition setOperator(final Operator operator)
     {
-        this.strategy = strategy;
-    }
-
-    public AbstractAction setNote(final String note)
-    {
-        this.note = note;
+        this.operator = operator;
         return this;
-    }
-
-    @Override
-    public String getNote()
-    {
-        return note;
     }
 }

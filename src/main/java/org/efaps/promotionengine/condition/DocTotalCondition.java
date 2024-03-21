@@ -24,7 +24,7 @@ import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
 public class DocTotalCondition
-    extends AbstractCondition
+    extends AbstractOperatorCondition
 {
 
     private BigDecimal total;
