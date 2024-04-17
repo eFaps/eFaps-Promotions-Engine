@@ -88,7 +88,11 @@ public abstract class AbstractProductCondition<T>
     @Override
     public boolean positionMet(final IPosition position)
     {
-        return getProducts().contains(position.getProductOid());
+        return switch (getEntryOperator()) {
+            case INCLUDES_ANY -> getProducts().contains(position.getProductOid());
+            case EXCLUDES -> !getProducts().contains(position.getProductOid());
+            default -> throw new IllegalArgumentException("Unexpected value: " + getEntryOperator());
+        };
     }
 
     private List<IPosition> includesAny(final ProcessData process)
