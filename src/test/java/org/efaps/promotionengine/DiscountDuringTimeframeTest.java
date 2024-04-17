@@ -47,7 +47,7 @@ public class DiscountDuringTimeframeTest
     {
         final var sourceConditions = new ArrayList<ICondition>();
         sourceConditions.add(new TimeCondition().addRange(
-                        OffsetTime.now().minusHours(3).withSecond(0).withNano(0),
+                        OffsetTime.now().minusMinutes(5).withSecond(0).withNano(0),
                         OffsetTime.now().plusMinutes(2).withSecond(0).withNano(0)));
 
         final var targetConditions = new ArrayList<ICondition>();
