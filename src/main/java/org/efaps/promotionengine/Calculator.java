@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.efaps.abacus.api.IConfig;
 import org.efaps.promotionengine.api.IDocument;
+import org.efaps.promotionengine.api.IPromotionsConfig;
 import org.efaps.promotionengine.process.Engine;
 import org.efaps.promotionengine.process.ProcessData;
 import org.efaps.promotionengine.promotion.Promotion;
@@ -42,16 +43,17 @@ public class Calculator
     public void calc(final IDocument document,
                      final List<Promotion> promotions)
     {
-        calc(document, promotions, null);
+        calc(document, promotions, null, new PromotionsConfiguration());
     }
 
     public void calc(final IDocument document,
                      final List<Promotion> promotions,
-                     final  Map<String, Object> data)
+                     final Map<String, Object> data,
+                     final IPromotionsConfig promotionsConfig)
     {
         super.calc(document);
         if (CollectionUtils.isNotEmpty(promotions)) {
-            new Engine().withProcessData(new ProcessData(document, data)).apply(document, promotions);
+            new Engine(promotionsConfig).withProcessData(new ProcessData(document, data)).apply(document, promotions);
             super.calc(document);
         }
     }

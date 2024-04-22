@@ -86,4 +86,21 @@ public class Position
         getTaxes().add(tax);
         return this;
     }
+
+    @Override
+    public Position clone()
+    {
+        final var position = new Position();
+        position.setCrossPrice(getCrossPrice());
+        position.setCrossUnitPrice(getCrossUnitPrice());
+        position.setIndex(getIndex());
+        position.setNetPrice(getNetPrice());
+        position.setNetUnitPrice(getNetPrice());
+        position.setProductOid(getProductOid());
+        position.setQuantity(getQuantity());
+        position.setTaxAmount(getTaxAmount());
+        position.setTaxes(getTaxes());
+        position.setDiscount(getDiscount());
+        return position;
+    }
 }

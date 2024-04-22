@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.efaps.promotionengine.api;
+package org.efaps.promotionengine;
 
-import java.math.BigDecimal;
+import org.efaps.promotionengine.api.IPromotionsConfig;
+import org.efaps.promotionengine.process.EngineRule;
 
-import org.efaps.abacus.api.ICalcPosition;
-
-public interface IPosition
-    extends ICalcPosition
+public class PromotionsConfiguration
+    implements IPromotionsConfig
 {
-    BigDecimal getDiscount();
 
-    void setDiscount(BigDecimal netPrice);
-
-    void setPromotionOid(String oid);
-
-    boolean isBurned();
+    private EngineRule engineRule;
 
     @Override
-    IPosition clone();
+    public EngineRule getEngineRule()
+    {
+        return engineRule;
+    }
+
+    public PromotionsConfiguration setEngineRule(EngineRule engineRule)
+    {
+        this.engineRule = engineRule;
+        return this;
+    }
+
 }

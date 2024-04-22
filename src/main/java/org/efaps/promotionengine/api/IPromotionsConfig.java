@@ -15,21 +15,13 @@
  */
 package org.efaps.promotionengine.api;
 
-import java.math.BigDecimal;
+import org.efaps.promotionengine.process.EngineRule;
 
-import org.efaps.abacus.api.ICalcPosition;
-
-public interface IPosition
-    extends ICalcPosition
+public interface IPromotionsConfig
 {
-    BigDecimal getDiscount();
 
-    void setDiscount(BigDecimal netPrice);
-
-    void setPromotionOid(String oid);
-
-    boolean isBurned();
-
-    @Override
-    IPosition clone();
+    default EngineRule getEngineRule()
+    {
+        return EngineRule.PRIORITY;
+    }
 }

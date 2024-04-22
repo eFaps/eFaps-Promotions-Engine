@@ -15,18 +15,35 @@
  */
 package org.efaps.promotionengine.process;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.collections4.iterators.PermutationIterator;
+import org.efaps.promotionengine.PromotionsConfiguration;
 import org.efaps.promotionengine.api.IDocument;
 import org.efaps.promotionengine.api.IPosition;
+import org.efaps.promotionengine.api.IPromotionsConfig;
 import org.efaps.promotionengine.condition.ICondition;
+import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.promotion.Promotion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Engine
 {
+
+    private final IPromotionsConfig config;
+
+    public Engine()
+    {
+        this(new PromotionsConfiguration());
+    }
+
+    public Engine(IPromotionsConfig config)
+    {
+        this.config = config;
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(Engine.class);
 
@@ -36,16 +53,46 @@ public class Engine
                       final List<Promotion> promotions)
     {
         LOG.info("Applying Promotions: {} to Document: {}", promotions, document);
-        // sort that highest number first
-        Collections.sort(promotions, (promotion0,
-                                      promotion1) -> promotion1.getPriority() - promotion0.getPriority());
-        for (final var promotion : promotions) {
-            getProcessData().setCurrentPromotion(promotion);
-            getProcessData().setStep(Step.SOURCECONDITION);
-            if (!promotion.hasSource() || meetsConditions(promotion.getSourceConditions())) {
-                runActions(promotion);
+        if (EngineRule.MOSTDISCOUNT.equals(config.getEngineRule())) {
+            IDocument mostDiscountDoc = null;
+            BigDecimal mostDiscount = BigDecimal.ZERO;
+            final PermutationIterator<Promotion> permutationIterator = new PermutationIterator<>(promotions);
+            while (permutationIterator.hasNext()) {
+                final var currentDoc = document.clone();
+                getProcessData().setDocument(currentDoc);
+                final var currentPermutation = permutationIterator.next();
+                for (final var promotion : currentPermutation) {
+                    getProcessData().setCurrentPromotion(promotion);
+                    getProcessData().setStep(Step.SOURCECONDITION);
+                    if (!promotion.hasSource() || meetsConditions(promotion.getSourceConditions())) {
+                        runActions(promotion);
+                    }
+                    getProcessData().getPositionsUsedForSouce().clear();
+                }
+                final var currentDiscount = currentDoc.getPositions().stream()
+                                .map(pos -> (IPosition) pos)
+                                .map(IPosition::getDiscount)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                if (mostDiscountDoc == null || mostDiscount.compareTo(currentDiscount) < 0) {
+                    mostDiscountDoc = currentDoc;
+                    mostDiscount = currentDiscount;
+                }
             }
-            getProcessData().getPositionsUsedForSouce().clear();
+            if (mostDiscountDoc != null) {
+                ((Document) document).setPositions(mostDiscountDoc.getPositions().stream().toList());
+            }
+        } else {
+            // sort that highest number first
+            Collections.sort(promotions, (promotion0,
+                                          promotion1) -> promotion1.getPriority() - promotion0.getPriority());
+            for (final var promotion : promotions) {
+                getProcessData().setCurrentPromotion(promotion);
+                getProcessData().setStep(Step.SOURCECONDITION);
+                if (!promotion.hasSource() || meetsConditions(promotion.getSourceConditions())) {
+                    runActions(promotion);
+                }
+                getProcessData().getPositionsUsedForSouce().clear();
+            }
         }
     }
 
@@ -96,7 +143,6 @@ public class Engine
     {
         return condition.isMet(getProcessData());
     }
-
 
     public ProcessData getProcessData()
     {

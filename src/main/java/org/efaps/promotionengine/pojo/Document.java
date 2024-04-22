@@ -17,6 +17,7 @@ package org.efaps.promotionengine.pojo;
 
 import java.math.BigDecimal;
 
+import org.efaps.abacus.api.ICalcPosition;
 import org.efaps.abacus.pojo.CalcDocument;
 import org.efaps.promotionengine.api.IDocument;
 import org.efaps.promotionengine.api.IPosition;
@@ -44,4 +45,15 @@ public class Document
         return (Document) super.addPosition(position);
     }
 
+    @Override
+    public Document clone() {
+        final var doc =  new Document();
+        doc.setNetTotal(this.getNetTotal());
+        doc.setCrossTotal(this.getCrossTotal());
+        doc.setTaxTotal(this.getTaxTotal());
+        doc.setDiscount(this.getDiscount());
+        doc.setTaxes(this.getTaxes());
+        doc.setPositions(this.getPositions().stream().map(ICalcPosition::clone).toList());
+        return doc;
+    }
 }

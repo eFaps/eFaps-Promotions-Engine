@@ -77,7 +77,7 @@ public class DiscountPerStoreTest
         final var calculator = new Calculator(new Configuration());
         final Map<String, Object> data = new HashMap<>();
         data.put(StoreCondition.KEY, "XYZ");
-        calculator.calc(document, Collections.singletonList(promotion), data);
+        calculator.calc(document, Collections.singletonList(promotion), data, new PromotionsConfiguration());
         Assert.assertTrue(new BigDecimal(80).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal("94.4").compareTo(document.getPositions().get(0).getCrossPrice()) == 0);
     }

@@ -27,7 +27,14 @@ import org.efaps.promotionengine.promotion.Promotion;
 public class ProcessData
 {
 
-    private final IDocument document;
+    private  IDocument document;
+
+
+    public void setDocument(IDocument document)
+    {
+        this.document = document;
+    }
+
 
     private final Map<String, Object> data;
 
