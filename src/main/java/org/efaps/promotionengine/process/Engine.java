@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.iterators.PermutationIterator;
 import org.efaps.promotionengine.PromotionsConfiguration;
 import org.efaps.promotionengine.api.IDocument;
@@ -101,12 +102,18 @@ public class Engine
         getProcessData().setStep(Step.TARGETCONDITION);
         if (promotion.hasSource()) {
             boolean actionRun = false;
+            List<IPosition> commonPositions = null;
             for (final var condition : promotion.getTargetConditions()) {
                 final var positions = condition.evalPositions(getProcessData());
-                actionRun = actionRun || !positions.isEmpty();
-                for (final var action : promotion.getActions()) {
-                    action.run(processData, positions);
+                if (commonPositions == null) {
+                    commonPositions = positions;
+                } else {
+                    commonPositions.retainAll(positions);
                 }
+            }
+            actionRun = actionRun || CollectionUtils.isNotEmpty(commonPositions);
+            for (final var action : promotion.getActions()) {
+                action.run(processData, commonPositions);
             }
             if (actionRun) {
                 getProcessData().getPositionsUsedForSouce().forEach(pos -> {
@@ -116,14 +123,15 @@ public class Engine
         } else {
             for (final var calcPosition : processData.getDocument().getPositions()) {
                 final var position = (IPosition) calcPosition;
-                if (!position.isBurned()) {
+                boolean meetsConditions = !position.isBurned();
+                if (meetsConditions) {
                     for (final var condition : promotion.getTargetConditions()) {
-                        if (condition.positionMet(position)) {
-                            for (final var action : promotion.getActions()) {
-                                action.run(processData, Collections.singletonList(position));
-                            }
-                            break;
-                        }
+                        meetsConditions = meetsConditions && condition.positionMet(position);
+                    }
+                }
+                if (meetsConditions) {
+                    for (final var action : promotion.getActions()) {
+                        action.run(processData, Collections.singletonList(position));
                     }
                 }
             }

@@ -18,7 +18,10 @@ package org.efaps.promotionengine.condition;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.efaps.abacus.api.ICalcPosition;
 import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 import org.efaps.promotionengine.process.Step;
@@ -68,10 +71,30 @@ public abstract class AbstractProductCondition<T>
         var ret = false;
         ret = switch (getEntryOperator()) {
             case INCLUDES_ANY -> includesAny(process).size() > 0;
+            case EXCLUDES -> checkExclude(process);
             default -> throw new IllegalArgumentException("Unexpected value: " + getEntryOperator());
         };
         LOG.info("Condition met: {}", ret);
         return ret;
+    }
+
+    /**
+     * Check that at least one position has a product that is not excluded
+     */
+    protected boolean checkExclude(final ProcessData process)
+    {
+        final Set<String> positionProducts = process.getDocument().getPositions().stream()
+                        .map(ICalcPosition::getProductOid)
+                        .distinct().collect(Collectors.toSet());
+
+        boolean atLeastOneProduct = false;
+        for (final var prodOid : positionProducts) {
+            if (!getProducts().contains(prodOid)) {
+                atLeastOneProduct = true;
+                break;
+            }
+        }
+        return atLeastOneProduct;
     }
 
     @Override
@@ -80,6 +103,7 @@ public abstract class AbstractProductCondition<T>
         List<IPosition> ret = new ArrayList<>();
         ret = switch (getEntryOperator()) {
             case INCLUDES_ANY -> includesAny(process);
+            case EXCLUDES -> exclude(process);
             default -> throw new IllegalArgumentException("Unexpected value: " + getEntryOperator());
         };
         return ret;
@@ -94,6 +118,19 @@ public abstract class AbstractProductCondition<T>
             default -> throw new IllegalArgumentException("Unexpected value: " + getEntryOperator());
         };
     }
+
+    private List<IPosition> exclude(final ProcessData process)
+    {
+        final var ret = new ArrayList<IPosition>();
+        for (final var calcPosition : process.getDocument().getPositions()) {
+            final var position = (IPosition) calcPosition;
+            if (positionMet(position)) {
+                ret.add(position);
+            }
+        }
+        return ret;
+    }
+
 
     private List<IPosition> includesAny(final ProcessData process)
     {

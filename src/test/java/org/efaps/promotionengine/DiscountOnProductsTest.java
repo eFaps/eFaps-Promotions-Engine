@@ -149,4 +149,66 @@ public class DiscountOnProductsTest
         Assert.assertTrue(new BigDecimal(144).compareTo(document.getPositions().get(2).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(250).compareTo(document.getPositions().get(3).getNetPrice()) == 0);
     }
+
+    @Test
+    public void aGroupOfProductsExceptSomeAre50PercentOff()
+    {
+        final var sourceConditions = new ArrayList<ICondition>();
+        sourceConditions.add(new ProductsCondition()
+                        .setPositionQuantity(BigDecimal.ONE)
+                        .setEntryOperator(EntryOperator.INCLUDES_ANY)
+                        .addProduct("INCLUDE.1")
+                        .addProduct("EXCLUSION.2")
+                        .addProduct("INCLUDE.3"));
+        sourceConditions.add(new ProductsCondition()
+                        .setPositionQuantity(BigDecimal.ONE)
+                        .setEntryOperator(EntryOperator.EXCLUDES)
+                        .addProduct("EXCLUSION.2"));
+
+        final var actions = new ArrayList<IAction>();
+        final var action = new PercentageDiscountAction().setPercentage(new BigDecimal(50));
+        actions.add(action);
+
+        final var promotion = Promotion.builder()
+                        .withOid("123.456")
+                        .withName("A group of products except some are 50% off")
+                        .withDescription("This can be a long text")
+                        .withPriority(1)
+                        .withStartDateTime(OffsetDateTime.now().minusDays(5))
+                        .withEndDateTime(OffsetDateTime.now().plusDays(5))
+                        .withTargetConditions(sourceConditions)
+                        .withActions(actions)
+                        .build();
+
+        final Document document = new Document()
+                        .addPosition(new Position()
+                                        .setQuantity(BigDecimal.ONE)
+                                        .setProductOid("INCLUDE.1")
+                                        .setNetUnitPrice(new BigDecimal(100))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
+                        .addPosition(new Position()
+                                        .setQuantity(BigDecimal.ONE)
+                                        .setProductOid("EXCLUSION.2")
+                                        .setNetUnitPrice(new BigDecimal(200))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
+                        .addPosition(new Position()
+                                        .setQuantity(BigDecimal.ONE)
+                                        .setProductOid("223.456")
+                                        .setNetUnitPrice(new BigDecimal(300))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
+                        .addPosition(new Position()
+                                        .setQuantity(BigDecimal.ONE)
+                                        .setProductOid("INCLUDE.3")
+                                        .setNetUnitPrice(new BigDecimal(400))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))));
+
+        final var calculator = new Calculator(new Configuration());
+        calculator.calc(document, Collections.singletonList(promotion));
+
+        Assert.assertTrue(new BigDecimal(50).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(200).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(300).compareTo(document.getPositions().get(2).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(200).compareTo(document.getPositions().get(3).getNetPrice()) == 0);
+    }
+
 }
