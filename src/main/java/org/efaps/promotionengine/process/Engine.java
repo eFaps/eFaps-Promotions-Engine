@@ -18,6 +18,7 @@ package org.efaps.promotionengine.process;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.iterators.PermutationIterator;
@@ -73,6 +74,7 @@ public class Engine
                 final var currentDiscount = currentDoc.getPositions().stream()
                                 .map(pos -> (IPosition) pos)
                                 .map(IPosition::getDiscount)
+                                .filter(Objects::nonNull)
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
                 if (mostDiscountDoc == null || mostDiscount.compareTo(currentDiscount) < 0) {
                     mostDiscountDoc = currentDoc;
