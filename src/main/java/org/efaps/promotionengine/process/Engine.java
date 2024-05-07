@@ -16,6 +16,7 @@
 package org.efaps.promotionengine.process;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -55,10 +56,15 @@ public class Engine
                       final List<Promotion> promotions)
     {
         LOG.info("Applying Promotions: {} to Document: {}", promotions, document);
+        final var currentPromotions = promotions.stream()
+                        .filter(promo -> (promo.getStartDateTime().isAfter(OffsetDateTime.now())
+                                        && promo.getEndDateTime().isBefore(OffsetDateTime.now())))
+                        .toList();
+
         if (EngineRule.MOSTDISCOUNT.equals(config.getEngineRule())) {
             IDocument mostDiscountDoc = null;
             BigDecimal mostDiscount = BigDecimal.ZERO;
-            final PermutationIterator<Promotion> permutationIterator = new PermutationIterator<>(promotions);
+            final PermutationIterator<Promotion> permutationIterator = new PermutationIterator<>(currentPromotions);
             while (permutationIterator.hasNext()) {
                 final var currentDoc = document.clone();
                 getProcessData().setDocument(currentDoc);
@@ -86,9 +92,9 @@ public class Engine
             }
         } else {
             // sort that highest number first
-            Collections.sort(promotions, (promotion0,
-                                          promotion1) -> promotion1.getPriority() - promotion0.getPriority());
-            for (final var promotion : promotions) {
+            Collections.sort(currentPromotions, (promotion0,
+                                                 promotion1) -> promotion1.getPriority() - promotion0.getPriority());
+            for (final var promotion : currentPromotions) {
                 getProcessData().setCurrentPromotion(promotion);
                 getProcessData().setStep(Step.SOURCECONDITION);
                 if (!promotion.hasSource() || meetsConditions(promotion.getSourceConditions())) {
