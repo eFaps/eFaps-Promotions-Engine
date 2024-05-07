@@ -58,8 +58,8 @@ public class Engine
     {
         LOG.info("Applying Promotions: {} to Document: {}", promotions, document);
         final var currentPromotions = promotions.stream()
-                        .filter(promo -> (promo.getStartDateTime().isAfter(OffsetDateTime.now())
-                                        && promo.getEndDateTime().isBefore(OffsetDateTime.now())))
+                        .filter(promo -> (promo.getStartDateTime().isBefore(OffsetDateTime.now())
+                                        && promo.getEndDateTime().isAfter(OffsetDateTime.now())))
                         .collect(Collectors.toList());
 
         if (EngineRule.MOSTDISCOUNT.equals(config.getEngineRule())) {
