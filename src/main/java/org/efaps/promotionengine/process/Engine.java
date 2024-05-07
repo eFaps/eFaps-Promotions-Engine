@@ -20,6 +20,7 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.iterators.PermutationIterator;
@@ -59,7 +60,7 @@ public class Engine
         final var currentPromotions = promotions.stream()
                         .filter(promo -> (promo.getStartDateTime().isAfter(OffsetDateTime.now())
                                         && promo.getEndDateTime().isBefore(OffsetDateTime.now())))
-                        .toList();
+                        .collect(Collectors.toList());
 
         if (EngineRule.MOSTDISCOUNT.equals(config.getEngineRule())) {
             IDocument mostDiscountDoc = null;
