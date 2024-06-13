@@ -16,28 +16,33 @@
 package org.efaps.promotionengine.pojo;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.efaps.abacus.api.ICalcPosition;
 import org.efaps.abacus.pojo.CalcDocument;
-import org.efaps.promotionengine.api.IDocument;
 import org.efaps.promotionengine.api.IPosition;
+import org.efaps.promotionengine.api.IPromotionDoc;
+import org.efaps.promotionengine.api.IPromotionInfo;
 
 public class Document
     extends CalcDocument
-    implements IDocument
+    implements IPromotionDoc
 {
 
-    private BigDecimal discount;
+    private IPromotionInfo promotionInfo;
+    private BigDecimal docDiscount;
+    private final List<String> promotionOids = new ArrayList<>();
 
-    public BigDecimal getDiscount()
+    public IPromotionInfo getPromotionInfo()
     {
-        return discount;
+        return promotionInfo;
     }
 
     @Override
-    public void setDiscount(BigDecimal discount)
+    public void setPromotionInfo(IPromotionInfo info)
     {
-        this.discount = discount;
+        this.promotionInfo = info;
     }
 
     public Document addPosition(IPosition position)
@@ -46,14 +51,45 @@ public class Document
     }
 
     @Override
-    public Document clone() {
-        final var doc =  new Document();
+    public Document clone()
+    {
+        final var doc = new Document();
         doc.setNetTotal(this.getNetTotal());
         doc.setCrossTotal(this.getCrossTotal());
         doc.setTaxTotal(this.getTaxTotal());
-        doc.setDiscount(this.getDiscount());
+        doc.setPromotionInfo(this.getPromotionInfo());
+        doc.addDocDiscount(this.getDocDiscount());
         doc.setTaxes(this.getTaxes());
         doc.setPositions(this.getPositions().stream().map(ICalcPosition::clone).toList());
         return doc;
+    }
+
+    @Override
+    public BigDecimal getDocDiscount()
+    {
+        return docDiscount;
+    }
+
+    @Override
+    public void addDocDiscount(BigDecimal discount)
+    {
+        if (discount != null) {
+            if (this.docDiscount == null) {
+                this.docDiscount = BigDecimal.ZERO;
+            }
+            this.docDiscount = discount;
+        }
+    }
+
+    @Override
+    public void addPromotionOid(String oid)
+    {
+        promotionOids.add(oid);
+    }
+
+    @Override
+    public List<String> getPromotionOids()
+    {
+        return promotionOids;
     }
 }

@@ -23,7 +23,10 @@ public interface IDocument
     extends ICalcDocument
 {
 
-    void setDiscount(BigDecimal discount);
-
+    @Override
     IDocument clone();
+
+    void addDocDiscount(BigDecimal discount);
+
+    BigDecimal getDocDiscount();
 }

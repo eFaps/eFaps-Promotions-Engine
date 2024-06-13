@@ -55,6 +55,9 @@ public class Calculator
         if (CollectionUtils.isNotEmpty(promotions)) {
             new Engine(promotionsConfig).withProcessData(new ProcessData(document, data)).apply(document, promotions);
             super.calc(document);
+            if (document.getDocDiscount() != null) {
+                document.setCrossTotal(document.getCrossTotal().subtract(document.getDocDiscount()));
+            }
         }
     }
 }

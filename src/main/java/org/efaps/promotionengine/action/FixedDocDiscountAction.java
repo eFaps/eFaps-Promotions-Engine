@@ -29,7 +29,7 @@ public class FixedDocDiscountAction
     public void run(final ProcessData process,
                     final List<IPosition> position)
     {
-        process.getDocument().setDiscount(getAmount());
+        process.getDocument().addDocDiscount(getAmount());
     }
 
     @Override

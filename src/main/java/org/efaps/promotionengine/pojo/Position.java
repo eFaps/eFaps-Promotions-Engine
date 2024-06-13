@@ -29,8 +29,10 @@ public class Position
 {
 
     private String promotionOid;
+
     private BigDecimal discount;
 
+    @Override
     public BigDecimal getDiscount()
     {
         return discount;
@@ -46,6 +48,12 @@ public class Position
     public void setPromotionOid(String oid)
     {
         this.promotionOid = oid;
+    }
+
+    @Override
+    public String getPromotionOid()
+    {
+        return promotionOid;
     }
 
     @Override

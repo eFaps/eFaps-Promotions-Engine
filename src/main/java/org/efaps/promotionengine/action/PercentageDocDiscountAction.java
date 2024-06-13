@@ -28,7 +28,7 @@ public class PercentageDocDiscountAction
     public void run(final ProcessData process,
                     final List<IPosition> position)
     {
-        process.getDocument().setDiscount(discount(process.getDocument().getNetTotal()));
+        process.getDocument().addDocDiscount(discount(process.getDocument().getNetTotal()));
     }
 
     @Override

@@ -17,21 +17,13 @@ package org.efaps.promotionengine.api;
 
 import java.math.BigDecimal;
 
-import org.efaps.abacus.api.ICalcPosition;
-
-public interface IPosition
-    extends ICalcPosition
+public interface IPromotionDetail
 {
+
+    int getIndex();
+
     BigDecimal getDiscount();
-
-    void setDiscount(BigDecimal netPrice);
-
-    void setPromotionOid(String oid);
 
     String getPromotionOid();
 
-    boolean isBurned();
-
-    @Override
-    IPosition clone();
 }

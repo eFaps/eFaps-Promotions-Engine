@@ -15,55 +15,72 @@
  */
 package org.efaps.promotionengine;
 
+import java.math.BigDecimal;
+import java.util.Collections;
+
+import org.efaps.abacus.pojo.Configuration;
+import org.efaps.abacus.pojo.Tax;
+import org.efaps.promotionengine.pojo.Document;
+import org.efaps.promotionengine.pojo.Position;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
 public class DocPromotionTest
 {
-    /**
+
     @Test
-    public void buyMoreThan100AndGet10PercentOff() {
-        final var promotion = Promotions.buyMoreThan100AndGet10PercentOff();
+    public void buyMoreThan100AndGet10PercentOff()
+    {
+        final var promotion = Promotions.buyMoreThan100AndGet10PercentOff().build();
 
         final var document = new Document()
-                        .setCrossTotal(new BigDecimal(110))
                         .addPosition(new Position()
                                         .setQuantity(BigDecimal.ONE)
                                         .setProductOid("123.4")
-                                        .setCrossTotal(new BigDecimal(20)))
+                                        .setNetUnitPrice(new BigDecimal(100))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
                         .addPosition(new Position()
                                         .setQuantity(BigDecimal.ONE)
-                                        .setProductOid("123.5")
-                                        .setCrossTotal(new BigDecimal(30)))
-                        .addPosition(new Position()
-                                        .setQuantity(BigDecimal.ONE)
-                                        .setProductOid("123.5")
-                                        .setCrossTotal(new BigDecimal(60)));
+                                        .setProductOid("223.456")
+                                        .setNetUnitPrice(new BigDecimal(150))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))));
 
-        final var engine = new Engine();
-        engine.apply(document, Collections.singletonList(promotion.build()));
-        Assert.assertTrue(new BigDecimal(82.5).compareTo(document.getCrossTotal()) == 0);
+        final var calculator = new Calculator(new Configuration());
+        calculator.calc(document, Collections.singletonList(promotion));
+
+        Assert.assertTrue(new BigDecimal(232.5).compareTo(document.getCrossTotal()) == 0);
+
+        Assert.assertTrue(new BigDecimal(62.5).compareTo(document.getPromotionInfo().getTotalDiscount()) == 0);
+        Assert.assertNull(document.getPromotionInfo().getDetails().get(0).getPromotionOid());
+        Assert.assertEquals(promotion.getOid(), document.getPromotionInfo().getPromotionOids().get(0));
     }
 
     @Test
-    public void buyMoreThan100AndGet20Off() {
-        final var promotion = Promotions.buyMoreThan100AndGet20Off();
+    public void buyMoreThan100AndGet20Off()
+    {
+
+        final var promotion = Promotions.buyMoreThan100AndGet20Off().build();
 
         final var document = new Document()
-                        .setCrossTotal(new BigDecimal(110))
                         .addPosition(new Position()
                                         .setQuantity(BigDecimal.ONE)
                                         .setProductOid("123.4")
-                                        .setCrossTotal(new BigDecimal(20)))
+                                        .setNetUnitPrice(new BigDecimal(100))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
                         .addPosition(new Position()
                                         .setQuantity(BigDecimal.ONE)
-                                        .setProductOid("123.5")
-                                        .setCrossTotal(new BigDecimal(30)))
-                        .addPosition(new Position()
-                                        .setQuantity(BigDecimal.ONE)
-                                        .setProductOid("123.5")
-                                        .setCrossTotal(new BigDecimal(60)));
+                                        .setProductOid("223.456")
+                                        .setNetUnitPrice(new BigDecimal(150))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))));
 
-        final var engine = new Engine();
-        engine.apply(document, Collections.singletonList(promotion.build()));
-        Assert.assertTrue(new BigDecimal(90).compareTo(document.getCrossTotal()) == 0);
+        final var calculator = new Calculator(new Configuration());
+        calculator.calc(document, Collections.singletonList(promotion));
+
+        Assert.assertTrue(new BigDecimal(275).compareTo(document.getCrossTotal()) == 0);
+
+        Assert.assertTrue(new BigDecimal(20).compareTo(document.getPromotionInfo().getTotalDiscount()) == 0);
+        Assert.assertNull(document.getPromotionInfo().getDetails().get(0).getPromotionOid());
+        Assert.assertEquals(promotion.getOid(), document.getPromotionInfo().getPromotionOids().get(0));
     }
-    **/
+
 }
