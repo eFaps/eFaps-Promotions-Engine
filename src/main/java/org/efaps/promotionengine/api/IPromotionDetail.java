@@ -26,6 +26,8 @@ public interface IPromotionDetail
 
     BigDecimal getNetDiscount();
 
+    BigDecimal getCrossUnitDiscount();
+
     BigDecimal getCrossDiscount();
 
     String getPromotionOid();

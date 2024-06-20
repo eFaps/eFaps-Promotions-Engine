@@ -29,12 +29,10 @@ public class PromotionDetailDto
 {
 
     private final int index;
-
     private final BigDecimal netUnitDiscount;
-
     private final BigDecimal netDiscount;
+    private final BigDecimal crossUnitDiscount;
     private final BigDecimal crossDiscount;
-
     private final String promotionOid;
 
     private PromotionDetailDto(Builder builder)
@@ -42,6 +40,7 @@ public class PromotionDetailDto
         this.index = builder.index;
         this.netUnitDiscount = builder.netUnitDiscount;
         this.netDiscount = builder.netDiscount;
+        this.crossUnitDiscount = builder.crossUnitDiscount;
         this.crossDiscount = builder.crossDiscount;
         this.promotionOid = builder.promotionOid;
     }
@@ -70,6 +69,11 @@ public class PromotionDetailDto
         return netDiscount;
     }
 
+    public BigDecimal getCrossUnitDiscount()
+    {
+        return crossUnitDiscount;
+    }
+
     @Override
     public BigDecimal getCrossDiscount()
     {
@@ -93,6 +97,7 @@ public class PromotionDetailDto
         private int index;
         private BigDecimal netUnitDiscount;
         private BigDecimal netDiscount;
+        private BigDecimal crossUnitDiscount;
         private BigDecimal crossDiscount;
         private String promotionOid;
 
@@ -118,6 +123,12 @@ public class PromotionDetailDto
             return this;
         }
 
+        public Builder withCrossUnitDiscount(BigDecimal crossUnitDiscount)
+        {
+            this.crossUnitDiscount = crossUnitDiscount;
+            return this;
+        }
+
         public Builder withCrossDiscount(BigDecimal crossDiscount)
         {
             this.crossDiscount = crossDiscount;
@@ -134,6 +145,5 @@ public class PromotionDetailDto
         {
             return new PromotionDetailDto(this);
         }
-
     }
 }

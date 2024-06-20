@@ -48,11 +48,14 @@ public class PromotionInfo
                     final var netUnitDiscount = originalDocPos.getNetUnitPrice()
                                     .subtract(promoDocPos.getNetUnitPrice());
                     final var netDiscount = originalDocPos.getNetPrice().subtract(promoDocPos.getNetPrice());
+                    final var crossUnitDiscount = originalDocPos.getCrossUnitPrice()
+                                    .subtract(promoDocPos.getCrossUnitPrice());
                     final var crossDiscount = originalDocPos.getCrossPrice().subtract(promoDocPos.getCrossPrice());
                     details.add(PromotionDetailDto.builder()
                                     .withIndex(promoDocPos.getIndex())
                                     .withNetUnitDiscount(netUnitDiscount)
                                     .withNetDiscount(netDiscount)
+                                    .withCrossUnitDiscount(crossUnitDiscount)
                                     .withCrossDiscount(crossDiscount)
                                     .withPromotionOid(promoDocPos.getPromotionOid())
                                     .build());
