@@ -25,6 +25,7 @@ import org.efaps.promotionengine.api.IPromotionsConfig;
 import org.efaps.promotionengine.process.Engine;
 import org.efaps.promotionengine.process.ProcessData;
 import org.efaps.promotionengine.promotion.Promotion;
+import org.efaps.promotionengine.promotion.PromotionInfo;
 
 public class Calculator
     extends org.efaps.abacus.Calculator
@@ -52,12 +53,20 @@ public class Calculator
                      final IPromotionsConfig promotionsConfig)
     {
         super.calc(document);
+
         if (CollectionUtils.isNotEmpty(promotions)) {
-            new Engine(promotionsConfig).withProcessData(new ProcessData(document, data)).apply(document, promotions);
-            super.calc(document);
-            if (document.getDocDiscount() != null) {
-                document.setCrossTotal(document.getCrossTotal().subtract(document.getDocDiscount()));
+            final var promoDoc = document.clone();
+            new Engine(promotionsConfig).withProcessData(new ProcessData(getConfig(), promoDoc, data)).apply(promoDoc,
+                            promotions);
+            super.calc(promoDoc);
+            if (promoDoc.getDocDiscount() != null) {
+                promoDoc.setCrossTotal(promoDoc.getCrossTotal().subtract(promoDoc.getDocDiscount()));
             }
+            final var promoInfo = PromotionInfo.evalPromotionInfo(document, promoDoc);
+            document.setPromotionInfo(promoInfo);
+
+            // sync the information into the original document
+            document.updateWith(promoDoc);
         }
     }
 }

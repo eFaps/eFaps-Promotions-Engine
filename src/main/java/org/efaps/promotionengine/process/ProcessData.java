@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.efaps.abacus.api.IConfig;
 import org.efaps.promotionengine.api.IDocument;
 import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.promotion.Promotion;
@@ -27,14 +28,7 @@ import org.efaps.promotionengine.promotion.Promotion;
 public class ProcessData
 {
 
-    private  IDocument document;
-
-
-    public void setDocument(IDocument document)
-    {
-        this.document = document;
-    }
-
+    private IDocument document;
 
     private final Map<String, Object> data;
 
@@ -44,9 +38,13 @@ public class ProcessData
 
     private Promotion currentPromotion;
 
-    public ProcessData(final IDocument document,
+    private final IConfig calculatorConfig;
+
+    public ProcessData(final IConfig calculatorConfig,
+                       final IDocument document,
                        final Map<String, Object> data)
     {
+        this.calculatorConfig = calculatorConfig;
         this.document = document;
         this.data = data == null ? new HashMap<>() : data;
         this.step = Step.SOURCECONDITION;
@@ -66,6 +64,17 @@ public class ProcessData
     public IDocument getDocument()
     {
         return document;
+    }
+
+    public ProcessData setDocument(IDocument document)
+    {
+        this.document = document;
+        return this;
+    }
+
+    public IConfig getCalculatorConfig()
+    {
+        return calculatorConfig;
     }
 
     public Step getStep()
@@ -112,7 +121,6 @@ public class ProcessData
     {
         return getData().containsKey(key);
     }
-
 
     public ProcessData addData(final String key,
                                final Object object)

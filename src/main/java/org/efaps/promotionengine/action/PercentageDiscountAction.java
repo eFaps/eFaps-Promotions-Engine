@@ -55,7 +55,7 @@ public class PercentageDiscountAction
                       final IPosition position)
     {
         position.setPromotionOid(process.getCurrentPromotion().getOid());
-        position.setDiscount(discount(position.getNetUnitPrice()));
+        position.setNetUnitPrice(position.getNetUnitPrice().subtract(discount(position.getNetUnitPrice())));
         LOG.info("Applied action on positon: {}", position);
     }
 

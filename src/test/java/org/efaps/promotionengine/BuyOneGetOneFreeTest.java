@@ -84,6 +84,11 @@ public class BuyOneGetOneFreeTest
 
         Assert.assertTrue(new BigDecimal(122).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(0).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
+
+        Assert.assertTrue(new BigDecimal(0)
+                        .compareTo(document.getPromotionInfo().getDetails().get(0).getNetDiscount()) == 0);
+        Assert.assertTrue(new BigDecimal(122)
+                        .compareTo(document.getPromotionInfo().getDetails().get(1).getNetDiscount()) == 0);
     }
 
     @Test
@@ -134,6 +139,7 @@ public class BuyOneGetOneFreeTest
 
         Assert.assertTrue(new BigDecimal(122).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(122).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
+        Assert.assertNull(document.getDocDiscount());
     }
 
     @Test
@@ -184,6 +190,12 @@ public class BuyOneGetOneFreeTest
 
         Assert.assertTrue(new BigDecimal(244).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(0).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
+
+        Assert.assertTrue(new BigDecimal(0)
+                        .compareTo(document.getPromotionInfo().getDetails().get(0).getNetDiscount()) == 0);
+        Assert.assertTrue(new BigDecimal(122)
+                        .compareTo(document.getPromotionInfo().getDetails().get(1).getNetDiscount()) == 0);
+
     }
 
     @Test
@@ -213,6 +225,12 @@ public class BuyOneGetOneFreeTest
         Assert.assertTrue(new BigDecimal(112.5).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(250).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(200).compareTo(document.getPositions().get(2).getNetPrice()) == 0);
+
+        Assert.assertTrue(new BigDecimal(37.5)
+                        .compareTo(document.getPromotionInfo().getDetails().get(0).getNetDiscount()) == 0);
+        Assert.assertNull(document.getPromotionInfo().getDetails().get(1).getPromotionOid());
+        Assert.assertNull(document.getPromotionInfo().getDetails().get(2).getPromotionOid());
+
     }
 
 }

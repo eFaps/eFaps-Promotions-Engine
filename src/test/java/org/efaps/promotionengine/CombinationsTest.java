@@ -51,8 +51,7 @@ public class CombinationsTest
         calculator.calc(document, promotions);
 
         Assert.assertTrue(new BigDecimal(50).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
-        Assert.assertTrue(new BigDecimal(50).compareTo(document.getPromotionInfo().getTotalDiscount()) == 0);
-
+        Assert.assertTrue(new BigDecimal(50).compareTo(document.getPromotionInfo().getNetTotalDiscount()) == 0);
 
         // second position
         final var document2 = new Document()
@@ -72,9 +71,10 @@ public class CombinationsTest
         Assert.assertTrue(new BigDecimal(50).compareTo(document2.getPositions().get(0).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(100).compareTo(document2.getPositions().get(1).getNetPrice()) == 0);
 
-        Assert.assertTrue(new BigDecimal(50).compareTo(document2.getPromotionInfo().getTotalDiscount()) == 0);
-        Assert.assertTrue(new BigDecimal(50).compareTo(document2.getPromotionInfo().getDetails().get(0).getDiscount()) == 0);
-        Assert.assertNull(document2.getPromotionInfo().getDetails().get(1).getDiscount());
+        Assert.assertTrue(new BigDecimal(50).compareTo(document2.getPromotionInfo().getNetTotalDiscount()) == 0);
+        Assert.assertTrue(new BigDecimal(50)
+                        .compareTo(document2.getPromotionInfo().getDetails().get(0).getNetUnitDiscount()) == 0);
+        Assert.assertNull(document2.getPromotionInfo().getDetails().get(1).getNetUnitDiscount());
 
         // third position
         final var document3 = new Document()
@@ -99,10 +99,12 @@ public class CombinationsTest
         Assert.assertTrue(new BigDecimal(100).compareTo(document3.getPositions().get(1).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(75).compareTo(document3.getPositions().get(2).getNetPrice()) == 0);
 
-        Assert.assertTrue(new BigDecimal(125).compareTo(document3.getPromotionInfo().getTotalDiscount()) == 0);
-        Assert.assertTrue(new BigDecimal(50).compareTo(document3.getPromotionInfo().getDetails().get(0).getDiscount()) == 0);
-        Assert.assertNull(document3.getPromotionInfo().getDetails().get(1).getDiscount());
-        Assert.assertTrue(new BigDecimal(75).compareTo(document3.getPromotionInfo().getDetails().get(2).getDiscount()) == 0);
+        Assert.assertTrue(new BigDecimal(125).compareTo(document3.getPromotionInfo().getNetTotalDiscount()) == 0);
+        Assert.assertTrue(new BigDecimal(50)
+                        .compareTo(document3.getPromotionInfo().getDetails().get(0).getNetUnitDiscount()) == 0);
+        Assert.assertNull(document3.getPromotionInfo().getDetails().get(1).getNetUnitDiscount());
+        Assert.assertTrue(new BigDecimal(75)
+                        .compareTo(document3.getPromotionInfo().getDetails().get(2).getNetUnitDiscount()) == 0);
 
         // fourth position
         final var document4 = new Document()
@@ -133,12 +135,13 @@ public class CombinationsTest
         Assert.assertTrue(new BigDecimal(75).compareTo(document4.getPositions().get(2).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(200).compareTo(document4.getPositions().get(3).getNetPrice()) == 0);
 
-        Assert.assertTrue(new BigDecimal(125).compareTo(document4.getPromotionInfo().getTotalDiscount()) == 0);
-        Assert.assertTrue(new BigDecimal(50).compareTo(document4.getPromotionInfo().getDetails().get(0).getDiscount()) == 0);
-        Assert.assertNull(document4.getPromotionInfo().getDetails().get(1).getDiscount());
-        Assert.assertTrue(new BigDecimal(75).compareTo(document3.getPromotionInfo().getDetails().get(2).getDiscount()) == 0);
-        Assert.assertNull(document4.getPromotionInfo().getDetails().get(3).getDiscount());
-
+        Assert.assertTrue(new BigDecimal(125).compareTo(document4.getPromotionInfo().getNetTotalDiscount()) == 0);
+        Assert.assertTrue(new BigDecimal(50)
+                        .compareTo(document4.getPromotionInfo().getDetails().get(0).getNetUnitDiscount()) == 0);
+        Assert.assertNull(document4.getPromotionInfo().getDetails().get(1).getNetUnitDiscount());
+        Assert.assertTrue(new BigDecimal(75)
+                        .compareTo(document3.getPromotionInfo().getDetails().get(2).getNetUnitDiscount()) == 0);
+        Assert.assertNull(document4.getPromotionInfo().getDetails().get(3).getNetUnitDiscount());
 
         // five position
         final var document5 = new Document()
@@ -175,12 +178,15 @@ public class CombinationsTest
         Assert.assertTrue(new BigDecimal(200).compareTo(document5.getPositions().get(3).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(0).compareTo(document5.getPositions().get(4).getNetPrice()) == 0);
 
-        Assert.assertTrue(new BigDecimal(200).compareTo(document5.getPromotionInfo().getTotalDiscount()) == 0);
-        Assert.assertTrue(new BigDecimal(50).compareTo(document5.getPromotionInfo().getDetails().get(0).getDiscount()) == 0);
-        Assert.assertNull(document5.getPromotionInfo().getDetails().get(1).getDiscount());
-        Assert.assertNull(document5.getPromotionInfo().getDetails().get(2).getDiscount());
-        Assert.assertNull(document5.getPromotionInfo().getDetails().get(3).getDiscount());
-        Assert.assertTrue(new BigDecimal(150).compareTo(document5.getPromotionInfo().getDetails().get(4).getDiscount()) == 0);
+        Assert.assertTrue(new BigDecimal(200).compareTo(document5.getPromotionInfo().getNetTotalDiscount()) == 0);
+        Assert.assertTrue(new BigDecimal(50)
+                        .compareTo(document5.getPromotionInfo().getDetails().get(0).getNetUnitDiscount()) == 0);
+        Assert.assertNull(document5.getPromotionInfo().getDetails().get(1).getNetUnitDiscount());
+        Assert.assertTrue(new BigDecimal(0)
+                        .compareTo(document5.getPromotionInfo().getDetails().get(2).getNetUnitDiscount()) == 0);
+        Assert.assertNull(document5.getPromotionInfo().getDetails().get(3).getNetUnitDiscount());
+        Assert.assertTrue(new BigDecimal(150)
+                        .compareTo(document5.getPromotionInfo().getDetails().get(4).getNetUnitDiscount()) == 0);
 
     }
 

@@ -16,6 +16,7 @@
 package org.efaps.promotionengine.api;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.efaps.abacus.api.ICalcDocument;
 
@@ -23,10 +24,21 @@ public interface IDocument
     extends ICalcDocument
 {
 
-    @Override
-    IDocument clone();
+    /**
+     * A  discount applied on the amount that the costumer should pay (including tax etc).
+     * e.g. payable amount of 100 minus discount of 20 results in new payable amount of 20
+     * @return
+     */
+    BigDecimal getDocDiscount();
 
     void addDocDiscount(BigDecimal discount);
 
-    BigDecimal getDocDiscount();
+    void setPromotionInfo(IPromotionInfo info);
+
+    void addPromotionOid(String oid);
+
+    List<String> getPromotionOids();
+
+    @Override
+    IDocument clone();
 }

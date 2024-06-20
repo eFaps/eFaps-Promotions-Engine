@@ -17,12 +17,16 @@ package org.efaps.promotionengine.api;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 public interface IPromotionInfo
 {
-    BigDecimal getTotalDiscount();
+
+    BigDecimal getCrossTotalDiscount();
+
+    BigDecimal getNetTotalDiscount();
 
     List<IPromotionDetail> getDetails();
 
-    List<String> getPromotionOids();
+    Set<String> getPromotionOids();
 }

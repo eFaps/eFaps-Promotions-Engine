@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.efaps.abacus.api.ICalcPosition;
 import org.efaps.abacus.pojo.CalcPosition;
 import org.efaps.abacus.pojo.Tax;
 import org.efaps.promotionengine.api.IPosition;
@@ -29,20 +30,6 @@ public class Position
 {
 
     private String promotionOid;
-
-    private BigDecimal discount;
-
-    @Override
-    public BigDecimal getDiscount()
-    {
-        return discount;
-    }
-
-    @Override
-    public void setDiscount(BigDecimal discount)
-    {
-        this.discount = discount;
-    }
 
     @Override
     public void setPromotionOid(String oid)
@@ -80,12 +67,6 @@ public class Position
         return (Position) super.setProductOid(productOid);
     }
 
-    @Override
-    public BigDecimal getNetUnitPrice()
-    {
-        return getDiscount() != null ? super.getNetUnitPrice().subtract(discount) : super.getNetUnitPrice();
-    }
-
     public Position addTax(final Tax tax)
     {
         if (CollectionUtils.isEmpty(getTaxes())) {
@@ -103,12 +84,19 @@ public class Position
         position.setCrossUnitPrice(getCrossUnitPrice());
         position.setIndex(getIndex());
         position.setNetPrice(getNetPrice());
-        position.setNetUnitPrice(getNetPrice());
+        position.setNetUnitPrice(getNetUnitPrice());
         position.setProductOid(getProductOid());
         position.setQuantity(getQuantity());
         position.setTaxAmount(getTaxAmount());
         position.setTaxes(getTaxes());
-        position.setDiscount(getDiscount());
         return position;
+    }
+
+    @Override
+    public Position updateWith(final ICalcPosition position)
+    {
+        super.updateWith(position);
+        setPromotionOid(((IPosition) position).getPromotionOid());
+        return this;
     }
 }

@@ -22,7 +22,11 @@ public interface IPromotionDetail
 
     int getIndex();
 
-    BigDecimal getDiscount();
+    BigDecimal getNetUnitDiscount();
+
+    BigDecimal getNetDiscount();
+
+    BigDecimal getCrossDiscount();
 
     String getPromotionOid();
 

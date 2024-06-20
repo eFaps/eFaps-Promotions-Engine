@@ -21,13 +21,13 @@ import java.util.List;
 
 import org.efaps.abacus.api.ICalcPosition;
 import org.efaps.abacus.pojo.CalcDocument;
+import org.efaps.promotionengine.api.IDocument;
 import org.efaps.promotionengine.api.IPosition;
-import org.efaps.promotionengine.api.IPromotionDoc;
 import org.efaps.promotionengine.api.IPromotionInfo;
 
 public class Document
     extends CalcDocument
-    implements IPromotionDoc
+    implements IDocument
 {
 
     private IPromotionInfo promotionInfo;
@@ -71,7 +71,7 @@ public class Document
     }
 
     @Override
-    public void addDocDiscount(BigDecimal discount)
+    public void addDocDiscount(final BigDecimal discount)
     {
         if (discount != null) {
             if (this.docDiscount == null) {
