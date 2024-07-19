@@ -27,9 +27,10 @@ public abstract class AbstractAction
         return strategy;
     }
 
-    public void setStrategy(Strategy strategy)
+    public AbstractAction setStrategy(final Strategy strategy)
     {
         this.strategy = strategy;
+        return this;
     }
 
     public AbstractAction setNote(final String note)

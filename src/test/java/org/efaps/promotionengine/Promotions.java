@@ -26,6 +26,7 @@ import org.efaps.promotionengine.action.FixedDocDiscountAction;
 import org.efaps.promotionengine.action.IAction;
 import org.efaps.promotionengine.action.PercentageDiscountAction;
 import org.efaps.promotionengine.action.PercentageDocDiscountAction;
+import org.efaps.promotionengine.action.Strategy;
 import org.efaps.promotionengine.condition.DateCondition;
 import org.efaps.promotionengine.condition.DocTotalCondition;
 import org.efaps.promotionengine.condition.EntryOperator;
@@ -109,7 +110,7 @@ public class Promotions
                         .withActions(actions);
     }
 
-    public static Promotion.Builder second25PercentOff()
+    public static Promotion.Builder second25PercentOff(final Strategy strategy)
     {
         final var sourceConditions = new ArrayList<ICondition>();
         sourceConditions.add(new ProductsCondition()
@@ -126,12 +127,12 @@ public class Promotions
                         .addProduct(PROD_BOGOF3));
 
         final var actions = new ArrayList<IAction>();
-        final var action = new PercentageDiscountAction().setPercentage(new BigDecimal(25));
+        final var action = new PercentageDiscountAction().setPercentage(new BigDecimal(25)).setStrategy(strategy);
         actions.add(action);
 
         return Promotion.builder()
                         .withOid("222.3")
-                        .withName("get second (cheaper one) 25% off")
+                        .withName("get second ("+ strategy + ") 25% off")
                         .withDescription("This can be a long text")
                         .withPriority(100)
                         .withStartDateTime(OffsetDateTime.now().minusDays(5))

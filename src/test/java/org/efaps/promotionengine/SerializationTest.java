@@ -15,6 +15,7 @@
  */
 package org.efaps.promotionengine;
 
+import org.efaps.promotionengine.action.Strategy;
 import org.efaps.promotionengine.promotion.Promotion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,7 @@ public class SerializationTest
         return new Object[] {
                         Promotions.productsFiftyPercentOff().build(),
                         Promotions.buyOneGetOneFree().build(),
-                        Promotions.second25PercentOff().build(),
+                        Promotions.second25PercentOff(Strategy.CHEAPEST).build(),
                         Promotions.buyMoreThan100AndGet10PercentOff().build(),
                         Promotions.buyMoreThan100AndGet20Off().build(),
                         Promotions.storeHas20PercentageOff().build(),

@@ -24,6 +24,7 @@ import org.efaps.abacus.pojo.Configuration;
 import org.efaps.abacus.pojo.Tax;
 import org.efaps.promotionengine.action.IAction;
 import org.efaps.promotionengine.action.PercentageDiscountAction;
+import org.efaps.promotionengine.action.Strategy;
 import org.efaps.promotionengine.condition.EntryOperator;
 import org.efaps.promotionengine.condition.ICondition;
 import org.efaps.promotionengine.condition.ProductsCondition;
@@ -199,7 +200,7 @@ public class BuyOneGetOneFreeTest
     }
 
     @Test
-    public void second25PercentOff()
+    public void second25PercentOffCheapest()
     {
         final var document = new Document()
                         .addPosition(new Position()
@@ -217,7 +218,7 @@ public class BuyOneGetOneFreeTest
                                         .setProductOid(Promotions.PROD_BOGOF3)
                                         .setNetUnitPrice(new BigDecimal(200))
                                         .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))));
-        final var promotion = Promotions.second25PercentOff().build();
+        final var promotion = Promotions.second25PercentOff(Strategy.CHEAPEST).build();
 
         final var calculator = new Calculator(new Configuration());
         calculator.calc(document, Collections.singletonList(promotion));
@@ -230,7 +231,39 @@ public class BuyOneGetOneFreeTest
                         .compareTo(document.getPromotionInfo().getDetails().get(0).getNetDiscount()) == 0);
         Assert.assertNull(document.getPromotionInfo().getDetails().get(1).getPromotionOid());
         Assert.assertNull(document.getPromotionInfo().getDetails().get(2).getPromotionOid());
-
     }
 
+    @Test
+    public void second25PercentOffPriciest()
+    {
+        final var document = new Document()
+                        .addPosition(new Position()
+                                        .setQuantity(new BigDecimal(1))
+                                        .setProductOid(Promotions.PROD_BOGOF2)
+                                        .setNetUnitPrice(new BigDecimal(150))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
+                        .addPosition(new Position()
+                                        .setQuantity(new BigDecimal(1))
+                                        .setProductOid(Promotions.PROD_BOGOF2)
+                                        .setNetUnitPrice(new BigDecimal(250))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
+                        .addPosition(new Position()
+                                        .setQuantity(new BigDecimal(1))
+                                        .setProductOid(Promotions.PROD_BOGOF3)
+                                        .setNetUnitPrice(new BigDecimal(200))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))));
+        final var promotion = Promotions.second25PercentOff(Strategy.PRICIEST).build();
+
+        final var calculator = new Calculator(new Configuration());
+        calculator.calc(document, Collections.singletonList(promotion));
+
+        Assert.assertTrue(new BigDecimal(150).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(187.5).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(200).compareTo(document.getPositions().get(2).getNetPrice()) == 0);
+
+        Assert.assertNotNull(document.getPromotionInfo().getDetails().get(0).getPromotionOid());
+        Assert.assertTrue(new BigDecimal(62.5)
+                        .compareTo(document.getPromotionInfo().getDetails().get(1).getNetDiscount()) == 0);
+        Assert.assertNull(document.getPromotionInfo().getDetails().get(2).getPromotionOid());
+    }
 }

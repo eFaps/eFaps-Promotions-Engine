@@ -43,6 +43,11 @@ public class PercentageDiscountAction
                 strategySorted.addAll(process.getPositionsUsedForSouce());
             }
             switch (getStrategy()) {
+                case PRICIEST:
+                    Collections.sort(strategySorted, Comparator.comparing(IPosition::getNetUnitPrice));
+                    Collections.reverse(strategySorted);
+                    apply(process, strategySorted.get(0));
+                    break;
                 case CHEAPEST:
                 default:
                     Collections.sort(strategySorted, Comparator.comparing(IPosition::getNetUnitPrice));
