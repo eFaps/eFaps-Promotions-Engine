@@ -22,6 +22,7 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.ArrayList;
 
+import org.efaps.promotionengine.action.FixedAmountAction;
 import org.efaps.promotionengine.action.FixedDocDiscountAction;
 import org.efaps.promotionengine.action.IAction;
 import org.efaps.promotionengine.action.PercentageDiscountAction;
@@ -50,6 +51,9 @@ public class Promotions
 
     public static String PROD_BOGOF2 = "PROD_BOGOF2";
     public static String PROD_BOGOF3 = "PROD_BOGOF3";
+
+    public static String PROD_SO1 = "PROD_SO1";
+    public static String PROD_SO2 = "PROD_SO2";
 
     public static Promotion.Builder productsFiftyPercentOff()
     {
@@ -287,6 +291,39 @@ public class Promotions
                         .withName("Apply twenty percent off")
                         .withDescription("This can be a long text")
                         .withPriority(1)
+                        .withStartDateTime(OffsetDateTime.now().minusDays(5))
+                        .withEndDateTime(OffsetDateTime.now().plusDays(5))
+                        .withSourceConditions(sourceConditions)
+                        .withTargetConditions(targetConditions)
+                        .withActions(actions);
+    }
+
+
+    public static Promotion.Builder secondForOne(final Strategy strategy)
+    {
+        final var sourceConditions = new ArrayList<ICondition>();
+        sourceConditions.add(new ProductsCondition()
+                        .setPositionQuantity(BigDecimal.ONE)
+                        .setEntryOperator(EntryOperator.INCLUDES_ANY)
+                        .addProduct(PROD_SO1)
+                        .addProduct(PROD_SO2));
+
+        final var targetConditions = new ArrayList<ICondition>();
+        targetConditions.add(new ProductsCondition()
+                        .setPositionQuantity(BigDecimal.ONE)
+                        .setEntryOperator(EntryOperator.INCLUDES_ANY)
+                        .addProduct(PROD_SO1)
+                        .addProduct(PROD_SO2));
+
+        final var actions = new ArrayList<IAction>();
+        final var action = new FixedAmountAction().setAmount(new BigDecimal(1)).setStrategy(strategy);
+        actions.add(action);
+
+        return Promotion.builder()
+                        .withOid("222.2")
+                        .withName("Fet second one for One Sol")
+                        .withDescription("This can be a long text")
+                        .withPriority(100)
                         .withStartDateTime(OffsetDateTime.now().minusDays(5))
                         .withEndDateTime(OffsetDateTime.now().plusDays(5))
                         .withSourceConditions(sourceConditions)

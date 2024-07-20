@@ -15,6 +15,7 @@
  */
 package org.efaps.promotionengine.action;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,11 +26,23 @@ import org.efaps.promotionengine.process.ProcessData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PercentageDiscountAction
-    extends AbstractPercentageAction
+public class FixedAmountAction
+    extends AbstractAction
 {
+    private static final Logger LOG = LoggerFactory.getLogger(FixedAmountAction.class);
 
-    private static final Logger LOG = LoggerFactory.getLogger(PercentageDiscountAction.class);
+    private BigDecimal amount;
+
+    public BigDecimal getAmount()
+    {
+        return amount;
+    }
+
+    public FixedAmountAction setAmount(final BigDecimal amount)
+    {
+        this.amount = amount;
+        return this;
+    }
 
     @Override
     public void run(final ProcessData process,
@@ -59,7 +72,7 @@ public class PercentageDiscountAction
                       final IPosition position)
     {
         position.setPromotionOid(process.getCurrentPromotion().getOid());
-        position.setNetUnitPrice(position.getNetUnitPrice().subtract(discount(position.getNetUnitPrice())));
+        position.setNetUnitPrice(amount);
         LOG.info("Applied action on positon: {}", position);
     }
 
@@ -69,15 +82,16 @@ public class PercentageDiscountAction
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof final PercentageDiscountAction other)) {
+        if (!(obj instanceof final FixedAmountAction other)) {
             return false;
         }
 
-        if (this.getPercentage() == null && other.getPercentage() == null) {
+        if (this.getAmount() == null && other.getAmount() == null) {
             return true;
         }
 
-        return this.getPercentage() != null && other.getPercentage() != null
-                        && this.getPercentage().compareTo(other.getPercentage()) == 0;
+        return this.getAmount() != null && other.getAmount() != null
+                        && this.getAmount().compareTo(other.getAmount()) == 0;
     }
+
 }

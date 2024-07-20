@@ -29,13 +29,14 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
                 @JsonSubTypes.Type(value = PercentageDiscountAction.class, name = "PercentageDiscountAction"),
                 @JsonSubTypes.Type(value = PercentageDocDiscountAction.class, name = "PercentageDocDiscountAction"),
                 @JsonSubTypes.Type(value = FixedDocDiscountAction.class, name = "FixedDocDiscountAction"),
-                @JsonSubTypes.Type(value = ProgramAction.class, name = "ProgramAction")
+                @JsonSubTypes.Type(value = ProgramAction.class, name = "ProgramAction"),
+                @JsonSubTypes.Type(value = FixedAmountAction.class, name = "FixedAmountAction")
 })
 public interface IAction
     extends IAnnotated
 {
 
     void run(final ProcessData process,
-             final List<IPosition> position);
+             final List<IPosition> positions);
 
 }

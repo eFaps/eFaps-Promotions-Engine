@@ -62,12 +62,15 @@ public class SerializationTest
                         Promotions.productsFiftyPercentOff().build(),
                         Promotions.buyOneGetOneFree().build(),
                         Promotions.second25PercentOff(Strategy.CHEAPEST).build(),
+                        Promotions.second25PercentOff(Strategy.PRICIEST).build(),
                         Promotions.buyMoreThan100AndGet10PercentOff().build(),
                         Promotions.buyMoreThan100AndGet20Off().build(),
                         Promotions.storeHas20PercentageOff().build(),
                         Promotions.from4pmTo7pm20PercentageOff().build(),
                         Promotions.everyMondayAndThursday20PercentageOff().build(),
-                        Promotions.cyberWow20PercentageOff().build()
+                        Promotions.cyberWow20PercentageOff().build(),
+                        Promotions.secondForOne(Strategy.CHEAPEST).build(),
+                        Promotions.secondForOne(Strategy.PRICIEST).build(),
         };
     }
 }

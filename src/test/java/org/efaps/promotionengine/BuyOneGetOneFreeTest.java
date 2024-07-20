@@ -266,4 +266,75 @@ public class BuyOneGetOneFreeTest
                         .compareTo(document.getPromotionInfo().getDetails().get(1).getNetDiscount()) == 0);
         Assert.assertNull(document.getPromotionInfo().getDetails().get(2).getPromotionOid());
     }
+
+
+    @Test
+    public void secondForOneCheapest()
+    {
+        final var document = new Document()
+                        .addPosition(new Position()
+                                        .setQuantity(new BigDecimal(1))
+                                        .setProductOid(Promotions.PROD_SO1)
+                                        .setNetUnitPrice(new BigDecimal(150))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
+                        .addPosition(new Position()
+                                        .setQuantity(new BigDecimal(1))
+                                        .setProductOid(Promotions.PROD_SO2)
+                                        .setNetUnitPrice(new BigDecimal(250))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
+                        .addPosition(new Position()
+                                        .setQuantity(new BigDecimal(1))
+                                        .setProductOid(Promotions.PROD_BOGOF3)
+                                        .setNetUnitPrice(new BigDecimal(200))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))));
+        final var promotion = Promotions.secondForOne(Strategy.CHEAPEST).build();
+
+        final var calculator = new Calculator(new Configuration());
+        calculator.calc(document, Collections.singletonList(promotion));
+
+        Assert.assertTrue(new BigDecimal(1).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(250).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(200).compareTo(document.getPositions().get(2).getNetPrice()) == 0);
+
+        Assert.assertNotNull(document.getPromotionInfo().getDetails().get(0).getPromotionOid());
+        Assert.assertTrue(new BigDecimal(149)
+                        .compareTo(document.getPromotionInfo().getDetails().get(0).getNetDiscount()) == 0);
+        Assert.assertNull(document.getPromotionInfo().getDetails().get(1).getPromotionOid());
+        Assert.assertNull(document.getPromotionInfo().getDetails().get(2).getPromotionOid());
+    }
+
+    @Test
+    public void secondForOnePriciest()
+    {
+        final var document = new Document()
+                        .addPosition(new Position()
+                                        .setQuantity(new BigDecimal(1))
+                                        .setProductOid(Promotions.PROD_SO1)
+                                        .setNetUnitPrice(new BigDecimal(150))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
+                        .addPosition(new Position()
+                                        .setQuantity(new BigDecimal(1))
+                                        .setProductOid(Promotions.PROD_SO2)
+                                        .setNetUnitPrice(new BigDecimal(250))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
+                        .addPosition(new Position()
+                                        .setQuantity(new BigDecimal(1))
+                                        .setProductOid(Promotions.PROD_BOGOF3)
+                                        .setNetUnitPrice(new BigDecimal(200))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))));
+        final var promotion = Promotions.secondForOne(Strategy.PRICIEST).build();
+
+        final var calculator = new Calculator(new Configuration());
+        calculator.calc(document, Collections.singletonList(promotion));
+
+        Assert.assertTrue(new BigDecimal(150).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(1).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(200).compareTo(document.getPositions().get(2).getNetPrice()) == 0);
+
+        Assert.assertNotNull(document.getPromotionInfo().getDetails().get(0).getPromotionOid());
+        Assert.assertTrue(new BigDecimal(249)
+                        .compareTo(document.getPromotionInfo().getDetails().get(1).getNetDiscount()) == 0);
+        Assert.assertNotNull(document.getPromotionInfo().getDetails().get(1).getPromotionOid());
+        Assert.assertNull(document.getPromotionInfo().getDetails().get(2).getPromotionOid());
+    }
 }
