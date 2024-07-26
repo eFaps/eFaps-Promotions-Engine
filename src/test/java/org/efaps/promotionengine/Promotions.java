@@ -33,6 +33,9 @@ import org.efaps.promotionengine.condition.DocTotalCondition;
 import org.efaps.promotionengine.condition.EntryOperator;
 import org.efaps.promotionengine.condition.ICondition;
 import org.efaps.promotionengine.condition.Operator;
+import org.efaps.promotionengine.condition.ProductFamilyConditionEntry;
+import org.efaps.promotionengine.condition.ProductFamilyTotalCondition;
+import org.efaps.promotionengine.condition.ProductTotalCondition;
 import org.efaps.promotionengine.condition.ProductsCondition;
 import org.efaps.promotionengine.condition.StoreCondition;
 import org.efaps.promotionengine.condition.TimeCondition;
@@ -321,7 +324,7 @@ public class Promotions
 
         return Promotion.builder()
                         .withOid("222.2")
-                        .withName("Fet second one for One Sol")
+                        .withName("Get second one for One Sol")
                         .withDescription("This can be a long text")
                         .withPriority(100)
                         .withStartDateTime(OffsetDateTime.now().minusDays(5))
@@ -331,5 +334,55 @@ public class Promotions
                         .withActions(actions);
     }
 
+    public static Promotion.Builder get10OffIfYouBuyMoreThan100()
+    {
+        final var sourceConditions = new ArrayList<ICondition>();
+        sourceConditions.add(new ProductTotalCondition()
+                        .addProduct(PROD_SO1)
+                        .addProduct(PROD_SO2)
+                        .setTotal(new BigDecimal(100))
+                        .setOperator(Operator.GREATER));
 
+        final var actions = new ArrayList<IAction>();
+        final var action = new FixedDocDiscountAction().setAmount(new BigDecimal(10));
+        actions.add(action);
+
+        return Promotion.builder()
+                        .withOid("222.23")
+                        .withName("Get 10 off if you bur more than 100")
+                        .withDescription("This can be a long text")
+                        .withPriority(100)
+                        .withStartDateTime(OffsetDateTime.now().minusDays(5))
+                        .withEndDateTime(OffsetDateTime.now().plusDays(5))
+                        .withSourceConditions(sourceConditions)
+                        .withActions(actions);
+    }
+
+    public static Promotion.Builder get10OffIfYouBuyMoreThan100ByFamily()
+    {
+        final var sourceConditions = new ArrayList<ICondition>();
+        sourceConditions.add(new ProductFamilyTotalCondition()
+                        .addEntry(new ProductFamilyConditionEntry()
+                                        .setProductFamilyOid("FAMOID1")
+                                        .addProduct(PROD_SO1))
+                        .addEntry(new ProductFamilyConditionEntry()
+                                        .setProductFamilyOid("FAMOID2")
+                                        .addProduct(PROD_SO2))
+                        .setTotal(new BigDecimal(100))
+                        .setOperator(Operator.GREATER));
+
+        final var actions = new ArrayList<IAction>();
+        final var action = new FixedDocDiscountAction().setAmount(new BigDecimal(10));
+        actions.add(action);
+
+        return Promotion.builder()
+                        .withOid("222.23")
+                        .withName("Get 10 off if you bur more than 100")
+                        .withDescription("This can be a long text")
+                        .withPriority(100)
+                        .withStartDateTime(OffsetDateTime.now().minusDays(5))
+                        .withEndDateTime(OffsetDateTime.now().plusDays(5))
+                        .withSourceConditions(sourceConditions)
+                        .withActions(actions);
+    }
 }

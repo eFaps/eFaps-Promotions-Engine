@@ -71,6 +71,8 @@ public class SerializationTest
                         Promotions.cyberWow20PercentageOff().build(),
                         Promotions.secondForOne(Strategy.CHEAPEST).build(),
                         Promotions.secondForOne(Strategy.PRICIEST).build(),
+                        Promotions.get10OffIfYouBuyMoreThan100().build(),
+                        Promotions.get10OffIfYouBuyMoreThan100ByFamily().build()
         };
     }
 }

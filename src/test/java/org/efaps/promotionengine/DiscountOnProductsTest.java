@@ -211,4 +211,29 @@ public class DiscountOnProductsTest
         Assert.assertTrue(new BigDecimal(200).compareTo(document.getPositions().get(3).getNetPrice()) == 0);
     }
 
+    @Test
+    public void listOfProductsTotal()
+    {
+        final var promotion = Promotions.get10OffIfYouBuyMoreThan100().build();
+        final Document document = new Document()
+                        .addPosition(new Position()
+                                        .setQuantity(BigDecimal.ONE)
+                                        .setProductOid(Promotions.PROD_SO1)
+                                        .setNetUnitPrice(new BigDecimal(50))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
+                        .addPosition(new Position()
+                                        .setQuantity(BigDecimal.ONE)
+                                        .setProductOid(Promotions.PROD_SO2)
+                                        .setNetUnitPrice(new BigDecimal(60))
+                                        .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))));
+        final var calculator = new Calculator(new Configuration());
+        calculator.calc(document, Collections.singletonList(promotion));
+
+        Assert.assertTrue(new BigDecimal(50).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(60).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
+
+        Assert.assertTrue(new BigDecimal(110).compareTo(document.getNetTotal()) == 0);
+        Assert.assertTrue(new BigDecimal("119.80").compareTo(document.getCrossTotal()) == 0);
+    }
+
 }
