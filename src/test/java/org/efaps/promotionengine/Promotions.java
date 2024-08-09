@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import org.efaps.promotionengine.action.FixedAmountAction;
 import org.efaps.promotionengine.action.FixedDocDiscountAction;
@@ -57,6 +59,8 @@ public class Promotions
 
     public static String PROD_SO1 = "PROD_SO1";
     public static String PROD_SO2 = "PROD_SO2";
+    public static String PROD_SO3 = "PROD_SO3";
+    public static String PROD_SO4 = "PROD_SO4";
 
     public static Promotion.Builder productsFiftyPercentOff()
     {
@@ -85,21 +89,21 @@ public class Promotions
                         .withActions(actions);
     }
 
-    public static Promotion.Builder buyOneGetOneFree()
+    public static Promotion.Builder buyOneGetOneFree(final String... productOid)
     {
+        final var productOids = new HashSet<>(Arrays.asList(productOid));
+
         final var sourceConditions = new ArrayList<ICondition>();
         sourceConditions.add(new ProductsCondition()
                         .setPositionQuantity(BigDecimal.ONE)
                         .setEntryOperator(EntryOperator.INCLUDES_ANY)
-                        .addProduct(PROD_BOGOF1)
-                        .addProduct(PROD_50OFF_BOGOF));
+                        .setProducts(productOids));
 
         final var targetConditions = new ArrayList<ICondition>();
         targetConditions.add(new ProductsCondition()
                         .setPositionQuantity(BigDecimal.ONE)
                         .setEntryOperator(EntryOperator.INCLUDES_ANY)
-                        .addProduct(PROD_BOGOF1)
-                        .addProduct(PROD_50OFF_BOGOF));
+                        .setProducts(productOids));
 
         final var actions = new ArrayList<IAction>();
         final var action = new PercentageDiscountAction().setPercentage(new BigDecimal(100));
@@ -139,7 +143,7 @@ public class Promotions
 
         return Promotion.builder()
                         .withOid("222.3")
-                        .withName("get second ("+ strategy + ") 25% off")
+                        .withName("get second (" + strategy + ") 25% off")
                         .withDescription("This can be a long text")
                         .withPriority(100)
                         .withStartDateTime(OffsetDateTime.now().minusDays(5))
@@ -301,7 +305,6 @@ public class Promotions
                         .withActions(actions);
     }
 
-
     public static Promotion.Builder secondForOne(final Strategy strategy)
     {
         final var sourceConditions = new ArrayList<ICondition>();
@@ -383,6 +386,32 @@ public class Promotions
                         .withStartDateTime(OffsetDateTime.now().minusDays(5))
                         .withEndDateTime(OffsetDateTime.now().plusDays(5))
                         .withSourceConditions(sourceConditions)
+                        .withActions(actions);
+    }
+
+    public static Promotion.Builder getBuyTwoAndGetBothForFixAmount(final String... productOid)
+    {
+        final var productOids = new HashSet<>(Arrays.asList(productOid));
+
+        final var conditions = new ArrayList<ICondition>();
+        conditions.add(new ProductsCondition()
+                        .setEntryOperator(EntryOperator.INCLUDES_ANY)
+                        .setPositionQuantity(new BigDecimal(2))
+                        .setAllowTargetSameAsSource(true)
+                        .setProducts(productOids));
+
+        final var actions = new ArrayList<IAction>();
+        actions.add(new FixedAmountAction().setAmount(new BigDecimal(10)));
+
+        return Promotion.builder()
+                        .withOid("222.24")
+                        .withName("But Two products and get both for a fixes price of 1")
+                        .withDescription("This can be a long text")
+                        .withPriority(100)
+                        .withStartDateTime(OffsetDateTime.now().minusDays(5))
+                        .withEndDateTime(OffsetDateTime.now().plusDays(5))
+                        .withSourceConditions(conditions)
+                        .withTargetConditions(conditions)
                         .withActions(actions);
     }
 }

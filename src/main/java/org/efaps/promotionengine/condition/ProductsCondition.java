@@ -15,9 +15,9 @@
  */
 package org.efaps.promotionengine.condition;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -26,15 +26,15 @@ public class ProductsCondition
     extends AbstractProductCondition<ProductsCondition>
 {
 
-    private List<String> products;
+    private Set<String> products;
 
     @Override
-    public List<String> getProducts()
+    public Set<String> getProducts()
     {
         return products;
     }
 
-    public ProductsCondition setEntries(final List<String> products)
+    public ProductsCondition setProducts(final Set<String> products)
     {
         this.products = products;
         return this;
@@ -43,7 +43,7 @@ public class ProductsCondition
     public ProductsCondition addProduct(final String product)
     {
         if (this.products == null) {
-            this.products = new ArrayList<>();
+            this.products = new HashSet<>();
         }
         this.products.add(product);
         return this;

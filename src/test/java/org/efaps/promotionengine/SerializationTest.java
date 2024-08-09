@@ -60,7 +60,7 @@ public class SerializationTest
     {
         return new Object[] {
                         Promotions.productsFiftyPercentOff().build(),
-                        Promotions.buyOneGetOneFree().build(),
+                        Promotions.buyOneGetOneFree("123.456","789.12").build(),
                         Promotions.second25PercentOff(Strategy.CHEAPEST).build(),
                         Promotions.second25PercentOff(Strategy.PRICIEST).build(),
                         Promotions.buyMoreThan100AndGet10PercentOff().build(),
@@ -72,7 +72,8 @@ public class SerializationTest
                         Promotions.secondForOne(Strategy.CHEAPEST).build(),
                         Promotions.secondForOne(Strategy.PRICIEST).build(),
                         Promotions.get10OffIfYouBuyMoreThan100().build(),
-                        Promotions.get10OffIfYouBuyMoreThan100ByFamily().build()
+                        Promotions.get10OffIfYouBuyMoreThan100ByFamily().build(),
+                        Promotions.getBuyTwoAndGetBothForFixAmount("123.456","789.12").build()
         };
     }
 }

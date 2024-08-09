@@ -38,6 +38,20 @@ public abstract class AbstractProductCondition<T>
 
     private BigDecimal positionQuantity;
 
+    private boolean allowTargetSameAsSource;
+
+    public boolean isAllowTargetSameAsSource()
+    {
+        return allowTargetSameAsSource;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T setAllowTargetSameAsSource(boolean allowTargetSameAsSource)
+    {
+        this.allowTargetSameAsSource = allowTargetSameAsSource;
+        return (T) this;
+    }
+
     public EntryOperator getEntryOperator()
     {
         return entryOperator;
@@ -62,7 +76,7 @@ public abstract class AbstractProductCondition<T>
         return (T) this;
     }
 
-    public abstract List<String> getProducts();
+    public abstract Set<String> getProducts();
 
     @Override
     public boolean isMet(final ProcessData process)
@@ -131,31 +145,49 @@ public abstract class AbstractProductCondition<T>
         return ret;
     }
 
-
     private List<IPosition> includesAny(final ProcessData process)
     {
         final var ret = new ArrayList<IPosition>();
-        for (final var product : getProducts()) {
-            var quantity = getPositionQuantity();
+        var quantity = getPositionQuantity();
+        if (process.getStep().equals(Step.SOURCECONDITION)) {
             for (final var calcPosition : process.getDocument().getPositions()) {
                 final var position = (IPosition) calcPosition;
-                if (position.getProductOid().equals(product)
-                                && !process.getPositionsUsedForSouce().contains(position)) {
+                if (!position.isBurned() && getProducts().contains(position.getProductOid())) {
                     quantity = quantity.subtract(position.getQuantity());
                     LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
                     process.registerConditionMet(position);
                     ret.add(position);
-                    // for source interrupt as soon as it is found
-                    if (quantity.compareTo(BigDecimal.ZERO) < 1 && process.getStep().equals(Step.SOURCECONDITION)) {
+                    if (quantity.compareTo(BigDecimal.ZERO) < 1) {
                         break;
                     }
                 }
             }
-            // for source interrupt as soon as it is found
-            if (quantity.compareTo(BigDecimal.ZERO) < 1 && process.getStep().equals(Step.SOURCECONDITION)) {
-                break;
+        } else {
+            for (final var calcPosition : process.getDocument().getPositions()) {
+                final var position = (IPosition) calcPosition;
+                if (!position.isBurned()) {
+                    if (isAllowTargetSameAsSource() && getProducts().contains(position.getProductOid())) {
+                        quantity = quantity.subtract(position.getQuantity());
+                        LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
+                        process.registerConditionMet(position);
+                        ret.add(position);
+                        if (quantity.compareTo(BigDecimal.ZERO) < 1) {
+                            break;
+                        }
+                    } else if (!process.getPositionsUsedForSouce().contains(position)
+                                    && getProducts().contains(position.getProductOid())) {
+                        quantity = quantity.subtract(position.getQuantity());
+                        LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
+                        process.registerConditionMet(position);
+                        ret.add(position);
+                        if (quantity.compareTo(BigDecimal.ZERO) < 1) {
+                            break;
+                        }
+                    }
+                }
             }
         }
+
         return ret;
     }
 

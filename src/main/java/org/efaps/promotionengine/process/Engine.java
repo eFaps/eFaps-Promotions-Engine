@@ -80,7 +80,7 @@ public class Engine
                 }
                 BigDecimal currentDiscount = BigDecimal.ZERO;
                 new org.efaps.abacus.Calculator(getProcessData().getCalculatorConfig()).calc(currentDoc);
-                final var promoInfo =  PromotionInfo.evalPromotionInfo(document, currentDoc);
+                final var promoInfo = PromotionInfo.evalPromotionInfo(document, currentDoc);
                 if (promoInfo != null) {
                     currentDiscount = promoInfo.getCrossTotalDiscount();
                 }
@@ -96,23 +96,34 @@ public class Engine
             // sort that highest number first
             Collections.sort(currentPromotions, (promotion0,
                                                  promotion1) -> promotion1.getPriority() - promotion0.getPriority());
-            for (final var promotion : currentPromotions) {
+            final var promoIter = currentPromotions.iterator();
+            Promotion promotion = null;
+            if (promoIter.hasNext()) {
+                promotion = promoIter.next();
+            }
+            while (promotion != null) {
                 getProcessData().setCurrentPromotion(promotion);
                 getProcessData().setStep(Step.SOURCECONDITION);
                 if (!promotion.hasSource() || meetsConditions(promotion.getSourceConditions())) {
-                    runActions(promotion);
+                    if (!runActions(promotion)) {
+                        promotion = null;
+                    }
+                } else if (promoIter.hasNext()) {
+                    promotion = promoIter.next();
+                    getProcessData().getPositionsUsedForSouce().clear();
+                } else {
+                    promotion = null;
                 }
-                getProcessData().getPositionsUsedForSouce().clear();
             }
         }
     }
 
-    public void runActions(final Promotion promotion)
+    public boolean runActions(final Promotion promotion)
     {
+        boolean actionRun = false;
         getProcessData().setStep(Step.TARGETCONDITION);
         if (promotion.hasSource()) {
             getProcessData().getDocument().addPromotionOid(promotion.getOid());
-            boolean actionRun = false;
             List<IPosition> commonPositions = null;
             for (final var condition : promotion.getTargetConditions()) {
                 final var positions = condition.evalPositions(getProcessData());
@@ -148,6 +159,7 @@ public class Engine
                 }
             }
         }
+        return actionRun;
     }
 
     public boolean meetsConditions(final List<ICondition> conditions)

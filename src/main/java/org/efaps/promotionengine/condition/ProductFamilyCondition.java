@@ -18,6 +18,7 @@ package org.efaps.promotionengine.condition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -70,8 +71,8 @@ public class ProductFamilyCondition
     }
 
     @Override
-    public List<String> getProducts()
+    public Set<String> getProducts()
     {
-        return entries.stream().flatMap(entry -> entry.getProducts().stream()).collect(Collectors.toList());
+        return entries.stream().flatMap(entry -> entry.getProducts().stream()).collect(Collectors.toSet());
     }
 }
