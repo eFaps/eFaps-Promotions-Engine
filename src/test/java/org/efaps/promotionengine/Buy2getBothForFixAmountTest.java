@@ -149,7 +149,8 @@ public class Buy2getBothForFixAmountTest
 
         Assert.assertTrue(new BigDecimal(5)
                         .compareTo(document.getPromotionInfo().getDetails().get(0).getNetDiscount()) == 0);
-        Assert.assertNull(document.getPromotionInfo().getDetails().get(1).getNetDiscount());
+        Assert.assertTrue(new BigDecimal(0)
+                        .compareTo(document.getPromotionInfo().getDetails().get(1).getNetDiscount()) == 0);
         Assert.assertTrue(new BigDecimal(10)
                         .compareTo(document.getPromotionInfo().getDetails().get(2).getNetDiscount()) == 0);
         Assert.assertNull(document.getPromotionInfo().getDetails().get(3).getNetDiscount());

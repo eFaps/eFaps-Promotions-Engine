@@ -39,6 +39,6 @@ public interface IAction
     void run(final ProcessData process,
              final List<IPosition> positions);
 
-    void run(final ProcessData process);
+    boolean run(final ProcessData process);
 
 }

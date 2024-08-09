@@ -17,10 +17,14 @@ package org.efaps.promotionengine.action;
 
 import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractAction
     implements IAction
 {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractAction.class);
 
     private Strategy strategy = Strategy.CHEAPEST;
     private String note;
@@ -43,17 +47,27 @@ public abstract class AbstractAction
     }
 
     @Override
-    public void run(final ProcessData processData)
+    public boolean run(final ProcessData processData)
     {
+        boolean  actionsRun = false;
         processData.setCurrentAction(this);
         final var conditions = processData.getCurrentPromotion().getTargetConditions();
         for (final var condition : conditions) {
+            LOG.debug("Evaluating positions for condition: {}", condition);
             final var positions = condition.evalPositions(processData);
-            System.out.println(positions);
             for (final var pos : positions) {
                 apply(processData, pos);
             }
+            if (positions.size() > 0) {
+                actionsRun = true;
+                processData.getPositionsUsedForSouce().forEach(pos -> {
+                    if (pos.getPromotionOid() == null) {
+                        pos.setPromotionOid(processData.getCurrentPromotion().getOid());
+                    }
+                });
+            }
         }
+        return actionsRun;
     }
 
     public abstract void apply(final ProcessData process,

@@ -118,11 +118,11 @@ public class Engine
 
     public boolean runActions(final Promotion promotion)
     {
-        final boolean actionRun = false;
+        boolean actionRun = false;
         getProcessData().setStep(Step.TARGETCONDITION);
         if (promotion.hasSource()) {
             for (final var action : promotion.getActions()) {
-                action.run(processData);
+                actionRun = action.run(processData);
             }
         }
 
