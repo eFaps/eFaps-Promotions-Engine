@@ -17,6 +17,8 @@ package org.efaps.promotionengine.condition;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -163,14 +165,27 @@ public abstract class AbstractProductCondition<T>
                 }
             }
             if (quantity.compareTo(BigDecimal.ZERO) < 1) {
-                ret.forEach(pos ->  process.registerConditionMet(pos));
+                ret.forEach(pos -> process.registerConditionMet(pos));
             } else {
                 ret.clear();
             }
         } else {
             // target
-            for (final var calcPosition : process.getDocument().getPositions()) {
-                final var position = (IPosition) calcPosition;
+            final var positions = process.getDocument().getPositions().stream().map(pos -> (IPosition) pos)
+                            .collect(Collectors.toList());
+            switch (process.getCurrentAction().getStrategy()) {
+                case PRICIEST:
+                    Collections.sort(positions, Comparator.comparing(IPosition::getNetUnitPrice));
+                    Collections.reverse(positions);
+                    break;
+                case CHEAPEST:
+                    Collections.sort(positions, Comparator.comparing(IPosition::getNetUnitPrice));
+                    break;
+                case INDEX:
+                default:
+            }
+
+            for (final var position : positions) {
                 if (!position.isBurned()) {
                     if (isAllowTargetSameAsSource() && getProducts().contains(position.getProductOid())) {
                         quantity = quantity.subtract(position.getQuantity());
@@ -193,7 +208,7 @@ public abstract class AbstractProductCondition<T>
                 }
             }
             if (quantity.compareTo(BigDecimal.ZERO) < 1) {
-                ret.forEach(pos ->  process.registerConditionMet(pos));
+                ret.forEach(pos -> process.registerConditionMet(pos));
             } else {
                 ret.clear();
             }

@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.efaps.abacus.api.IConfig;
+import org.efaps.promotionengine.action.AbstractAction;
 import org.efaps.promotionengine.api.IDocument;
 import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.promotion.Promotion;
@@ -39,6 +40,9 @@ public class ProcessData
     private Promotion currentPromotion;
 
     private final IConfig calculatorConfig;
+
+    private AbstractAction currentAction;
+
 
     public ProcessData(final IConfig calculatorConfig,
                        final IDocument document,
@@ -127,6 +131,16 @@ public class ProcessData
     {
         getData().put(key, object);
         return this;
+    }
+
+    public void setCurrentAction(final AbstractAction action)
+    {
+        this.currentAction = action;
+    }
+
+    public AbstractAction getCurrentAction()
+    {
+        return currentAction;
     }
 
 }

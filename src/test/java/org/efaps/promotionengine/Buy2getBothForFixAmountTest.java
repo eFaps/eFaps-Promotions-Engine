@@ -43,6 +43,7 @@ public class Buy2getBothForFixAmountTest
         calculator.calc(document, Collections.singletonList(promotion));
 
         Assert.assertTrue(new BigDecimal(15).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
+        Assert.assertNull(document.getPromotionInfo());
     }
 
     @Test
@@ -67,10 +68,15 @@ public class Buy2getBothForFixAmountTest
 
         Assert.assertTrue(new BigDecimal(10).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(10).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
+
+        Assert.assertTrue(new BigDecimal(5)
+                        .compareTo(document.getPromotionInfo().getDetails().get(0).getNetDiscount()) == 0);
+        Assert.assertTrue(new BigDecimal(10)
+                        .compareTo(document.getPromotionInfo().getDetails().get(1).getNetDiscount()) == 0);
     }
 
     @Test
-    public void buy2getBothForFixAmount3()
+    public void meetButAdditionalProduct()
     {
         final var document = new Document()
                         .addPosition(new Position()
@@ -89,17 +95,24 @@ public class Buy2getBothForFixAmountTest
                                         .setNetUnitPrice(new BigDecimal(30))
                                         .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))));
 
-        final var promotion = Promotions.getBuyTwoAndGetBothForFixAmount().build();
+        final var promotion = Promotions.getBuyTwoAndGetBothForFixAmount(Promotions.PROD_SO1, Promotions.PROD_SO2)
+                        .build();
         final var calculator = new Calculator(new Configuration());
         calculator.calc(document, Collections.singletonList(promotion));
 
         Assert.assertTrue(new BigDecimal(10).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(20).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(10).compareTo(document.getPositions().get(2).getNetPrice()) == 0);
+
+        Assert.assertTrue(new BigDecimal(5)
+                        .compareTo(document.getPromotionInfo().getDetails().get(0).getNetDiscount()) == 0);
+        Assert.assertNull(document.getPromotionInfo().getDetails().get(1).getNetDiscount());
+        Assert.assertTrue(new BigDecimal(20)
+                        .compareTo(document.getPromotionInfo().getDetails().get(2).getNetDiscount()) == 0);
     }
 
     @Test
-    public void buy2getBothForFixAmount4()
+    public void meetThreeAndOneMore()
     {
         final var document = new Document()
                         .addPosition(new Position()
@@ -110,12 +123,12 @@ public class Buy2getBothForFixAmountTest
                         .addPosition(new Position()
                                         .setQuantity(new BigDecimal(1))
                                         .setProductOid(Promotions.PROD_SO3)
-                                        .setNetUnitPrice(new BigDecimal(20))
+                                        .setNetUnitPrice(new BigDecimal(30))
                                         .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
                         .addPosition(new Position()
                                         .setQuantity(new BigDecimal(1))
                                         .setProductOid(Promotions.PROD_SO2)
-                                        .setNetUnitPrice(new BigDecimal(30))
+                                        .setNetUnitPrice(new BigDecimal(20))
                                         .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
                         .addPosition(new Position()
                                         .setQuantity(new BigDecimal(1))
@@ -123,14 +136,24 @@ public class Buy2getBothForFixAmountTest
                                         .setNetUnitPrice(new BigDecimal(40))
                                         .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))));
 
-        final var promotion = Promotions.getBuyTwoAndGetBothForFixAmount().build();
+        final var promotion = Promotions
+                        .getBuyTwoAndGetBothForFixAmount(Promotions.PROD_SO1, Promotions.PROD_SO2, Promotions.PROD_SO3)
+                        .build();
         final var calculator = new Calculator(new Configuration());
         calculator.calc(document, Collections.singletonList(promotion));
 
         Assert.assertTrue(new BigDecimal(10).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
-        Assert.assertTrue(new BigDecimal(20).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(30).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(10).compareTo(document.getPositions().get(2).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(40).compareTo(document.getPositions().get(3).getNetPrice()) == 0);
+
+        Assert.assertTrue(new BigDecimal(5)
+                        .compareTo(document.getPromotionInfo().getDetails().get(0).getNetDiscount()) == 0);
+        Assert.assertNull(document.getPromotionInfo().getDetails().get(1).getNetDiscount());
+        Assert.assertTrue(new BigDecimal(10)
+                        .compareTo(document.getPromotionInfo().getDetails().get(2).getNetDiscount()) == 0);
+        Assert.assertNull(document.getPromotionInfo().getDetails().get(3).getNetDiscount());
+
     }
 
 }

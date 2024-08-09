@@ -21,11 +21,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.iterators.PermutationIterator;
 import org.efaps.promotionengine.PromotionsConfiguration;
 import org.efaps.promotionengine.api.IDocument;
-import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.api.IPromotionsConfig;
 import org.efaps.promotionengine.condition.ICondition;
 import org.efaps.promotionengine.pojo.Document;
@@ -120,8 +118,15 @@ public class Engine
 
     public boolean runActions(final Promotion promotion)
     {
-        boolean actionRun = false;
+        final boolean actionRun = false;
         getProcessData().setStep(Step.TARGETCONDITION);
+        if (promotion.hasSource()) {
+            for (final var action : promotion.getActions()) {
+                action.run(processData);
+            }
+        }
+
+        /**
         if (promotion.hasSource()) {
             getProcessData().getDocument().addPromotionOid(promotion.getOid());
             List<IPosition> commonPositions = null;
@@ -159,6 +164,7 @@ public class Engine
                 }
             }
         }
+        **/
         return actionRun;
     }
 

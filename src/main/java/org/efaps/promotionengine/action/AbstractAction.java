@@ -15,6 +15,9 @@
  */
 package org.efaps.promotionengine.action;
 
+import org.efaps.promotionengine.api.IPosition;
+import org.efaps.promotionengine.process.ProcessData;
+
 public abstract class AbstractAction
     implements IAction
 {
@@ -38,6 +41,23 @@ public abstract class AbstractAction
         this.note = note;
         return this;
     }
+
+    @Override
+    public void run(final ProcessData processData)
+    {
+        processData.setCurrentAction(this);
+        final var conditions = processData.getCurrentPromotion().getTargetConditions();
+        for (final var condition : conditions) {
+            final var positions = condition.evalPositions(processData);
+            System.out.println(positions);
+            for (final var pos : positions) {
+                apply(processData, pos);
+            }
+        }
+    }
+
+    public abstract void apply(final ProcessData process,
+                               final IPosition position);
 
     @Override
     public String getNote()

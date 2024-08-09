@@ -43,4 +43,12 @@ public class FixedDocDiscountAction
         }
         return Objects.equals(this.getAmount(), ((FixedDocDiscountAction) obj).getAmount());
     }
+
+    @Override
+    public void apply(ProcessData process,
+                      IPosition position)
+    {
+        // TODO Auto-generated method stub
+
+    }
 }

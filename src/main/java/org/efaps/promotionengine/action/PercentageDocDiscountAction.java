@@ -17,7 +17,6 @@ package org.efaps.promotionengine.action;
 
 import java.util.List;
 
-import org.efaps.promotionengine.api.IDocument;
 import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
@@ -30,7 +29,7 @@ public class PercentageDocDiscountAction
                     final List<IPosition> position)
     {
         process.getDocument().addDocDiscount(discount(process.getDocument().getNetTotal()));
-        ((IDocument) process.getDocument()).addPromotionOid(process.getCurrentPromotion().getOid());
+        process.getDocument().addPromotionOid(process.getCurrentPromotion().getOid());
     }
 
     @Override
@@ -49,5 +48,11 @@ public class PercentageDocDiscountAction
 
         return this.getPercentage() != null && other.getPercentage() != null
                         && this.getPercentage().compareTo(other.getPercentage()) == 0;
+    }
+
+    @Override
+    public void apply(ProcessData process,
+                      IPosition position)
+    {
     }
 }
