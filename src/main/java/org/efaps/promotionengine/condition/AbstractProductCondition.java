@@ -195,8 +195,8 @@ public abstract class AbstractProductCondition<T>
                         if (quantity.compareTo(BigDecimal.ZERO) < 1) {
                             break;
                         }
-                    } else if (!process.getPositionsUsedForSouce().contains(position)
-                                    && getProducts().contains(position.getProductOid())) {
+                    } else if (getProducts().contains(position.getProductOid())
+                                    && canbeUsed(process, positions, position)) {
                         quantity = quantity.subtract(position.getQuantity());
                         LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
                         process.registerConditionMet(position);
@@ -211,6 +211,30 @@ public abstract class AbstractProductCondition<T>
                 ret.forEach(pos -> process.registerConditionMet(pos));
             } else {
                 ret.clear();
+            }
+        }
+        return ret;
+    }
+
+    private boolean canbeUsed(final ProcessData processData,
+                              final List<IPosition> positions,
+                              final IPosition currentPosition)
+    {
+        boolean ret = false;
+        if (!processData.getPositionsUsedForSouce().contains(currentPosition)) {
+            ret = true;
+        } else {
+            final var index = positions.indexOf(currentPosition);
+            if (index == 0 && positions.size() > 1
+                            && positions.get(1).getNetUnitPrice().compareTo(currentPosition.getNetUnitPrice()) > 0) {
+                final var replacementOpt = positions.stream().filter(pos -> !pos.equals(currentPosition)
+                                && getProducts().contains(pos.getProductOid())
+                                && !pos.isBurned()).findFirst();
+                if (replacementOpt.isPresent()) {
+                    processData.getPositionsUsedForSouce().remove(currentPosition);
+                    processData.getPositionsUsedForSouce().add(replacementOpt.get());
+                    ret = true;
+                }
             }
         }
         return ret;

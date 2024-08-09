@@ -121,21 +121,22 @@ public class Promotions
                         .withActions(actions);
     }
 
-    public static Promotion.Builder second25PercentOff(final Strategy strategy)
+    public static Promotion.Builder second25PercentOff(final Strategy strategy,
+                                                       final String... productOid)
     {
+        final var productOids = new HashSet<>(Arrays.asList(productOid));
+
         final var sourceConditions = new ArrayList<ICondition>();
         sourceConditions.add(new ProductsCondition()
                         .setPositionQuantity(BigDecimal.ONE)
                         .setEntryOperator(EntryOperator.INCLUDES_ANY)
-                        .addProduct(PROD_BOGOF2)
-                        .addProduct(PROD_BOGOF3));
+                        .setProducts(productOids));
 
         final var targetConditions = new ArrayList<ICondition>();
         targetConditions.add(new ProductsCondition()
                         .setPositionQuantity(BigDecimal.ONE)
                         .setEntryOperator(EntryOperator.INCLUDES_ANY)
-                        .addProduct(PROD_BOGOF2)
-                        .addProduct(PROD_BOGOF3));
+                        .setProducts(productOids));
 
         final var actions = new ArrayList<IAction>();
         final var action = new PercentageDiscountAction().setPercentage(new BigDecimal(25)).setStrategy(strategy);
