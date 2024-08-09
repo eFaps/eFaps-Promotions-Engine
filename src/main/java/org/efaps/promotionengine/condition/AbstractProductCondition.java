@@ -155,14 +155,20 @@ public abstract class AbstractProductCondition<T>
                 if (!position.isBurned() && getProducts().contains(position.getProductOid())) {
                     quantity = quantity.subtract(position.getQuantity());
                     LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
-                    process.registerConditionMet(position);
+
                     ret.add(position);
                     if (quantity.compareTo(BigDecimal.ZERO) < 1) {
                         break;
                     }
                 }
             }
+            if (quantity.compareTo(BigDecimal.ZERO) < 1) {
+                ret.forEach(pos ->  process.registerConditionMet(pos));
+            } else {
+                ret.clear();
+            }
         } else {
+            // target
             for (final var calcPosition : process.getDocument().getPositions()) {
                 final var position = (IPosition) calcPosition;
                 if (!position.isBurned()) {
@@ -186,8 +192,12 @@ public abstract class AbstractProductCondition<T>
                     }
                 }
             }
+            if (quantity.compareTo(BigDecimal.ZERO) < 1) {
+                ret.forEach(pos ->  process.registerConditionMet(pos));
+            } else {
+                ret.clear();
+            }
         }
-
         return ret;
     }
 
