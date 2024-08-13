@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 public class FixedAmountAction
     extends AbstractAction
 {
+
     private static final Logger LOG = LoggerFactory.getLogger(FixedAmountAction.class);
 
     private BigDecimal amount;
@@ -68,12 +69,18 @@ public class FixedAmountAction
         }
     }
 
-    public void apply(final ProcessData process,
-                      final IPosition position)
+    @Override
+    public boolean apply(final ProcessData process,
+                         final IPosition position)
     {
-        position.setPromotionOid(process.getCurrentPromotion().getOid());
-        position.setNetUnitPrice(amount);
-        LOG.info("Applied action on positon: {}", position);
+        boolean ret = false;
+        if (position.getPromotionOid() == null) {
+            ret = true;
+            position.setPromotionOid(process.getCurrentPromotion().getOid());
+            position.setNetUnitPrice(amount);
+            LOG.info("Applied action on positon: {}", position);
+        }
+        return ret;
     }
 
     @Override

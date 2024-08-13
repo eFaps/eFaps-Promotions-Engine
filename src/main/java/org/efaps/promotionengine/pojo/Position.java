@@ -31,6 +31,8 @@ public class Position
 
     private String promotionOid;
 
+
+
     @Override
     public void setPromotionOid(String oid)
     {

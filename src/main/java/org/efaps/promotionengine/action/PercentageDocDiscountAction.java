@@ -51,8 +51,9 @@ public class PercentageDocDiscountAction
     }
 
     @Override
-    public void apply(ProcessData process,
-                      IPosition position)
+    public boolean apply(ProcessData process,
+                         IPosition position)
     {
+        return false;
     }
 }

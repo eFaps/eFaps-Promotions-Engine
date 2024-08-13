@@ -55,12 +55,18 @@ public class PercentageDiscountAction
         }
     }
 
-    public void apply(final ProcessData process,
-                      final IPosition position)
+    @Override
+    public boolean apply(final ProcessData process,
+                         final IPosition position)
     {
-        position.setPromotionOid(process.getCurrentPromotion().getOid());
-        position.setNetUnitPrice(position.getNetUnitPrice().subtract(discount(position.getNetUnitPrice())));
-        LOG.info("Applied action on positon: {}", position);
+        boolean ret = false;
+        if (position.getPromotionOid() == null) {
+            ret = true;
+            position.setPromotionOid(process.getCurrentPromotion().getOid());
+            position.setNetUnitPrice(position.getNetUnitPrice().subtract(discount(position.getNetUnitPrice())));
+            LOG.info("Applied action on positon: {}", position);
+        }
+        return ret;
     }
 
     @Override

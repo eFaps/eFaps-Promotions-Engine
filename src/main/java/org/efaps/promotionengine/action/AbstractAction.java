@@ -15,6 +15,8 @@
  */
 package org.efaps.promotionengine.action;
 
+import java.util.List;
+
 import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 import org.slf4j.Logger;
@@ -49,17 +51,24 @@ public abstract class AbstractAction
     @Override
     public boolean run(final ProcessData processData)
     {
-        boolean  actionsRun = false;
+        boolean actionsRun = false;
         processData.setCurrentAction(this);
         final var conditions = processData.getCurrentPromotion().getTargetConditions();
+        List<IPosition> commonPositions = null;
         for (final var condition : conditions) {
             LOG.debug("Evaluating positions for condition: {}", condition);
             final var positions = condition.evalPositions(processData);
-            for (final var pos : positions) {
-                apply(processData, pos);
+            if (commonPositions == null) {
+                commonPositions = positions;
+            } else {
+                commonPositions.retainAll(positions);
             }
-            if (positions.size() > 0) {
-                actionsRun = true;
+        }
+        if (commonPositions != null) {
+            for (final var pos : commonPositions) {
+                actionsRun = apply(processData, pos) || actionsRun;
+            }
+            if (commonPositions.size() > 0) {
                 processData.getPositionsUsedForSouce().forEach(pos -> {
                     if (pos.getPromotionOid() == null) {
                         pos.setPromotionOid(processData.getCurrentPromotion().getOid());
@@ -70,8 +79,8 @@ public abstract class AbstractAction
         return actionsRun;
     }
 
-    public abstract void apply(final ProcessData process,
-                               final IPosition position);
+    public abstract boolean apply(final ProcessData process,
+                                  final IPosition position);
 
     @Override
     public String getNote()

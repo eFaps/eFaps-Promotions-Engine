@@ -174,18 +174,18 @@ public class CombinationsTest
         calculator.calc(document5, promotions);
         Assert.assertTrue(new BigDecimal(50).compareTo(document5.getPositions().get(0).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(100).compareTo(document5.getPositions().get(1).getNetPrice()) == 0);
-        Assert.assertTrue(new BigDecimal(150).compareTo(document5.getPositions().get(2).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(75).compareTo(document5.getPositions().get(2).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(200).compareTo(document5.getPositions().get(3).getNetPrice()) == 0);
-        Assert.assertTrue(new BigDecimal(0).compareTo(document5.getPositions().get(4).getNetPrice()) == 0);
+        Assert.assertTrue(new BigDecimal(75).compareTo(document5.getPositions().get(4).getNetPrice()) == 0);
 
         Assert.assertTrue(new BigDecimal(200).compareTo(document5.getPromotionInfo().getNetTotalDiscount()) == 0);
         Assert.assertTrue(new BigDecimal(50)
                         .compareTo(document5.getPromotionInfo().getDetails().get(0).getNetUnitDiscount()) == 0);
         Assert.assertNull(document5.getPromotionInfo().getDetails().get(1).getNetUnitDiscount());
-        Assert.assertTrue(new BigDecimal(0)
+        Assert.assertTrue(new BigDecimal(75)
                         .compareTo(document5.getPromotionInfo().getDetails().get(2).getNetUnitDiscount()) == 0);
         Assert.assertNull(document5.getPromotionInfo().getDetails().get(3).getNetUnitDiscount());
-        Assert.assertTrue(new BigDecimal(150)
+        Assert.assertTrue(new BigDecimal(75)
                         .compareTo(document5.getPromotionInfo().getDetails().get(4).getNetUnitDiscount()) == 0);
 
     }

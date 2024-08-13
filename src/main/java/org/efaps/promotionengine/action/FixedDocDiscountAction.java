@@ -45,10 +45,9 @@ public class FixedDocDiscountAction
     }
 
     @Override
-    public void apply(ProcessData process,
+    public boolean apply(ProcessData process,
                       IPosition position)
     {
-        // TODO Auto-generated method stub
-
+        return false;
     }
 }

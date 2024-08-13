@@ -120,11 +120,11 @@ public class Engine
     {
         boolean actionRun = false;
         getProcessData().setStep(Step.TARGETCONDITION);
-        if (promotion.hasSource()) {
-            for (final var action : promotion.getActions()) {
-                actionRun = action.run(processData);
-            }
+       // if (promotion.hasSource()) {
+        for (final var action : promotion.getActions()) {
+            actionRun = action.run(processData);
         }
+        //}
 
         /**
         if (promotion.hasSource()) {
