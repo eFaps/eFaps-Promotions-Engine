@@ -68,14 +68,8 @@ public class Engine
                 final var currentDoc = document.clone();
                 getProcessData().setDocument(currentDoc);
                 final var currentPermutation = permutationIterator.next();
-                for (final var promotion : currentPermutation) {
-                    getProcessData().setCurrentPromotion(promotion);
-                    getProcessData().setStep(Step.SOURCECONDITION);
-                    if (!promotion.hasSource() || meetsConditions(promotion.getSourceConditions())) {
-                        runActions(promotion);
-                    }
-                    getProcessData().getPositionsUsedForSouce().clear();
-                }
+                applyInternal(currentPermutation);
+
                 BigDecimal currentDiscount = BigDecimal.ZERO;
                 new org.efaps.abacus.Calculator(getProcessData().getCalculatorConfig()).calc(currentDoc);
                 final var promoInfo = PromotionInfo.evalPromotionInfo(document, currentDoc);
@@ -94,24 +88,34 @@ public class Engine
             // sort that highest number first
             Collections.sort(currentPromotions, (promotion0,
                                                  promotion1) -> promotion1.getPriority() - promotion0.getPriority());
-            final var promoIter = currentPromotions.iterator();
-            Promotion promotion = null;
-            if (promoIter.hasNext()) {
-                promotion = promoIter.next();
-            }
-            while (promotion != null) {
-                getProcessData().setCurrentPromotion(promotion);
-                getProcessData().setStep(Step.SOURCECONDITION);
-                if (!promotion.hasSource() || meetsConditions(promotion.getSourceConditions())) {
-                    if (!runActions(promotion)) {
+            applyInternal(currentPromotions);
+        }
+    }
+
+    private void applyInternal(final List<Promotion> promotions)
+    {
+        final var promoIter = promotions.iterator();
+        Promotion promotion = null;
+        if (promoIter.hasNext()) {
+            promotion = promoIter.next();
+        }
+        while (promotion != null) {
+            getProcessData().setCurrentPromotion(promotion);
+            getProcessData().setStep(Step.SOURCECONDITION);
+            if (!promotion.hasSource() || meetsConditions(promotion.getSourceConditions())) {
+                if (!runActions(promotion)) {
+                    if (promoIter.hasNext()) {
+                        promotion = promoIter.next();
+                        getProcessData().getPositionsUsedForSouce().clear();
+                    } else {
                         promotion = null;
                     }
-                } else if (promoIter.hasNext()) {
-                    promotion = promoIter.next();
-                    getProcessData().getPositionsUsedForSouce().clear();
-                } else {
-                    promotion = null;
                 }
+            } else if (promoIter.hasNext()) {
+                promotion = promoIter.next();
+                getProcessData().getPositionsUsedForSouce().clear();
+            } else {
+                promotion = null;
             }
         }
     }
@@ -120,51 +124,35 @@ public class Engine
     {
         boolean actionRun = false;
         getProcessData().setStep(Step.TARGETCONDITION);
-       // if (promotion.hasSource()) {
+        // if (promotion.hasSource()) {
         for (final var action : promotion.getActions()) {
             actionRun = action.run(processData);
         }
-        //}
+        // }
 
         /**
-        if (promotion.hasSource()) {
-            getProcessData().getDocument().addPromotionOid(promotion.getOid());
-            List<IPosition> commonPositions = null;
-            for (final var condition : promotion.getTargetConditions()) {
-                final var positions = condition.evalPositions(getProcessData());
-                if (commonPositions == null) {
-                    commonPositions = positions;
-                } else {
-                    commonPositions.retainAll(positions);
-                }
-            }
-            actionRun = actionRun || CollectionUtils.isNotEmpty(commonPositions);
-            for (final var action : promotion.getActions()) {
-                action.run(processData, commonPositions);
-            }
-            if (actionRun) {
-                getProcessData().getPositionsUsedForSouce().forEach(pos -> {
-                    pos.setPromotionOid(promotion.getOid());
-                });
-            }
-        } else {
-            for (final var calcPosition : processData.getDocument().getPositions()) {
-                final var position = (IPosition) calcPosition;
-                boolean meetsConditions = !position.isBurned();
-                if (meetsConditions) {
-                    for (final var condition : promotion.getTargetConditions()) {
-                        meetsConditions = meetsConditions && condition.positionMet(position);
-                    }
-                }
-                if (meetsConditions) {
-                    getProcessData().getDocument().addPromotionOid(promotion.getOid());
-                    for (final var action : promotion.getActions()) {
-                        action.run(processData, Collections.singletonList(position));
-                    }
-                }
-            }
-        }
-        **/
+         * if (promotion.hasSource()) {
+         * getProcessData().getDocument().addPromotionOid(promotion.getOid());
+         * List<IPosition> commonPositions = null; for (final var condition :
+         * promotion.getTargetConditions()) { final var positions =
+         * condition.evalPositions(getProcessData()); if (commonPositions ==
+         * null) { commonPositions = positions; } else {
+         * commonPositions.retainAll(positions); } } actionRun = actionRun ||
+         * CollectionUtils.isNotEmpty(commonPositions); for (final var action :
+         * promotion.getActions()) { action.run(processData, commonPositions); }
+         * if (actionRun) {
+         * getProcessData().getPositionsUsedForSouce().forEach(pos -> {
+         * pos.setPromotionOid(promotion.getOid()); }); } } else { for (final
+         * var calcPosition : processData.getDocument().getPositions()) { final
+         * var position = (IPosition) calcPosition; boolean meetsConditions =
+         * !position.isBurned(); if (meetsConditions) { for (final var condition
+         * : promotion.getTargetConditions()) { meetsConditions =
+         * meetsConditions && condition.positionMet(position); } } if
+         * (meetsConditions) {
+         * getProcessData().getDocument().addPromotionOid(promotion.getOid());
+         * for (final var action : promotion.getActions()) {
+         * action.run(processData, Collections.singletonList(position)); } } } }
+         **/
         return actionRun;
     }
 
