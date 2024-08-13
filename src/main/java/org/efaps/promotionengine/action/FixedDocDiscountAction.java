@@ -15,7 +15,6 @@
  */
 package org.efaps.promotionengine.action;
 
-import java.util.List;
 import java.util.Objects;
 
 import org.efaps.promotionengine.api.IPosition;
@@ -25,11 +24,21 @@ public class FixedDocDiscountAction
     extends AbstractFixedAction
 {
 
+    boolean executed = false;
+
     @Override
-    public void run(final ProcessData process,
-                    final List<IPosition> position)
+    public boolean run(final ProcessData process)
     {
-        process.getDocument().addDocDiscount(getAmount());
+        final boolean ret;
+        if (!executed) {
+            executed = true;
+            process.getDocument().addDocDiscount(getAmount());
+            process.getDocument().addPromotionOid(process.getCurrentPromotion().getOid());
+            ret = true;
+        } else {
+            ret = false;
+        }
+        return ret;
     }
 
     @Override
@@ -45,8 +54,8 @@ public class FixedDocDiscountAction
     }
 
     @Override
-    public boolean apply(ProcessData process,
-                      IPosition position)
+    public boolean apply(final ProcessData process,
+                         final IPosition position)
     {
         return false;
     }

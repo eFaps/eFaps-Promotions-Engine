@@ -15,10 +15,7 @@
  */
 package org.efaps.promotionengine.action;
 
-import java.util.List;
-
 import org.efaps.promotionengine.api.IAnnotated;
-import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -35,9 +32,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 public interface IAction
     extends IAnnotated
 {
-
-    void run(final ProcessData process,
-             final List<IPosition> positions);
 
     boolean run(final ProcessData process);
 

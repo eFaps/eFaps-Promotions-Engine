@@ -15,21 +15,27 @@
  */
 package org.efaps.promotionengine.action;
 
-import java.util.List;
-
 import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
 public class PercentageDocDiscountAction
     extends AbstractPercentageAction
 {
+    boolean executed = false;
 
     @Override
-    public void run(final ProcessData process,
-                    final List<IPosition> position)
+    public boolean run(final ProcessData process)
     {
-        process.getDocument().addDocDiscount(discount(process.getDocument().getNetTotal()));
-        process.getDocument().addPromotionOid(process.getCurrentPromotion().getOid());
+        final boolean ret;
+        if (!executed) {
+            executed = true;
+            process.getDocument().addDocDiscount(discount(process.getDocument().getNetTotal()));
+            process.getDocument().addPromotionOid(process.getCurrentPromotion().getOid());
+            ret = true;
+        } else {
+            ret = false;
+        }
+        return ret;
     }
 
     @Override

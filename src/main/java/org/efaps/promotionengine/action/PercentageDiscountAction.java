@@ -15,11 +15,6 @@
  */
 package org.efaps.promotionengine.action;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 import org.slf4j.Logger;
@@ -30,30 +25,6 @@ public class PercentageDiscountAction
 {
 
     private static final Logger LOG = LoggerFactory.getLogger(PercentageDiscountAction.class);
-
-    @Override
-    public void run(final ProcessData process,
-                    final List<IPosition> positions)
-    {
-        if (!positions.isEmpty()) {
-            LOG.info("Applying action on positions: {}", positions);
-            final List<IPosition> strategySorted = new ArrayList<>(positions);
-            if (!process.getPositionsUsedForSouce().isEmpty()) {
-                strategySorted.addAll(process.getPositionsUsedForSouce());
-            }
-            switch (getStrategy()) {
-                case PRICIEST:
-                    Collections.sort(strategySorted, Comparator.comparing(IPosition::getNetUnitPrice));
-                    Collections.reverse(strategySorted);
-                    apply(process, strategySorted.get(0));
-                    break;
-                case CHEAPEST:
-                default:
-                    Collections.sort(strategySorted, Comparator.comparing(IPosition::getNetUnitPrice));
-                    apply(process, strategySorted.get(0));
-            }
-        }
-    }
 
     @Override
     public boolean apply(final ProcessData process,

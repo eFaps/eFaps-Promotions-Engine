@@ -153,15 +153,15 @@ public class DiscountOnProductsTest
     @Test
     public void aGroupOfProductsExceptSomeAre50PercentOff()
     {
-        final var sourceConditions = new ArrayList<ICondition>();
-        sourceConditions.add(new ProductsCondition()
-                        .setPositionQuantity(BigDecimal.ONE)
+        final var targetConditions = new ArrayList<ICondition>();
+        targetConditions.add(new ProductsCondition()
+                        .setPositionQuantity(BigDecimal.ZERO)
                         .setEntryOperator(EntryOperator.INCLUDES_ANY)
                         .addProduct("INCLUDE.1")
                         .addProduct("EXCLUSION.2")
                         .addProduct("INCLUDE.3"));
-        sourceConditions.add(new ProductsCondition()
-                        .setPositionQuantity(BigDecimal.ONE)
+        targetConditions.add(new ProductsCondition()
+                        .setPositionQuantity(BigDecimal.ZERO)
                         .setEntryOperator(EntryOperator.EXCLUDES)
                         .addProduct("EXCLUSION.2"));
 
@@ -176,7 +176,7 @@ public class DiscountOnProductsTest
                         .withPriority(1)
                         .withStartDateTime(OffsetDateTime.now().minusDays(5))
                         .withEndDateTime(OffsetDateTime.now().plusDays(5))
-                        .withTargetConditions(sourceConditions)
+                        .withTargetConditions(targetConditions)
                         .withActions(actions)
                         .build();
 

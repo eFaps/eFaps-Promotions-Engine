@@ -150,6 +150,7 @@ public abstract class AbstractProductCondition<T>
     private List<IPosition> includesAny(final ProcessData process)
     {
         final var ret = new ArrayList<IPosition>();
+        final boolean checkQuantity = getPositionQuantity().compareTo(BigDecimal.ZERO) > 0;
         var quantity = getPositionQuantity();
         if (process.getStep().equals(Step.SOURCECONDITION)) {
             for (final var calcPosition : process.getDocument().getPositions()) {
@@ -159,7 +160,7 @@ public abstract class AbstractProductCondition<T>
                     LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
 
                     ret.add(position);
-                    if (quantity.compareTo(BigDecimal.ZERO) < 1) {
+                    if (checkQuantity && quantity.compareTo(BigDecimal.ZERO) < 1) {
                         break;
                     }
                 }
@@ -192,7 +193,7 @@ public abstract class AbstractProductCondition<T>
                         LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
                         process.registerConditionMet(position);
                         ret.add(position);
-                        if (quantity.compareTo(BigDecimal.ZERO) < 1) {
+                        if (checkQuantity && quantity.compareTo(BigDecimal.ZERO) < 1) {
                             break;
                         }
                     } else if (getProducts().contains(position.getProductOid())
@@ -201,7 +202,7 @@ public abstract class AbstractProductCondition<T>
                         LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
                         process.registerConditionMet(position);
                         ret.add(position);
-                        if (quantity.compareTo(BigDecimal.ZERO) < 1) {
+                        if (checkQuantity && quantity.compareTo(BigDecimal.ZERO) < 1) {
                             break;
                         }
                     }
