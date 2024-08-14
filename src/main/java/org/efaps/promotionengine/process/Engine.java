@@ -99,19 +99,33 @@ public class Engine
         if (promoIter.hasNext()) {
             promotion = promoIter.next();
         }
+        int counter = 0;
         while (promotion != null) {
             getProcessData().setCurrentPromotion(promotion);
             getProcessData().setStep(Step.SOURCECONDITION);
             if (!promotion.hasSource() || meetsConditions(promotion.getSourceConditions())) {
                 if (!runActions(promotion)) {
                     if (promoIter.hasNext()) {
+                        counter = 0;
                         promotion = promoIter.next();
                         getProcessData().getPositionsUsedForSouce().clear();
                     } else {
                         promotion = null;
                     }
+                } else {
+                    counter++;
+                    if (promotion.getMax() > 0 && counter >= promotion.getMax()) {
+                        counter = 0;
+                        if (promoIter.hasNext()) {
+                            promotion = promoIter.next();
+                            getProcessData().getPositionsUsedForSouce().clear();
+                        } else {
+                            promotion = null;
+                        }
+                    }
                 }
             } else if (promoIter.hasNext()) {
+                counter = 0;
                 promotion = promoIter.next();
                 getProcessData().getPositionsUsedForSouce().clear();
             } else {

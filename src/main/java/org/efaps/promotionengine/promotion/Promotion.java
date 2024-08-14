@@ -41,6 +41,8 @@ public class Promotion
 
     private final int priority;
 
+    private final int max;
+
     private final OffsetDateTime startDateTime;
 
     private final OffsetDateTime endDateTime;
@@ -58,6 +60,7 @@ public class Promotion
         this.description = builder.description;
         this.label = builder.label;
         this.priority = builder.priority;
+        this.max = builder.max;
         this.startDateTime = builder.startDateTime;
         this.endDateTime = builder.endDateTime;
         this.sourceConditions = builder.sourceConditions;
@@ -88,6 +91,11 @@ public class Promotion
     public int getPriority()
     {
         return priority;
+    }
+
+    public int getMax()
+    {
+        return max;
     }
 
     public OffsetDateTime getStartDateTime()
@@ -154,6 +162,7 @@ public class Promotion
         private String description;
         private String label;
         private int priority;
+        private int max;
         private OffsetDateTime startDateTime;
         private OffsetDateTime endDateTime;
         private List<ICondition> sourceConditions = new ArrayList<>();
@@ -191,6 +200,12 @@ public class Promotion
         public Builder withPriority(int priority)
         {
             this.priority = priority;
+            return this;
+        }
+
+        public Builder withMax(int max)
+        {
+            this.max = max;
             return this;
         }
 
