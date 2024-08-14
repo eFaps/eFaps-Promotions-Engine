@@ -24,7 +24,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.promotionengine.action.IAction;
 import org.efaps.promotionengine.condition.ICondition;
+import org.efaps.promotionengine.condition.MaxCondition;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(builder = Promotion.Builder.class)
@@ -40,8 +42,6 @@ public class Promotion
     private final String label;
 
     private final int priority;
-
-    private final int max;
 
     private final OffsetDateTime startDateTime;
 
@@ -60,7 +60,6 @@ public class Promotion
         this.description = builder.description;
         this.label = builder.label;
         this.priority = builder.priority;
-        this.max = builder.max;
         this.startDateTime = builder.startDateTime;
         this.endDateTime = builder.endDateTime;
         this.sourceConditions = builder.sourceConditions;
@@ -93,11 +92,6 @@ public class Promotion
         return priority;
     }
 
-    public int getMax()
-    {
-        return max;
-    }
-
     public OffsetDateTime getStartDateTime()
     {
         return startDateTime;
@@ -126,6 +120,17 @@ public class Promotion
     public List<IAction> getActions()
     {
         return actions;
+    }
+
+    @JsonIgnore
+    public int getMax()
+    {
+        var ret = 0;
+        final var maxOpt = getSourceConditions().stream().filter(MaxCondition.class::isInstance).findFirst();
+        if (maxOpt.isPresent()) {
+            ret = ((MaxCondition) maxOpt.get()).getMax();
+        }
+        return ret;
     }
 
     @Override
@@ -162,7 +167,6 @@ public class Promotion
         private String description;
         private String label;
         private int priority;
-        private int max;
         private OffsetDateTime startDateTime;
         private OffsetDateTime endDateTime;
         private List<ICondition> sourceConditions = new ArrayList<>();
@@ -200,12 +204,6 @@ public class Promotion
         public Builder withPriority(int priority)
         {
             this.priority = priority;
-            return this;
-        }
-
-        public Builder withMax(int max)
-        {
-            this.max = max;
             return this;
         }
 

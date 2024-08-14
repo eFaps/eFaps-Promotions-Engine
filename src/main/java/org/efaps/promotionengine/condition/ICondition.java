@@ -34,7 +34,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = WeekdayCondition.class, name = "WeekdayCondition"),
     @JsonSubTypes.Type(value = DateCondition.class, name = "DateCondition"),
     @JsonSubTypes.Type(value = ProductTotalCondition.class, name = "ProductTotalCondition"),
-    @JsonSubTypes.Type(value = ProductFamilyTotalCondition.class, name = "ProductFamilyTotalCondition")
+    @JsonSubTypes.Type(value = ProductFamilyTotalCondition.class, name = "ProductFamilyTotalCondition"),
+    @JsonSubTypes.Type(value = MaxCondition.class, name = "MaxCondition")
 })
 public interface ICondition
     extends IAnnotated

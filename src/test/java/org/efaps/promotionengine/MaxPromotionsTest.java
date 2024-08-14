@@ -20,6 +20,7 @@ import java.util.Collections;
 
 import org.efaps.abacus.pojo.Configuration;
 import org.efaps.abacus.pojo.Tax;
+import org.efaps.promotionengine.condition.MaxCondition;
 import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.pojo.Position;
 import org.efaps.promotionengine.promotion.Promotion;
@@ -191,6 +192,7 @@ public class MaxPromotionsTest
 
     private Promotion getPromotion()
     {
-        return Promotions.buyOneGetOneFree(Promotions.PROD_SO1, Promotions.PROD_SO2).withMax(3) .build();
+        return Promotions.buyOneGetOneFree(Promotions.PROD_SO1, Promotions.PROD_SO2)
+                        .addSourceCondition(new MaxCondition().setMax(3)).build();
     }
 }
