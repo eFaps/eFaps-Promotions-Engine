@@ -35,6 +35,7 @@ import org.efaps.promotionengine.condition.DocTotalCondition;
 import org.efaps.promotionengine.condition.EntryOperator;
 import org.efaps.promotionengine.condition.ICondition;
 import org.efaps.promotionengine.condition.Operator;
+import org.efaps.promotionengine.condition.OrCondition;
 import org.efaps.promotionengine.condition.ProductFamilyConditionEntry;
 import org.efaps.promotionengine.condition.ProductFamilyTotalCondition;
 import org.efaps.promotionengine.condition.ProductTotalCondition;
@@ -413,6 +414,41 @@ public class Promotions
                         .withEndDateTime(OffsetDateTime.now().plusDays(5))
                         .withSourceConditions(conditions)
                         .withTargetConditions(conditions)
+                        .withActions(actions);
+    }
+
+    public static Promotion.Builder getAggregationPromotion()
+    {
+        // simulate multiple product list e.g. all from one label OR from another label
+        final var condition = new OrCondition()
+                        .addCondition(new ProductsCondition()
+                                        .setPositionQuantity(BigDecimal.ONE)
+                                        .setEntryOperator(EntryOperator.INCLUDES_ANY)
+                                        .addProduct(PROD_SO1))
+                        .addCondition(new ProductsCondition()
+                                        .setPositionQuantity(BigDecimal.ONE)
+                                        .setEntryOperator(EntryOperator.INCLUDES_ANY)
+                                        .addProduct(PROD_SO2))
+                        .addCondition(new ProductsCondition()
+                                        .setPositionQuantity(BigDecimal.ONE)
+                                        .setEntryOperator(EntryOperator.INCLUDES_ANY)
+                                        .addProduct(PROD_SO3));
+
+        final var targetConditions = new ArrayList<ICondition>();
+        targetConditions.add(condition);
+
+        final var actions = new ArrayList<IAction>();
+        final var action = new PercentageDiscountAction().setPercentage(new BigDecimal(50));
+        actions.add(action);
+
+        return Promotion.builder()
+                        .withOid("777.2")
+                        .withName("All products from one of the lists are 50% off")
+                        .withDescription("This can be a long text")
+                        .withPriority(50)
+                        .withStartDateTime(OffsetDateTime.now().minusDays(5))
+                        .withEndDateTime(OffsetDateTime.now().plusDays(5))
+                        .withTargetConditions(targetConditions)
                         .withActions(actions);
     }
 }

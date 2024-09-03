@@ -73,7 +73,8 @@ public class SerializationTest
                         Promotions.secondForOne(Strategy.PRICIEST).build(),
                         Promotions.get10OffIfYouBuyMoreThan100().build(),
                         Promotions.get10OffIfYouBuyMoreThan100ByFamily().build(),
-                        Promotions.getBuyTwoAndGetBothForFixAmount("123.456", "789.12").build()
+                        Promotions.getBuyTwoAndGetBothForFixAmount("123.456", "789.12").build(),
+                        Promotions.getAggregationPromotion().build()
         };
     }
 }

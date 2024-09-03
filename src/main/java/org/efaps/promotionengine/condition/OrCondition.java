@@ -17,7 +17,10 @@ package org.efaps.promotionengine.condition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
@@ -60,4 +63,23 @@ public class OrCondition
         }
         return ret;
     }
+
+    @Override
+    public String toString()
+    {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof final OrCondition condition)) {
+            return false;
+        }
+        return Objects.equals(this.getConditions(), condition.getConditions());
+    }
+
 }
