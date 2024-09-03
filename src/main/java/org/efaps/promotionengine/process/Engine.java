@@ -63,8 +63,10 @@ public class Engine
         if (EngineRule.MOSTDISCOUNT.equals(config.getEngineRule())) {
             IDocument mostDiscountDoc = null;
             BigDecimal mostDiscount = BigDecimal.ZERO;
+            int y = 0;
             final PermutationIterator<Promotion> permutationIterator = new PermutationIterator<>(currentPromotions);
             while (permutationIterator.hasNext()) {
+                LOG.info("Permutation Nr: {}", y++);
                 final var currentDoc = document.clone();
                 getProcessData().setDocument(currentDoc);
                 final var currentPermutation = permutationIterator.next();
