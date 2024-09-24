@@ -29,6 +29,8 @@ public class PromotionDetailDto
 {
 
     private final int index;
+    private final BigDecimal netUnitBase;
+    private final BigDecimal netBase;
     private final BigDecimal netUnitDiscount;
     private final BigDecimal netDiscount;
     private final BigDecimal crossUnitDiscount;
@@ -38,6 +40,8 @@ public class PromotionDetailDto
     private PromotionDetailDto(Builder builder)
     {
         this.index = builder.index;
+        this.netUnitBase = builder.netUnitBase;
+        this.netBase = builder.netBase;
         this.netUnitDiscount = builder.netUnitDiscount;
         this.netDiscount = builder.netDiscount;
         this.crossUnitDiscount = builder.crossUnitDiscount;
@@ -57,6 +61,18 @@ public class PromotionDetailDto
         return promotionOid;
     }
 
+    public BigDecimal getNetUnitBase()
+    {
+        return netUnitBase;
+    }
+
+
+    public BigDecimal getNetBase()
+    {
+        return netBase;
+    }
+
+
     @Override
     public BigDecimal getNetUnitDiscount()
     {
@@ -69,6 +85,7 @@ public class PromotionDetailDto
         return netDiscount;
     }
 
+    @Override
     public BigDecimal getCrossUnitDiscount()
     {
         return crossUnitDiscount;
@@ -95,6 +112,8 @@ public class PromotionDetailDto
     {
 
         private int index;
+        private BigDecimal netUnitBase;
+        private BigDecimal netBase;
         private BigDecimal netUnitDiscount;
         private BigDecimal netDiscount;
         private BigDecimal crossUnitDiscount;
@@ -108,6 +127,18 @@ public class PromotionDetailDto
         public Builder withIndex(int index)
         {
             this.index = index;
+            return this;
+        }
+
+        public Builder withNetUnitBase(BigDecimal netUnitBase)
+        {
+            this.netUnitBase = netUnitBase;
+            return this;
+        }
+
+        public Builder withNetBase(BigDecimal netBase)
+        {
+            this.netBase = netBase;
             return this;
         }
 

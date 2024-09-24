@@ -53,6 +53,8 @@ public class PromotionInfo
                     final var crossDiscount = originalDocPos.getCrossPrice().subtract(promoDocPos.getCrossPrice());
                     details.add(PromotionDetailDto.builder()
                                     .withIndex(promoDocPos.getIndex())
+                                    .withNetBase(originalDocPos.getNetPrice())
+                                    .withNetUnitBase(originalDocPos.getNetUnitPrice())
                                     .withNetUnitDiscount(netUnitDiscount)
                                     .withNetDiscount(netDiscount)
                                     .withCrossUnitDiscount(crossUnitDiscount)
