@@ -61,17 +61,17 @@ public class PromotionDetailDto
         return promotionOid;
     }
 
+    @Override
     public BigDecimal getNetUnitBase()
     {
         return netUnitBase;
     }
 
-
+    @Override
     public BigDecimal getNetBase()
     {
         return netBase;
     }
-
 
     @Override
     public BigDecimal getNetUnitDiscount()

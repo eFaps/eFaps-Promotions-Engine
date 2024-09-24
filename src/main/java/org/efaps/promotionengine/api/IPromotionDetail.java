@@ -22,6 +22,10 @@ public interface IPromotionDetail
 
     int getIndex();
 
+    BigDecimal getNetUnitBase();
+
+    BigDecimal getNetBase();
+
     BigDecimal getNetUnitDiscount();
 
     BigDecimal getNetDiscount();
