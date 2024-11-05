@@ -44,7 +44,9 @@ public class PromotionInfo
                 final IPosition originalDocPos = (IPosition) originalDocPosIter.next();
                 final IPosition promoDocPos = (IPosition) promoDocPosIter.next();
 
-                if (promoDocPos.getPromotionOid() != null) {
+                if (promoDocPos.getPromotionOids().isEmpty()) {
+                    details.add(PromotionDetailDto.builder().build());
+                } else {
                     final var netUnitDiscount = originalDocPos.getNetUnitPrice()
                                     .subtract(promoDocPos.getNetUnitPrice());
                     final var netDiscount = originalDocPos.getNetPrice().subtract(promoDocPos.getNetPrice());
@@ -59,10 +61,8 @@ public class PromotionInfo
                                     .withNetDiscount(netDiscount)
                                     .withCrossUnitDiscount(crossUnitDiscount)
                                     .withCrossDiscount(crossDiscount)
-                                    .withPromotionOid(promoDocPos.getPromotionOid())
+                                    .withPromotionOids(promoDocPos.getPromotionOids())
                                     .build());
-                } else {
-                    details.add(PromotionDetailDto.builder().build());
                 }
             }
 
@@ -79,8 +79,9 @@ public class PromotionInfo
 
             final var promotionOids = new HashSet<>(promoDoc.getPromotionOids());
             promotionOids.addAll(details.stream()
-                            .map(IPromotionDetail::getPromotionOid)
-                            .filter(Objects::nonNull).toList());
+                            .flatMap(detail -> detail.getPromotionOids().stream())
+                            .filter(Objects::nonNull)
+                            .toList());
 
             info = PromotionInfoDto.builder()
                             .withNetTotalDiscount(docNetDiscount)

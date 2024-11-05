@@ -16,6 +16,8 @@
 package org.efaps.promotionengine.dto;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -35,7 +37,7 @@ public class PromotionDetailDto
     private final BigDecimal netDiscount;
     private final BigDecimal crossUnitDiscount;
     private final BigDecimal crossDiscount;
-    private final String promotionOid;
+    private final List<String> promotionOids;
 
     private PromotionDetailDto(Builder builder)
     {
@@ -46,7 +48,7 @@ public class PromotionDetailDto
         this.netDiscount = builder.netDiscount;
         this.crossUnitDiscount = builder.crossUnitDiscount;
         this.crossDiscount = builder.crossDiscount;
-        this.promotionOid = builder.promotionOid;
+        this.promotionOids = builder.promotionOids == null ? new ArrayList<>() : builder.promotionOids;
     }
 
     @Override
@@ -56,9 +58,9 @@ public class PromotionDetailDto
     }
 
     @Override
-    public String getPromotionOid()
+    public List<String> getPromotionOids()
     {
-        return promotionOid;
+        return promotionOids;
     }
 
     @Override
@@ -118,7 +120,7 @@ public class PromotionDetailDto
         private BigDecimal netDiscount;
         private BigDecimal crossUnitDiscount;
         private BigDecimal crossDiscount;
-        private String promotionOid;
+        private List<String> promotionOids;
 
         private Builder()
         {
@@ -166,9 +168,9 @@ public class PromotionDetailDto
             return this;
         }
 
-        public Builder withPromotionOid(String promotionOid)
+        public Builder withPromotionOids(final List<String> promotionOids)
         {
-            this.promotionOid = promotionOid;
+            this.promotionOids = promotionOids;
             return this;
         }
 

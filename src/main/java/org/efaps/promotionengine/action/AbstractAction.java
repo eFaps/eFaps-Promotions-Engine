@@ -70,9 +70,7 @@ public abstract class AbstractAction
             }
             if (commonPositions.size() > 0) {
                 processData.getPositionsUsedForSouce().forEach(pos -> {
-                    if (pos.getPromotionOid() == null) {
-                        pos.setPromotionOid(processData.getCurrentPromotion().getOid());
-                    }
+                    pos.addPromotionOid(processData.getCurrentPromotion().getOid());
                 });
             }
         }

@@ -17,6 +17,7 @@ package org.efaps.promotionengine.pojo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.efaps.abacus.api.ICalcPosition;
@@ -29,26 +30,26 @@ public class Position
     implements IPosition
 {
 
-    private String promotionOid;
-
-
+    private List<String> promotionOids;
 
     @Override
-    public void setPromotionOid(String oid)
+    public void addPromotionOid(String promotionOid)
     {
-        this.promotionOid = oid;
+        getPromotionOids().add(promotionOid);
+    }
+
+    public void setPromotionOids(final List<String> promotionOids)
+    {
+        this.promotionOids = promotionOids;
     }
 
     @Override
-    public String getPromotionOid()
+    public List<String> getPromotionOids()
     {
-        return promotionOid;
-    }
-
-    @Override
-    public boolean isBurned()
-    {
-        return promotionOid != null;
+        if (this.promotionOids == null) {
+            this.promotionOids = new ArrayList<>();
+        }
+        return promotionOids;
     }
 
     @Override
@@ -98,7 +99,7 @@ public class Position
     public Position updateWith(final ICalcPosition position)
     {
         super.updateWith(position);
-        setPromotionOid(((IPosition) position).getPromotionOid());
+        setPromotionOids(((IPosition) position).getPromotionOids());
         return this;
     }
 }

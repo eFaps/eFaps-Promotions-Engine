@@ -16,6 +16,7 @@
 package org.efaps.promotionengine.api;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface IPromotionDetail
 {
@@ -34,6 +35,6 @@ public interface IPromotionDetail
 
     BigDecimal getCrossDiscount();
 
-    String getPromotionOid();
+    List<String> getPromotionOids();
 
 }

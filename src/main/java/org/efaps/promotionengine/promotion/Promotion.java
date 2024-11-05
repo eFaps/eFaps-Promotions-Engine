@@ -133,6 +133,12 @@ public class Promotion
         return ret;
     }
 
+    @JsonIgnore
+    public boolean isStackable()
+    {
+        return false;
+    }
+
     @Override
     public String toString()
     {
@@ -172,7 +178,6 @@ public class Promotion
         private List<ICondition> sourceConditions = new ArrayList<>();
         private List<ICondition> targetConditions = new ArrayList<>();
         private List<IAction> actions = new ArrayList<>();
-
         private Builder()
         {
         }

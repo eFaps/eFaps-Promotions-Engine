@@ -51,7 +51,7 @@ public class DocPromotionTest
         Assert.assertTrue(new BigDecimal(232.5).compareTo(document.getCrossTotal()) == 0);
 
         Assert.assertTrue(new BigDecimal(62.5).compareTo(document.getPromotionInfo().getCrossTotalDiscount()) == 0);
-        Assert.assertNull(document.getPromotionInfo().getDetails().get(0).getPromotionOid());
+        Assert.assertTrue(document.getPromotionInfo().getDetails().get(0).getPromotionOids().isEmpty());
         Assert.assertTrue(document.getPromotionInfo().getPromotionOids().contains(promotion.getOid()));
     }
 
@@ -79,7 +79,7 @@ public class DocPromotionTest
         Assert.assertTrue(new BigDecimal(275).compareTo(document.getCrossTotal()) == 0);
 
         Assert.assertTrue(new BigDecimal(20).compareTo(document.getPromotionInfo().getCrossTotalDiscount()) == 0);
-        Assert.assertNull(document.getPromotionInfo().getDetails().get(0).getPromotionOid());
+        Assert.assertTrue(document.getPromotionInfo().getDetails().get(0).getPromotionOids().isEmpty());
         Assert.assertTrue(document.getPromotionInfo().getPromotionOids().contains(promotion.getOid()));
     }
 

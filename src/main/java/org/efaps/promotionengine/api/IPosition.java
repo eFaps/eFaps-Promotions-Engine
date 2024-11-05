@@ -15,16 +15,26 @@
  */
 package org.efaps.promotionengine.api;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.efaps.abacus.api.ICalcPosition;
 
 public interface IPosition
     extends ICalcPosition
 {
-    void setPromotionOid(String oid);
 
-    String getPromotionOid();
+    void addPromotionOid(final String promotionOid);
 
-    boolean isBurned();
+    default List<String> getPromotionOids()
+    {
+        return Collections.emptyList();
+    }
+
+    default boolean isBurned()
+    {
+        return getPromotionOids() != null && !getPromotionOids().isEmpty();
+    }
 
     @Override
     IPosition clone();

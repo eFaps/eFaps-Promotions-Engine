@@ -451,4 +451,27 @@ public class Promotions
                         .withTargetConditions(targetConditions)
                         .withActions(actions);
     }
+
+    public static Promotion.Builder products10PercentOff(final String... productOid)
+    {
+        final var productOids = new HashSet<>(Arrays.asList(productOid));
+        final var targetConditions = new ArrayList<ICondition>();
+        targetConditions.add(new ProductsCondition()
+                        .setPositionQuantity(BigDecimal.ONE)
+                        .setEntryOperator(EntryOperator.INCLUDES_ANY)
+                        .setProducts(productOids));
+
+        final var actions = new ArrayList<IAction>();
+        final var action = new PercentageDiscountAction().setPercentage(new BigDecimal(10));
+        actions.add(action);
+
+        return Promotion.builder()
+                        .withOid("222.1")
+                        .withName("Products are 10% off")
+                        .withPriority(50)
+                        .withStartDateTime(OffsetDateTime.now().minusDays(5))
+                        .withEndDateTime(OffsetDateTime.now().plusDays(5))
+                        .withTargetConditions(targetConditions)
+                        .withActions(actions);
+    }
 }

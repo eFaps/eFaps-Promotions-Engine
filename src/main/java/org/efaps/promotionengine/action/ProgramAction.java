@@ -15,13 +15,8 @@
  */
 package org.efaps.promotionengine.action;
 
-import org.efaps.promotionengine.process.Engine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class ProgramAction
 {
-    private static final Logger LOG = LoggerFactory.getLogger(Engine.class);
 
     private String className;
 

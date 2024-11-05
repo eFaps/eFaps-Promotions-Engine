@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class Engine
 {
+    private static final Logger LOG = LoggerFactory.getLogger(Engine.class);
 
     private final IPromotionsConfig config;
 
@@ -46,8 +47,6 @@ public class Engine
     {
         this.config = config;
     }
-
-    private static final Logger LOG = LoggerFactory.getLogger(Engine.class);
 
     private ProcessData processData;
 
@@ -90,7 +89,13 @@ public class Engine
             // sort that highest number first
             Collections.sort(currentPromotions, (promotion0,
                                                  promotion1) -> promotion1.getPriority() - promotion0.getPriority());
-            applyInternal(currentPromotions);
+
+            final var standard = currentPromotions.stream().filter(promo -> !promo.isStackable()).toList();
+            final var stackable = currentPromotions.stream().filter(Promotion::isStackable).toList();
+            LOG.info("Promotions to apply, standar: {}, stackable: {}", standard.size(), stackable.size());
+
+            applyInternal(standard);
+            applyInternal(stackable);
         }
     }
 
@@ -140,36 +145,10 @@ public class Engine
     {
         boolean actionRun = false;
         getProcessData().setStep(Step.TARGETCONDITION);
-        // if (promotion.hasSource()) {
         for (final var action : promotion.getActions()) {
             actionRun = action.run(processData);
         }
-        // }
-
-        /**
-         * if (promotion.hasSource()) {
-         * getProcessData().getDocument().addPromotionOid(promotion.getOid());
-         * List<IPosition> commonPositions = null; for (final var condition :
-         * promotion.getTargetConditions()) { final var positions =
-         * condition.evalPositions(getProcessData()); if (commonPositions ==
-         * null) { commonPositions = positions; } else {
-         * commonPositions.retainAll(positions); } } actionRun = actionRun ||
-         * CollectionUtils.isNotEmpty(commonPositions); for (final var action :
-         * promotion.getActions()) { action.run(processData, commonPositions); }
-         * if (actionRun) {
-         * getProcessData().getPositionsUsedForSouce().forEach(pos -> {
-         * pos.setPromotionOid(promotion.getOid()); }); } } else { for (final
-         * var calcPosition : processData.getDocument().getPositions()) { final
-         * var position = (IPosition) calcPosition; boolean meetsConditions =
-         * !position.isBurned(); if (meetsConditions) { for (final var condition
-         * : promotion.getTargetConditions()) { meetsConditions =
-         * meetsConditions && condition.positionMet(position); } } if
-         * (meetsConditions) {
-         * getProcessData().getDocument().addPromotionOid(promotion.getOid());
-         * for (final var action : promotion.getActions()) {
-         * action.run(processData, Collections.singletonList(position)); } } } }
-         **/
-        return actionRun;
+         return actionRun;
     }
 
     public boolean meetsConditions(final List<ICondition> conditions)
