@@ -25,6 +25,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.promotionengine.action.IAction;
 import org.efaps.promotionengine.condition.ICondition;
 import org.efaps.promotionengine.condition.MaxCondition;
+import org.efaps.promotionengine.condition.StackCondition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -136,7 +137,7 @@ public class Promotion
     @JsonIgnore
     public boolean isStackable()
     {
-        return false;
+        return getSourceConditions().stream().anyMatch(StackCondition.class::isInstance);
     }
 
     @Override

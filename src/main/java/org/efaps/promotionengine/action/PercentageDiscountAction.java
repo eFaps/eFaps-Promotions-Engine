@@ -31,7 +31,7 @@ public class PercentageDiscountAction
                          final IPosition position)
     {
         boolean ret = false;
-        if (!position.isBurned()) {
+        if (!position.isBurned(process)) {
             ret = true;
             position.addPromotionOid(process.getCurrentPromotion().getOid());
             position.setNetUnitPrice(position.getNetUnitPrice().subtract(discount(position.getNetUnitPrice())));

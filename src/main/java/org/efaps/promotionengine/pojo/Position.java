@@ -24,6 +24,7 @@ import org.efaps.abacus.api.ICalcPosition;
 import org.efaps.abacus.pojo.CalcPosition;
 import org.efaps.abacus.pojo.Tax;
 import org.efaps.promotionengine.api.IPosition;
+import org.efaps.promotionengine.process.ProcessData;
 
 public class Position
     extends CalcPosition
@@ -101,5 +102,18 @@ public class Position
         super.updateWith(position);
         setPromotionOids(((IPosition) position).getPromotionOids());
         return this;
+    }
+
+    @Override
+    public boolean isBurned(final ProcessData process)
+    {
+        boolean ret;
+        // for stackable check that it was not already applied
+        if (process.getCurrentPromotion().isStackable()) {
+            ret = getPromotionOids().contains(process.getCurrentPromotion().getOid());
+        } else {
+            ret = getPromotionOids() != null && !getPromotionOids().isEmpty();
+        }
+        return ret;
     }
 }

@@ -13,27 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.efaps.promotionengine.api;
+package org.efaps.promotionengine.condition;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.efaps.abacus.api.ICalcPosition;
+import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 
-public interface IPosition
-    extends ICalcPosition
+public class StackCondition
+    extends AbstractCondition
 {
 
-    void addPromotionOid(final String promotionOid);
-
-    default List<String> getPromotionOids()
+    @Override
+    public boolean isMet(final ProcessData process)
     {
-        return Collections.emptyList();
+        return true;
     }
 
-    boolean isBurned(final ProcessData process);
+    @Override
+    public List<IPosition> evalPositions(ProcessData process)
+    {
+        return new ArrayList<>();
+    }
 
     @Override
-    IPosition clone();
+    public boolean positionMet(IPosition position)
+    {
+        return false;
+    }
+
 }

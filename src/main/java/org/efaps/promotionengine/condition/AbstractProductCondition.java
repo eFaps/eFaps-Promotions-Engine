@@ -155,7 +155,7 @@ public abstract class AbstractProductCondition<T>
         if (process.getStep().equals(Step.SOURCECONDITION)) {
             for (final var calcPosition : process.getDocument().getPositions()) {
                 final var position = (IPosition) calcPosition;
-                if (!position.isBurned() && getProducts().contains(position.getProductOid())) {
+                if (!position.isBurned(process) && getProducts().contains(position.getProductOid())) {
                     quantity = quantity.subtract(position.getQuantity());
                     LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
 
@@ -187,7 +187,7 @@ public abstract class AbstractProductCondition<T>
             }
 
             for (final var position : positions) {
-                if (!position.isBurned()) {
+                if (!position.isBurned(process)) {
                     if (isAllowTargetSameAsSource() && getProducts().contains(position.getProductOid())) {
                         quantity = quantity.subtract(position.getQuantity());
                         LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
@@ -230,7 +230,7 @@ public abstract class AbstractProductCondition<T>
                             && positions.get(1).getNetUnitPrice().compareTo(currentPosition.getNetUnitPrice()) > 0) {
                 final var replacementOpt = positions.stream().filter(pos -> !pos.equals(currentPosition)
                                 && getProducts().contains(pos.getProductOid())
-                                && !pos.isBurned()).findFirst();
+                                && !pos.isBurned(processData)).findFirst();
                 if (replacementOpt.isPresent()) {
                     processData.getPositionsUsedForSouce().remove(currentPosition);
                     processData.getPositionsUsedForSouce().add(replacementOpt.get());

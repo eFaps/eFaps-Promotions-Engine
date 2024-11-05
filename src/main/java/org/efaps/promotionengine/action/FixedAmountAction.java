@@ -46,7 +46,7 @@ public class FixedAmountAction
                          final IPosition position)
     {
         boolean ret = false;
-        if (!position.isBurned()) {
+        if (!position.isBurned(process)) {
             ret = true;
             position.addPromotionOid(process.getCurrentPromotion().getOid());
             position.setNetUnitPrice(amount);

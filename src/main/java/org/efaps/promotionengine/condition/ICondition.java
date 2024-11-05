@@ -36,7 +36,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = ProductTotalCondition.class, name = "ProductTotalCondition"),
     @JsonSubTypes.Type(value = ProductFamilyTotalCondition.class, name = "ProductFamilyTotalCondition"),
     @JsonSubTypes.Type(value = MaxCondition.class, name = "MaxCondition"),
-    @JsonSubTypes.Type(value = OrCondition.class, name = "OrCondition")
+    @JsonSubTypes.Type(value = OrCondition.class, name = "OrCondition"),
+    @JsonSubTypes.Type(value = StackCondition.class, name = "StackCondition")
 })
 public interface ICondition
     extends IAnnotated

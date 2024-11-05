@@ -17,7 +17,7 @@ package org.efaps.promotionengine.process;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class Engine
 {
+
     private static final Logger LOG = LoggerFactory.getLogger(Engine.class);
 
     private final IPromotionsConfig config;
@@ -86,16 +87,13 @@ public class Engine
                 ((Document) document).setPositions(mostDiscountDoc.getPositions().stream().toList());
             }
         } else {
-            // sort that highest number first
-            Collections.sort(currentPromotions, (promotion0,
-                                                 promotion1) -> promotion1.getPriority() - promotion0.getPriority());
-
-            final var standard = currentPromotions.stream().filter(promo -> !promo.isStackable()).toList();
-            final var stackable = currentPromotions.stream().filter(Promotion::isStackable).toList();
-            LOG.info("Promotions to apply, standar: {}, stackable: {}", standard.size(), stackable.size());
-
-            applyInternal(standard);
-            applyInternal(stackable);
+            // sort that highest number first, and the stackable equally sorted
+            // afterwards
+            final var sorted = currentPromotions.stream()
+                            .sorted(Comparator.comparing(Promotion::isStackable)
+                                            .thenComparing(Comparator.comparing(Promotion::getPriority).reversed()))
+                            .toList();
+            applyInternal(sorted);
         }
     }
 
@@ -148,7 +146,7 @@ public class Engine
         for (final var action : promotion.getActions()) {
             actionRun = action.run(processData);
         }
-         return actionRun;
+        return actionRun;
     }
 
     public boolean meetsConditions(final List<ICondition> conditions)
