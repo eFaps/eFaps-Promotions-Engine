@@ -15,20 +15,16 @@
  */
 package org.efaps.promotionengine.process;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.iterators.PermutationIterator;
 import org.efaps.promotionengine.PromotionsConfiguration;
 import org.efaps.promotionengine.api.IDocument;
 import org.efaps.promotionengine.api.IPromotionsConfig;
 import org.efaps.promotionengine.condition.ICondition;
-import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.promotion.Promotion;
-import org.efaps.promotionengine.promotion.PromotionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,28 +35,49 @@ public class Engine
 
     private final IPromotionsConfig config;
 
+    private ProcessData processData;
+
     public Engine()
     {
         this(new PromotionsConfiguration());
     }
 
-    public Engine(IPromotionsConfig config)
+    public Engine(final IPromotionsConfig config)
     {
         this.config = config;
     }
 
-    private ProcessData processData;
+    public IPromotionsConfig getConfig()
+    {
+        return config;
+    }
 
     public void apply(final IDocument document,
                       final List<Promotion> promotions)
     {
         LOG.info("Applying Promotions: {} to Document: {}", promotions, document);
         final var currentPromotions = promotions.stream()
-                        .filter(promo -> (promo.getStartDateTime().isBefore(OffsetDateTime.now())
-                                        && promo.getEndDateTime().isAfter(OffsetDateTime.now())))
+                        .filter(promo -> (promo.getStartDateTime().isBefore(getConfig().getEvaluationDateTime())
+                                        && promo.getEndDateTime().isAfter(getConfig().getEvaluationDateTime())))
                         .collect(Collectors.toList());
 
         if (EngineRule.MOSTDISCOUNT.equals(config.getEngineRule())) {
+            LOG.info("applying {} discounts with MOSTDISCOUNT active", currentPromotions.size());
+            // check to reduce the possible Promotions by testing them individually
+            final List<Promotion> possiblePromotions = new ArrayList<>();
+            currentPromotions.forEach(promotion -> {
+                final var currentDoc = document.clone();
+                getProcessData().setDocument(currentDoc);
+                getProcessData().setCurrentPromotion(promotion);
+                if (meetsConditions(promotion.getSourceConditions())
+                                || meetsConditions(promotion.getTargetConditions())) {
+                    // evaluate priority
+                    possiblePromotions.add(promotion);
+                }
+            });
+            LOG.info("Found {} possible promotions of {}", possiblePromotions.size(), currentPromotions.size());
+
+           /**
             IDocument mostDiscountDoc = null;
             BigDecimal mostDiscount = BigDecimal.ZERO;
             int y = 0;
@@ -86,6 +103,7 @@ public class Engine
             if (mostDiscountDoc != null && mostDiscount.compareTo(BigDecimal.ZERO) != 0) {
                 ((Document) document).setPositions(mostDiscountDoc.getPositions().stream().toList());
             }
+            **/
         } else {
             // sort that highest number first, and the stackable equally sorted
             // afterwards
@@ -165,6 +183,7 @@ public class Engine
 
     public ProcessData getProcessData()
     {
+        processData.setPromotionsConfig(getConfig());
         return processData;
     }
 

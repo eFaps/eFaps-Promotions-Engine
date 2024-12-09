@@ -24,6 +24,7 @@ import org.efaps.abacus.api.IConfig;
 import org.efaps.promotionengine.action.AbstractAction;
 import org.efaps.promotionengine.api.IDocument;
 import org.efaps.promotionengine.api.IPosition;
+import org.efaps.promotionengine.api.IPromotionsConfig;
 import org.efaps.promotionengine.promotion.Promotion;
 
 public class ProcessData
@@ -43,6 +44,8 @@ public class ProcessData
 
     private AbstractAction currentAction;
 
+    private IPromotionsConfig promotionsConfig;
+
 
     public ProcessData(final IConfig calculatorConfig,
                        final IDocument document,
@@ -53,6 +56,17 @@ public class ProcessData
         this.data = data == null ? new HashMap<>() : data;
         this.step = Step.SOURCECONDITION;
     }
+
+    public IPromotionsConfig getPromotionsConfig()
+    {
+        return promotionsConfig;
+    }
+
+    public void setPromotionsConfig(final IPromotionsConfig promotionsConfig)
+    {
+        this.promotionsConfig = promotionsConfig;
+    }
+
 
     public Promotion getCurrentPromotion()
     {

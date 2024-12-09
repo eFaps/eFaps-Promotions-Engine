@@ -16,7 +16,6 @@
 package org.efaps.promotionengine.condition;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +44,7 @@ public class WeekdayCondition
     @Override
     public boolean isMet(final ProcessData process)
     {
-        final var today = LocalDate.now().getDayOfWeek();
+        final var today = process.getPromotionsConfig().getEvaluationDateTime().toLocalDate().getDayOfWeek();
         for (final var day : getDays()) {
             if (today.equals(day)) {
                 return true;

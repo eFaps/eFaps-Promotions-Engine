@@ -44,7 +44,7 @@ public class TimeCondition
     @Override
     public boolean isMet(final ProcessData process)
     {
-        final var time = OffsetTime.now();
+        final var time = process.getPromotionsConfig().getEvaluationDateTime().toOffsetTime();
         for (final var range : ranges) {
             if (time.isAfter(range.getStartTime()) && time.isBefore(range.getEndTime())) {
                 return true;
@@ -54,13 +54,13 @@ public class TimeCondition
     }
 
     @Override
-    public List<IPosition> evalPositions(ProcessData process)
+    public List<IPosition> evalPositions(final ProcessData process)
     {
         return new ArrayList<>();
     }
 
     @Override
-    public boolean positionMet(IPosition position)
+    public boolean positionMet(final IPosition position)
     {
         return false;
     }

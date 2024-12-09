@@ -15,6 +15,8 @@
  */
 package org.efaps.promotionengine.api;
 
+import java.time.OffsetDateTime;
+
 import org.efaps.promotionengine.process.EngineRule;
 
 public interface IPromotionsConfig
@@ -23,5 +25,10 @@ public interface IPromotionsConfig
     default EngineRule getEngineRule()
     {
         return EngineRule.PRIORITY;
+    }
+
+    default OffsetDateTime getEvaluationDateTime()
+    {
+        return OffsetDateTime.now();
     }
 }

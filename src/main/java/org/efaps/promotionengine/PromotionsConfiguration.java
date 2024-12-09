@@ -15,6 +15,8 @@
  */
 package org.efaps.promotionengine;
 
+import java.time.OffsetDateTime;
+
 import org.efaps.promotionengine.api.IPromotionsConfig;
 import org.efaps.promotionengine.process.EngineRule;
 
@@ -23,6 +25,8 @@ public class PromotionsConfiguration
 {
 
     private EngineRule engineRule;
+
+    private OffsetDateTime evaluationDateTime;
 
     @Override
     public EngineRule getEngineRule()
@@ -34,6 +38,20 @@ public class PromotionsConfiguration
     {
         this.engineRule = engineRule;
         return this;
+    }
+
+    @Override
+    public OffsetDateTime getEvaluationDateTime()
+    {
+        if (evaluationDateTime == null) {
+            return IPromotionsConfig.super.getEvaluationDateTime();
+        }
+        return evaluationDateTime;
+    }
+
+    public void setEvaluationDateTime(final OffsetDateTime evaluationDateTime)
+    {
+        this.evaluationDateTime = evaluationDateTime;
     }
 
 }

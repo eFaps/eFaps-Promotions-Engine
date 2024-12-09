@@ -60,7 +60,8 @@ public class DateCondition
     @Override
     public boolean isMet(final ProcessData process)
     {
-        final var date = LocalDate.now(zoneId);
+        // LocalDate.now(zoneId)
+        final var date = process.getPromotionsConfig().getEvaluationDateTime().atZoneSameInstant(zoneId).toLocalDate();
         for (final var range : ranges) {
             if ((date.isAfter(range.getStartDate()) || date.isEqual(range.getStartDate()))
                             && (date.isBefore(range.getEndDate()) || date.isEqual(range.getEndDate()))) {
