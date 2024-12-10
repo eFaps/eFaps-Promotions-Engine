@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.efaps.abacus.api.ICalcPosition;
 import org.efaps.abacus.pojo.CalcPosition;
 import org.efaps.abacus.pojo.Tax;
@@ -32,6 +31,12 @@ public class Position
 {
 
     private List<String> promotionOids;
+
+    @Override
+    public Position setIndex(final int index)
+    {
+        return (Position) super.setIndex(index);
+    }
 
     @Override
     public void addPromotionOid(String promotionOid)
@@ -71,13 +76,10 @@ public class Position
         return (Position) super.setProductOid(productOid);
     }
 
+    @Override
     public Position addTax(final Tax tax)
     {
-        if (CollectionUtils.isEmpty(getTaxes())) {
-            setTaxes(new ArrayList<>());
-        }
-        getTaxes().add(tax);
-        return this;
+        return (Position) super.addTax(tax);
     }
 
     @Override

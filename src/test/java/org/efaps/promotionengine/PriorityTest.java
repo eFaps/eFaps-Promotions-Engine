@@ -89,7 +89,7 @@ public class PriorityTest
                     .build();
 
     final Promotion promo5 = Promotion.builder()
-                    .withOid("222.4")
+                    .withOid("222.5")
                     .withName("Both products are 50% off")
                     .withPriority(1)
                     .withStartDateTime(OffsetDateTime.now().minusDays(5))
@@ -107,11 +107,13 @@ public class PriorityTest
     {
         return new Document()
                         .addPosition(new Position()
+                                        .setIndex(1)
                                         .setQuantity(BigDecimal.ONE)
                                         .setProductOid("PROD1")
                                         .setNetUnitPrice(new BigDecimal(100))
                                         .addTax(Tax.getAdvalorem("IGV", new BigDecimal("18"))))
                         .addPosition(new Position()
+                                        .setIndex(2)
                                         .setQuantity(BigDecimal.ONE)
                                         .setProductOid("PROD2")
                                         .setNetUnitPrice(new BigDecimal(200))
