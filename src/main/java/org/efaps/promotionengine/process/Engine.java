@@ -85,7 +85,7 @@ public class Engine
                     } else {
                         // evaluate priorities
                         applyInternal(Collections.singletonList(promotion));
-
+                        LOG.info("currentDoc: {}", currentDoc);
                         // check if docDiscount
                         if (currentDoc.getPromotionOids().isEmpty()) {
                             final Set<Integer> indexes = new HashSet<>();
