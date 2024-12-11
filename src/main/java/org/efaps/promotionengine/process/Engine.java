@@ -74,8 +74,7 @@ public class Engine
             // check to reduce the possible Promotions by testing them individually
             final MultiValuedMap<Integer, Promotion> possiblePromotions = new ArrayListValuedHashMap<>();
             currentPromotions.forEach(promotion -> {
-                final var currentDoc = document.clone();
-                getProcessData().setDocument(currentDoc);
+                getProcessData().setDocument(document.clone());
                 getProcessData().setCurrentPromotion(promotion);
                 if (meetsConditions(promotion.getSourceConditions())
                                 || meetsConditions(promotion.getTargetConditions())) {
@@ -83,14 +82,15 @@ public class Engine
                     if (promotion.isStackable()) {
                         possiblePromotions.put(-1, promotion);
                     } else {
+                        getProcessData().setDocument(document.clone());
                         // evaluate priorities
                         applyInternal(Collections.singletonList(promotion));
-                        LOG.info("currentDoc: {}", currentDoc);
+                        LOG.info("ProcessDoc: {}", getProcessData().getDocument());
                         // check if docDiscount
-                        if (currentDoc.getPromotionOids().isEmpty()) {
+                        if (getProcessData().getDocument().getPromotionOids().isEmpty()) {
                             final Set<Integer> indexes = new HashSet<>();
                             BigDecimal discountedAmount = BigDecimal.ZERO;
-                            for (final var pos : currentDoc.getPositions()) {
+                            for (final var pos : getProcessData().getDocument().getPositions()) {
                                 if (!((IPosition) pos).getPromotionOids().isEmpty()) {
                                     indexes.add(pos.getIndex());
                                     discountedAmount = discountedAmount.add(pos.getNetUnitPrice().multiply(pos.getQuantity()));
@@ -108,7 +108,7 @@ public class Engine
                             possiblePromotions.put(discount.multiply(new BigDecimal(100)).intValue(), promotion);
                         } else {
                             LOG.warn("Not implemened: {}", promotion);
-                            currentDoc.getDocDiscount();
+                            getProcessData().getDocument().getDocDiscount();
                         }
                     }
                 }
