@@ -52,7 +52,10 @@ public class ProductsCondition
     @Override
     public String toString()
     {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                        .appendSuper(super.toString())
+                        .append("products", products, products.size() < 500)
+                        .build();
     }
 
     @Override

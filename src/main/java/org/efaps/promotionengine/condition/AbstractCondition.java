@@ -15,6 +15,9 @@
  */
 package org.efaps.promotionengine.condition;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 public abstract class AbstractCondition
     implements ICondition
 {
@@ -30,6 +33,8 @@ public abstract class AbstractCondition
     @Override
     public String getNote()
     {
-        return note;
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                        .append("note", note)
+                        .build();
     }
 }
