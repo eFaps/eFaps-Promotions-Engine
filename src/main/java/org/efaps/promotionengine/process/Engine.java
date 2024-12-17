@@ -63,14 +63,14 @@ public class Engine
     public void apply(final IDocument document,
                       final List<Promotion> promotions)
     {
-        LOG.info("Applying Promotions: {} to Document: {}", promotions, document);
+        LOG.info("Applying {} Promotions: {} against Document: {}", promotions.size(), promotions, document);
         final var currentPromotions = promotions.stream()
                         .filter(promo -> (promo.getStartDateTime().isBefore(getConfig().getEvaluationDateTime())
                                         && promo.getEndDateTime().isAfter(getConfig().getEvaluationDateTime())))
                         .collect(Collectors.toList());
 
         if (EngineRule.MOSTDISCOUNT.equals(config.getEngineRule())) {
-            LOG.info("applying {} discounts with MOSTDISCOUNT active", currentPromotions.size());
+            LOG.info("MOSTDISCOUNT active, checking {} discounts against the document", currentPromotions.size());
             // check to reduce the possible Promotions by testing them individually
             final MultiValuedMap<Integer, Promotion> possiblePromotions = new ArrayListValuedHashMap<>();
             currentPromotions.forEach(promotion -> {
@@ -78,14 +78,14 @@ public class Engine
                 getProcessData().setCurrentPromotion(promotion);
                 if (meetsConditions(promotion.getSourceConditions())
                                 || meetsConditions(promotion.getTargetConditions())) {
-                    LOG.info("Promotion {} meets conditions", promotion.getOid());
+                    LOG.debug("Promotion {} meets conditions", promotion.getOid());
                     if (promotion.isStackable()) {
                         possiblePromotions.put(-1, promotion);
                     } else {
                         getProcessData().setDocument(document.clone());
                         // evaluate priorities
                         applyInternal(Collections.singletonList(promotion));
-                        LOG.info("ProcessDoc: {}", getProcessData().getDocument());
+                        LOG.debug("ProcessDoc: {}", getProcessData().getDocument());
                         // check if docDiscount
                         if (getProcessData().getDocument().getPromotionOids().isEmpty()) {
                             final Set<Integer> indexes = new HashSet<>();
@@ -103,8 +103,8 @@ public class Engine
                                 }
                             }
                             final var discount = orginalAmount.subtract(discountedAmount);
-                            LOG.info("Promotion {} orginal {} - discounted {} -> discount {}", promotion.getOid(),
-                                            orginalAmount, discountedAmount, discount);
+                            LOG.info("Promotion {} results in orginal amount: {} - discounted amount: {} -> discount amount: {}",
+                                            promotion.getOid(), orginalAmount, discountedAmount, discount);
                             possiblePromotions.put(discount.multiply(new BigDecimal(100)).intValue(), promotion);
                         } else {
                             LOG.warn("Not implemened: {}", promotion);
@@ -125,6 +125,8 @@ public class Engine
                     sorted.addAll(entry.getValue());
                 });
             Collections.reverse(sorted);
+            LOG.info("Promotion hierarchy:", sorted.stream().map(Promotion::getOid).toList());
+
             applyInternal(sorted);
         } else {
             // sort that highest number first, and the stackable equally sorted

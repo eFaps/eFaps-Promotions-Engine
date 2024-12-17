@@ -85,14 +85,14 @@ public abstract class AbstractProductCondition<T>
     @Override
     public boolean isMet(final ProcessData process)
     {
-        LOG.info("Checking if condition is met for Document: {}", process.getDocument());
+        LOG.debug("Checking if condition is met for Document: {}", process.getDocument());
         var ret = false;
         ret = switch (getEntryOperator()) {
             case INCLUDES_ANY -> includesAny(process).size() > 0;
             case EXCLUDES -> checkExclude(process);
             default -> throw new IllegalArgumentException("Unexpected value: " + getEntryOperator());
         };
-        LOG.info("Condition met: {}", ret);
+        LOG.debug("Condition met: {}", ret);
         return ret;
     }
 
@@ -159,7 +159,7 @@ public abstract class AbstractProductCondition<T>
                 final var position = (IPosition) calcPosition;
                 if (!position.isBurned(process) && getProducts().contains(position.getProductOid())) {
                     quantity = quantity.subtract(position.getQuantity());
-                    LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
+                    LOG.debug("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
 
                     ret.add(position);
                     if (checkQuantity && quantity.compareTo(BigDecimal.ZERO) < 1) {
@@ -192,7 +192,7 @@ public abstract class AbstractProductCondition<T>
                 if (!position.isBurned(process)) {
                     if (isAllowTargetSameAsSource() && getProducts().contains(position.getProductOid())) {
                         quantity = quantity.subtract(position.getQuantity());
-                        LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
+                        LOG.debug("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
                         process.registerConditionMet(position);
                         ret.add(position);
                         if (checkQuantity && quantity.compareTo(BigDecimal.ZERO) < 1) {
@@ -201,7 +201,7 @@ public abstract class AbstractProductCondition<T>
                     } else if (getProducts().contains(position.getProductOid())
                                     && canbeUsed(process, positions, position)) {
                         quantity = quantity.subtract(position.getQuantity());
-                        LOG.info("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
+                        LOG.debug("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
                         process.registerConditionMet(position);
                         ret.add(position);
                         if (checkQuantity && quantity.compareTo(BigDecimal.ZERO) < 1) {
