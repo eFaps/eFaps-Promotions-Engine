@@ -18,6 +18,7 @@ package org.efaps.promotionengine.condition;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -52,9 +53,16 @@ public class ProductsCondition
     @Override
     public String toString()
     {
+        final Object productsExcerpt;
+        if (products.size() > 100) {
+            final var info = Stream.of("...", "...", "<length=" + products.size() + ">");
+            productsExcerpt = Stream.concat(products.stream().limit(100), info).toArray();
+        } else {
+            productsExcerpt = products;
+        }
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                         .appendSuper(super.toString())
-                        .append("products", products, products.size() < 500)
+                        .append("products", productsExcerpt)
                         .build();
     }
 
