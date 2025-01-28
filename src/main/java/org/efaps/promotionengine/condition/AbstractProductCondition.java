@@ -176,18 +176,19 @@ public abstract class AbstractProductCondition<T>
             // target
             final var positions = process.getDocument().getPositions().stream().map(pos -> (IPosition) pos)
                             .collect(Collectors.toList());
-            switch (process.getCurrentAction().getStrategy()) {
-                case PRICIEST:
-                    Collections.sort(positions, Comparator.comparing(IPosition::getNetUnitPrice));
-                    Collections.reverse(positions);
-                    break;
-                case CHEAPEST:
-                    Collections.sort(positions, Comparator.comparing(IPosition::getNetUnitPrice));
-                    break;
-                case INDEX:
-                default:
+            if (process.getCurrentAction() != null) {
+                switch (process.getCurrentAction().getStrategy()) {
+                    case PRICIEST:
+                        Collections.sort(positions, Comparator.comparing(IPosition::getNetUnitPrice));
+                        Collections.reverse(positions);
+                        break;
+                    case CHEAPEST:
+                        Collections.sort(positions, Comparator.comparing(IPosition::getNetUnitPrice));
+                        break;
+                    case INDEX:
+                    default:
+                }
             }
-
             for (final var position : positions) {
                 if (!position.isBurned(process)) {
                     if (isAllowTargetSameAsSource() && getProducts().contains(position.getProductOid())) {
