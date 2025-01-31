@@ -17,6 +17,7 @@ package org.efaps.promotionengine.process;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -24,15 +25,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.iterators.PermutationIterator;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.efaps.promotionengine.PromotionsConfiguration;
 import org.efaps.promotionengine.api.IDocument;
 import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.api.IPromotionsConfig;
 import org.efaps.promotionengine.condition.ICondition;
+import org.efaps.promotionengine.pojo.Document;
 import org.efaps.promotionengine.promotion.Promotion;
+import org.efaps.promotionengine.promotion.PromotionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,14 +78,16 @@ public class Engine
             LOG.info("MOSTDISCOUNT active, checking {} discounts against the document", currentPromotions.size());
             // check to reduce the possible Promotions by testing them individually
             final MultiValuedMap<Integer, Promotion> possiblePromotions = new ArrayListValuedHashMap<>();
+            final List<Promotion> stackables = new ArrayList<>();
+
             currentPromotions.forEach(promotion -> {
                 getProcessData().setDocument(document.clone());
                 getProcessData().setCurrentPromotion(promotion);
                 if (meetsConditions(promotion.getSourceConditions())
                                 || meetsConditions(promotion.getTargetConditions())) {
-                    LOG.debug("Promotion {} meets conditions", promotion.getOid());
+                    LOG.debug("Promotion {} meets source or target conditions", promotion.getOid());
                     if (promotion.isStackable()) {
-                        possiblePromotions.put(-1, promotion);
+                        stackables.add(promotion);
                     } else {
                         getProcessData().setDocument(document.clone());
                         // evaluate priorities
@@ -96,16 +103,20 @@ public class Engine
                                     discountedAmount = discountedAmount.add(pos.getNetUnitPrice().multiply(pos.getQuantity()));
                                 }
                             }
-                            BigDecimal orginalAmount = BigDecimal.ZERO;
-                            for (final var pos : document.getPositions()) {
-                                if (indexes.contains(pos.getIndex())) {
-                                    orginalAmount = orginalAmount.add(pos.getNetUnitPrice().multiply(pos.getQuantity()));
+                            if (BigDecimal.ZERO.compareTo(discountedAmount) < 0) {
+                                BigDecimal orginalAmount = BigDecimal.ZERO;
+                                for (final var pos : document.getPositions()) {
+                                    if (indexes.contains(pos.getIndex())) {
+                                        orginalAmount = orginalAmount.add(pos.getNetUnitPrice().multiply(pos.getQuantity()));
+                                    }
                                 }
+                                final var discount = orginalAmount.subtract(discountedAmount);
+                                LOG.info("Promotion {} results in orginal amount: {} - discounted amount: {} -> discount amount: {}",
+                                                promotion.getOid(), orginalAmount, discountedAmount, discount);
+                                possiblePromotions.put(discount.multiply(new BigDecimal(100)).intValue(), promotion);
+                            } else {
+                                LOG.info("Promotion {} does not discount", promotion);
                             }
-                            final var discount = orginalAmount.subtract(discountedAmount);
-                            LOG.info("Promotion {} results in orginal amount: {} - discounted amount: {} -> discount amount: {}",
-                                            promotion.getOid(), orginalAmount, discountedAmount, discount);
-                            possiblePromotions.put(discount.multiply(new BigDecimal(100)).intValue(), promotion);
                         } else {
                             LOG.warn("Not implemened: {}", promotion);
                             getProcessData().getDocument().getDocDiscount();
@@ -125,9 +136,9 @@ public class Engine
                     sorted.addAll(entry.getValue());
                 });
             Collections.reverse(sorted);
-            LOG.info("Promotion hierarchy:", sorted.stream().map(Promotion::getOid).toList());
+            LOG.info("Promotion hierarchy: {}", sorted.stream().map(Promotion::getOid).toList());
 
-            applyInternal(sorted);
+            permutation(document, sorted, stackables);
         } else {
             // sort that highest number first, and the stackable equally sorted
             // afterwards
@@ -136,6 +147,54 @@ public class Engine
                                             .thenComparing(Comparator.comparing(Promotion::getPriority).reversed()))
                             .toList();
             applyInternal(sorted);
+        }
+    }
+
+    private void permutation(final IDocument document,
+                             final List<Promotion> sorted,
+                             final List<Promotion> stackables)
+    {
+        IDocument mostDiscountDoc = null;
+        BigDecimal mostDiscount = BigDecimal.ZERO;
+
+        final List<Promotion> permutables = new ArrayList<>();
+        final List<Promotion> overhang = new ArrayList<>();
+        int idx = 0;
+        for (final var promo: sorted) {
+            if (idx < 5) {
+                permutables.add(promo);
+            } else {
+                overhang.add(promo);
+            }
+            idx++;
+        }
+
+        int y = 0;
+
+        final PermutationIterator<Promotion> permutationIterator = new PermutationIterator<>(permutables);
+        while (permutationIterator.hasNext()) {
+            LOG.info("Permutation Nr: {}", y++);
+            final var currentDoc = document.clone();
+            getProcessData().setDocument(currentDoc);
+            final var currentPermutation = permutationIterator.next();
+
+            final var applieable = Stream.of(currentPermutation, overhang, stackables).flatMap(Collection::stream).toList();
+            applyInternal(applieable);
+            getProcessData().setDocument(document);
+
+            BigDecimal currentDiscount = BigDecimal.ZERO;
+            new org.efaps.abacus.Calculator(getProcessData().getCalculatorConfig()).calc(currentDoc);
+            final var promoInfo = PromotionInfo.evalPromotionInfo(document, currentDoc);
+            if (promoInfo != null) {
+                currentDiscount = promoInfo.getCrossTotalDiscount();
+            }
+            if (mostDiscountDoc == null || mostDiscount.compareTo(currentDiscount) < 0) {
+                mostDiscountDoc = currentDoc;
+                mostDiscount = currentDiscount;
+            }
+        }
+        if (mostDiscountDoc != null && mostDiscount.compareTo(BigDecimal.ZERO) != 0) {
+            ((Document) document).setPositions(mostDiscountDoc.getPositions().stream().toList());
         }
     }
 
