@@ -17,7 +17,7 @@ import org.efaps.promotionengine.promotion.Promotion;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class MostDiscountExcludeTest
+public class ClientUseCase1
 {
 
     final Promotion promoWithExclusion = Promotion.builder()
@@ -63,7 +63,7 @@ public class MostDiscountExcludeTest
     }
 
     @Test
-    public void feb2055()
+    public void feb2025()
     {
         final var document = getDocument();
         final var promotions = new ArrayList<Promotion>();
