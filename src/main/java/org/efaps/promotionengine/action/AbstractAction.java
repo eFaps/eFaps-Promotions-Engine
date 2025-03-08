@@ -18,6 +18,7 @@ package org.efaps.promotionengine.action;
 import java.util.List;
 
 import org.efaps.promotionengine.api.IPosition;
+import org.efaps.promotionengine.dto.PromotionDetailDto;
 import org.efaps.promotionengine.process.ProcessData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,9 @@ public abstract class AbstractAction
             }
             if (commonPositions.size() > 0) {
                 processData.getPositionsUsedForSouce().forEach(pos -> {
-                    pos.addPromotionOid(processData.getCurrentPromotion().getOid());
+                    pos.addPromotionDetail(PromotionDetailDto.builder()
+                                    .withPromotionOid(processData.getCurrentPromotion().getOid())
+                                    .build());
                 });
             }
         }

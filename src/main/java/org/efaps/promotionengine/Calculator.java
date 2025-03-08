@@ -62,7 +62,7 @@ public class Calculator
             if (promoDoc.getDocDiscount() != null) {
                 promoDoc.setCrossTotal(promoDoc.getCrossTotal().subtract(promoDoc.getDocDiscount()));
             }
-            final var promoInfo = PromotionInfo.evalPromotionInfo(document, promoDoc);
+            final var promoInfo = PromotionInfo.evalPromotionInfo(getConfig(), document, promoDoc);
             document.setPromotionInfo(promoInfo);
 
             // sync the information into the original document

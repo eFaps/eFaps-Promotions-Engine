@@ -74,7 +74,6 @@ public class CombinationsTest
         Assert.assertTrue(new BigDecimal(50).compareTo(document2.getPromotionInfo().getNetTotalDiscount()) == 0);
         Assert.assertTrue(new BigDecimal(50)
                         .compareTo(document2.getPromotionInfo().getDetails().get(0).getNetUnitDiscount()) == 0);
-        Assert.assertNull(document2.getPromotionInfo().getDetails().get(1).getNetUnitDiscount());
 
         // third position
         final var document3 = new Document()
@@ -102,9 +101,8 @@ public class CombinationsTest
         Assert.assertTrue(new BigDecimal(125).compareTo(document3.getPromotionInfo().getNetTotalDiscount()) == 0);
         Assert.assertTrue(new BigDecimal(50)
                         .compareTo(document3.getPromotionInfo().getDetails().get(0).getNetUnitDiscount()) == 0);
-        Assert.assertNull(document3.getPromotionInfo().getDetails().get(1).getNetUnitDiscount());
         Assert.assertTrue(new BigDecimal(75)
-                        .compareTo(document3.getPromotionInfo().getDetails().get(2).getNetUnitDiscount()) == 0);
+                        .compareTo(document3.getPromotionInfo().findDetailsForPosition(3).get(0).getNetUnitDiscount()) == 0);
 
         // fourth position
         final var document4 = new Document()
@@ -138,10 +136,8 @@ public class CombinationsTest
         Assert.assertTrue(new BigDecimal(125).compareTo(document4.getPromotionInfo().getNetTotalDiscount()) == 0);
         Assert.assertTrue(new BigDecimal(50)
                         .compareTo(document4.getPromotionInfo().getDetails().get(0).getNetUnitDiscount()) == 0);
-        Assert.assertNull(document4.getPromotionInfo().getDetails().get(1).getNetUnitDiscount());
         Assert.assertTrue(new BigDecimal(75)
-                        .compareTo(document3.getPromotionInfo().getDetails().get(2).getNetUnitDiscount()) == 0);
-        Assert.assertNull(document4.getPromotionInfo().getDetails().get(3).getNetUnitDiscount());
+                        .compareTo(document3.getPromotionInfo().findDetailsForPosition(3).get(0).getNetUnitDiscount()) == 0);
 
         // five position
         final var document5 = new Document()
@@ -181,13 +177,8 @@ public class CombinationsTest
         Assert.assertTrue(new BigDecimal(200).compareTo(document5.getPromotionInfo().getNetTotalDiscount()) == 0);
         Assert.assertTrue(new BigDecimal(50)
                         .compareTo(document5.getPromotionInfo().getDetails().get(0).getNetUnitDiscount()) == 0);
-        Assert.assertNull(document5.getPromotionInfo().getDetails().get(1).getNetUnitDiscount());
         Assert.assertTrue(new BigDecimal(75)
                         .compareTo(document5.getPromotionInfo().getDetails().get(2).getNetUnitDiscount()) == 0);
-        Assert.assertNull(document5.getPromotionInfo().getDetails().get(3).getNetUnitDiscount());
-        Assert.assertTrue(new BigDecimal(75)
-                        .compareTo(document5.getPromotionInfo().getDetails().get(4).getNetUnitDiscount()) == 0);
-
     }
 
 }

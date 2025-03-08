@@ -23,6 +23,7 @@ import org.efaps.abacus.api.ICalcPosition;
 import org.efaps.abacus.pojo.CalcPosition;
 import org.efaps.abacus.pojo.Tax;
 import org.efaps.promotionengine.api.IPosition;
+import org.efaps.promotionengine.api.IPromotionDetail;
 import org.efaps.promotionengine.process.ProcessData;
 
 public class Position
@@ -30,7 +31,7 @@ public class Position
     implements IPosition
 {
 
-    private List<String> promotionOids;
+    private List<IPromotionDetail> promotionDetails;
 
     @Override
     public Position setIndex(final int index)
@@ -39,23 +40,9 @@ public class Position
     }
 
     @Override
-    public void addPromotionOid(String promotionOid)
+    public void addPromotionDetail(IPromotionDetail detail)
     {
-        getPromotionOids().add(promotionOid);
-    }
-
-    public void setPromotionOids(final List<String> promotionOids)
-    {
-        this.promotionOids = promotionOids;
-    }
-
-    @Override
-    public List<String> getPromotionOids()
-    {
-        if (this.promotionOids == null) {
-            this.promotionOids = new ArrayList<>();
-        }
-        return promotionOids;
+        getPromotionDetails().add(detail);
     }
 
     @Override
@@ -102,7 +89,7 @@ public class Position
     public Position updateWith(final ICalcPosition position)
     {
         super.updateWith(position);
-        setPromotionOids(((IPosition) position).getPromotionOids());
+        setPromotionDetails(((IPosition) position).getPromotionDetails());
         return this;
     }
 
@@ -112,10 +99,25 @@ public class Position
         boolean ret;
         // for stackable check that it was not already applied
         if (process.getCurrentPromotion().isStackable()) {
-            ret = getPromotionOids().contains(process.getCurrentPromotion().getOid());
+            ret = getPromotionDetails().stream()
+                            .anyMatch(detail -> detail.getPromotionOid().equals(process.getCurrentPromotion().getOid()));
         } else {
-            ret = getPromotionOids() != null && !getPromotionOids().isEmpty();
+            ret = getPromotionDetails() != null && !getPromotionDetails().isEmpty();
         }
         return ret;
+    }
+
+    @Override
+    public List<IPromotionDetail> getPromotionDetails()
+    {
+        if (this.promotionDetails == null) {
+            this.promotionDetails = new ArrayList<>();
+        }
+        return promotionDetails;
+    }
+
+    public void setPromotionDetails(final List<IPromotionDetail> promotionDetails)
+    {
+        this.promotionDetails = promotionDetails;
     }
 }

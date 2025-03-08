@@ -29,4 +29,6 @@ public interface IPromotionInfo
     List<IPromotionDetail> getDetails();
 
     Set<String> getPromotionOids();
+
+    List<IPromotionDetail> findDetailsForPosition(int index);
 }

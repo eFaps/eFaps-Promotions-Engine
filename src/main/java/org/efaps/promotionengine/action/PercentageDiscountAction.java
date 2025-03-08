@@ -16,6 +16,7 @@
 package org.efaps.promotionengine.action;
 
 import org.efaps.promotionengine.api.IPosition;
+import org.efaps.promotionengine.dto.PromotionDetailDto;
 import org.efaps.promotionengine.process.ProcessData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +34,14 @@ public class PercentageDiscountAction
         boolean ret = false;
         if (!position.isBurned(process)) {
             ret = true;
-            position.addPromotionOid(process.getCurrentPromotion().getOid());
-            position.setNetUnitPrice(position.getNetUnitPrice().subtract(discount(position.getNetUnitPrice())));
+            final var netUnitDiscount = discount(position.getNetUnitPrice());
+            position.addPromotionDetail(PromotionDetailDto.builder()
+                            .withNetUnitBase(position.getNetUnitPrice())
+                            .withNetUnitDiscount(netUnitDiscount)
+                            .withPromotionOid(process.getCurrentPromotion().getOid())
+                            .build());
+
+            position.setNetUnitPrice(position.getNetUnitPrice().subtract(netUnitDiscount));
             LOG.info("Applied action on positon: {}", position);
         }
         return ret;

@@ -51,6 +51,7 @@ public class StackingTest
 
         final var document = new Document()
                         .addPosition(new Position()
+                                        .setIndex(1)
                                         .setQuantity(BigDecimal.ONE)
                                         .setProductOid(prod1)
                                         .setNetUnitPrice(new BigDecimal(100))
@@ -62,9 +63,9 @@ public class StackingTest
         Assert.assertTrue(new BigDecimal(81).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
         Assert.assertNotNull(document.getPromotionInfo());
         Assert.assertEquals(2, document.getPromotionInfo().getPromotionOids().size());
-        Assert.assertEquals(2, document.getPromotionInfo().getDetails().get(0).getPromotionOids().size());
-        Assert.assertTrue(document.getPromotionInfo().getDetails().get(0).getPromotionOids().contains(promo1.getOid()));
-        Assert.assertTrue(document.getPromotionInfo().getDetails().get(0).getPromotionOids()
-                        .contains(additionalPromo1.getOid()));
+        Assert.assertEquals(1, document.getPromotionInfo().getDetails().get(0).getPositionIndex());
+        Assert.assertEquals(1, document.getPromotionInfo().getDetails().get(1).getPositionIndex());
+        Assert.assertEquals(promo1.getOid(), document.getPromotionInfo().getDetails().get(0).getPromotionOid());
+        Assert.assertEquals(additionalPromo1.getOid(), document.getPromotionInfo().getDetails().get(1).getPromotionOid());
     }
 }

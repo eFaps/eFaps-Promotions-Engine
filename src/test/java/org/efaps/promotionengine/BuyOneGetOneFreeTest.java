@@ -79,10 +79,8 @@ public class BuyOneGetOneFreeTest
         Assert.assertTrue(new BigDecimal(100).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(0).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
 
-        Assert.assertTrue(new BigDecimal(0)
-                        .compareTo(document.getPromotionInfo().getDetails().get(0).getNetDiscount()) == 0);
         Assert.assertTrue(new BigDecimal(100)
-                        .compareTo(document.getPromotionInfo().getDetails().get(1).getNetDiscount()) == 0);
+                        .compareTo(document.getPromotionInfo().findDetailsForPosition(2).get(0).getNetDiscount()) == 0);
     }
 
     @Test
@@ -108,10 +106,8 @@ public class BuyOneGetOneFreeTest
         Assert.assertTrue(new BigDecimal(100).compareTo(document.getPositions().get(0).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(0).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
 
-        Assert.assertTrue(new BigDecimal(0)
-                        .compareTo(document.getPromotionInfo().getDetails().get(0).getNetDiscount()) == 0);
         Assert.assertTrue(new BigDecimal(100)
-                        .compareTo(document.getPromotionInfo().getDetails().get(1).getNetDiscount()) == 0);
+                        .compareTo(document.getPromotionInfo().findDetailsForPosition(2).get(0).getNetDiscount()) == 0);
     }
 
 
@@ -144,11 +140,8 @@ public class BuyOneGetOneFreeTest
         Assert.assertTrue(new BigDecimal(0).compareTo(document.getPositions().get(1).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(150).compareTo(document.getPositions().get(2).getNetPrice()) == 0);
 
-        Assert.assertTrue(new BigDecimal(0)
-                        .compareTo(document.getPromotionInfo().getDetails().get(0).getNetDiscount()) == 0);
         Assert.assertTrue(new BigDecimal(122)
-                        .compareTo(document.getPromotionInfo().getDetails().get(1).getNetDiscount()) == 0);
-        Assert.assertNull(document.getPromotionInfo().getDetails().get(2).getNetDiscount());
+                        .compareTo(document.getPromotionInfo().findDetailsForPosition(2).get(0).getNetDiscount()) == 0);
     }
 
     @Test
@@ -192,15 +185,10 @@ public class BuyOneGetOneFreeTest
         Assert.assertTrue(new BigDecimal(100).compareTo(document.getPositions().get(3).getNetPrice()) == 0);
         Assert.assertTrue(new BigDecimal(0).compareTo(document.getPositions().get(4).getNetPrice()) == 0);
 
-        Assert.assertTrue(new BigDecimal(0)
-                        .compareTo(document.getPromotionInfo().getDetails().get(0).getNetDiscount()) == 0);
         Assert.assertTrue(new BigDecimal(100)
-                        .compareTo(document.getPromotionInfo().getDetails().get(1).getNetDiscount()) == 0);
-        Assert.assertNull(document.getPromotionInfo().getDetails().get(2).getNetDiscount());
-        Assert.assertTrue(new BigDecimal(0)
-                        .compareTo(document.getPromotionInfo().getDetails().get(3).getNetDiscount()) == 0);
+                        .compareTo(document.getPromotionInfo().findDetailsForPosition(2).get(0).getNetDiscount()) == 0);
         Assert.assertTrue(new BigDecimal(100)
-                        .compareTo(document.getPromotionInfo().getDetails().get(4).getNetDiscount()) == 0);
+                        .compareTo(document.getPromotionInfo().findDetailsForPosition(5).get(0).getNetDiscount()) == 0);
     }
 
     @Test

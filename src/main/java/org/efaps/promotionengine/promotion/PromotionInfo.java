@@ -21,48 +21,62 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+import org.efaps.abacus.api.ICalcPosition;
+import org.efaps.abacus.api.IConfig;
+import org.efaps.abacus.pojo.CalcDocument;
+import org.efaps.abacus.pojo.CalcPosition;
 import org.efaps.promotionengine.api.IDocument;
-import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.api.IPromotionDetail;
 import org.efaps.promotionengine.api.IPromotionInfo;
 import org.efaps.promotionengine.dto.PromotionDetailDto;
 import org.efaps.promotionengine.dto.PromotionInfoDto;
+import org.efaps.promotionengine.pojo.Position;
 
 public class PromotionInfo
 {
 
-    public static IPromotionInfo evalPromotionInfo(final IDocument originalDoc,
+    public static IPromotionInfo evalPromotionInfo(final IConfig config,
+                                                   final IDocument originalDoc,
                                                    final IDocument promoDoc)
     {
         PromotionInfoDto info = null;
         if (originalDoc.getCrossTotal().compareTo(promoDoc.getCrossTotal()) != 0) {
-            final var originalDocPosIter = originalDoc.getPositions().iterator();
-            final var promoDocPosIter = promoDoc.getPositions().iterator();
-
             final List<IPromotionDetail> details = new ArrayList<>();
-            while (originalDocPosIter.hasNext()) {
-                final IPosition originalDocPos = (IPosition) originalDocPosIter.next();
-                final IPosition promoDocPos = (IPosition) promoDocPosIter.next();
+            for (final ICalcPosition position : promoDoc.getPositions()) {
+                final var promoDocPos = (Position) position;
+                for (final var detail : promoDocPos.getPromotionDetails()) {
+                    if (detail.getNetUnitBase() != null) {
+                        final var calculator = new org.efaps.abacus.Calculator(config);
 
-                if (promoDocPos.getPromotionOids().isEmpty()) {
-                    details.add(PromotionDetailDto.builder().build());
-                } else {
-                    final var netUnitDiscount = originalDocPos.getNetUnitPrice()
-                                    .subtract(promoDocPos.getNetUnitPrice());
-                    final var netDiscount = originalDocPos.getNetPrice().subtract(promoDocPos.getNetPrice());
-                    final var crossUnitDiscount = originalDocPos.getCrossUnitPrice()
-                                    .subtract(promoDocPos.getCrossUnitPrice());
-                    final var crossDiscount = originalDocPos.getCrossPrice().subtract(promoDocPos.getCrossPrice());
-                    details.add(PromotionDetailDto.builder()
-                                    .withIndex(promoDocPos.getIndex())
-                                    .withNetBase(originalDocPos.getNetPrice())
-                                    .withNetUnitBase(originalDocPos.getNetUnitPrice())
-                                    .withNetUnitDiscount(netUnitDiscount)
-                                    .withNetDiscount(netDiscount)
-                                    .withCrossUnitDiscount(crossUnitDiscount)
-                                    .withCrossDiscount(crossDiscount)
-                                    .withPromotionOids(promoDocPos.getPromotionOids())
-                                    .build());
+                        final var detailCalcDoc = new CalcDocument();
+                        final var calcPos = new CalcPosition()
+                                        .setQuantity(promoDocPos.getQuantity())
+                                        .setNetUnitPrice(detail.getNetUnitBase())
+                                        .setProductOid(promoDocPos.getProductOid())
+                                        .setTaxes(promoDocPos.getTaxes());
+                        detailCalcDoc.addPosition(calcPos);
+                        calculator.calc(detailCalcDoc);
+
+                        final var netBase = detailCalcDoc.getPositions().get(0).getNetPrice();
+                        final var crossUnitPriceBase = detailCalcDoc.getPositions().get(0).getCrossUnitPrice();
+                        final var crossPriceBase = detailCalcDoc.getPositions().get(0).getCrossPrice();
+                        calcPos.setNetUnitPrice(detail.getNetUnitBase().subtract(detail.getNetUnitDiscount()));
+                        calculator.calc(detailCalcDoc);
+                        final var netPrice = detailCalcDoc.getPositions().get(0).getNetPrice();
+                        final var crossUnitPrice = detailCalcDoc.getPositions().get(0).getCrossUnitPrice();
+                        final var crossPrice = detailCalcDoc.getPositions().get(0).getCrossPrice();
+
+                        details.add(PromotionDetailDto.builder()
+                                        .withPositionIndex(position.getIndex())
+                                        .withNetUnitDiscount(detail.getNetUnitDiscount())
+                                        .withNetUnitBase(detail.getNetUnitBase())
+                                        .withNetDiscount(netBase.subtract(netPrice))
+                                        .withNetBase(netBase)
+                                        .withCrossDiscount(crossPriceBase.subtract(crossPrice))
+                                        .withCrossUnitDiscount(crossUnitPriceBase.subtract(crossUnitPrice))
+                                        .withPromotionOid(detail.getPromotionOid())
+                                        .build());
+                    }
                 }
             }
 
@@ -79,7 +93,7 @@ public class PromotionInfo
 
             final var promotionOids = new HashSet<>(promoDoc.getPromotionOids());
             promotionOids.addAll(details.stream()
-                            .flatMap(detail -> detail.getPromotionOids().stream())
+                            .map(IPromotionDetail::getPromotionOid)
                             .filter(Objects::nonNull)
                             .toList());
 

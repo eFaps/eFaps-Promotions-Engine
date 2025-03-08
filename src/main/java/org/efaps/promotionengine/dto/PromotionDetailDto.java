@@ -16,8 +16,6 @@
 package org.efaps.promotionengine.dto;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -30,37 +28,37 @@ public class PromotionDetailDto
     implements IPromotionDetail
 {
 
-    private final int index;
+    private final int positionIndex;
     private final BigDecimal netUnitBase;
     private final BigDecimal netBase;
     private final BigDecimal netUnitDiscount;
     private final BigDecimal netDiscount;
     private final BigDecimal crossUnitDiscount;
     private final BigDecimal crossDiscount;
-    private final List<String> promotionOids;
+    private final String promotionOid;
 
     private PromotionDetailDto(Builder builder)
     {
-        this.index = builder.index;
+        this.positionIndex = builder.positionIndex;
         this.netUnitBase = builder.netUnitBase;
         this.netBase = builder.netBase;
         this.netUnitDiscount = builder.netUnitDiscount;
         this.netDiscount = builder.netDiscount;
         this.crossUnitDiscount = builder.crossUnitDiscount;
         this.crossDiscount = builder.crossDiscount;
-        this.promotionOids = builder.promotionOids == null ? new ArrayList<>() : builder.promotionOids;
+        this.promotionOid = builder.promotionOid;
     }
 
     @Override
-    public int getIndex()
+    public int getPositionIndex()
     {
-        return index;
+        return positionIndex;
     }
 
     @Override
-    public List<String> getPromotionOids()
+    public String getPromotionOid()
     {
-        return promotionOids;
+        return promotionOid;
     }
 
     @Override
@@ -113,22 +111,22 @@ public class PromotionDetailDto
     public static final class Builder
     {
 
-        private int index;
+        private int positionIndex;
         private BigDecimal netUnitBase;
         private BigDecimal netBase;
         private BigDecimal netUnitDiscount;
         private BigDecimal netDiscount;
         private BigDecimal crossUnitDiscount;
         private BigDecimal crossDiscount;
-        private List<String> promotionOids;
+        private String promotionOid;
 
         private Builder()
         {
         }
 
-        public Builder withIndex(int index)
+        public Builder withPositionIndex(int positionIndex)
         {
-            this.index = index;
+            this.positionIndex = positionIndex;
             return this;
         }
 
@@ -168,9 +166,9 @@ public class PromotionDetailDto
             return this;
         }
 
-        public Builder withPromotionOids(final List<String> promotionOids)
+        public Builder withPromotionOid(final String promotionOid)
         {
-            this.promotionOids = promotionOids;
+            this.promotionOid = promotionOid;
             return this;
         }
 

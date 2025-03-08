@@ -36,8 +36,8 @@ import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.api.IPromotionsConfig;
 import org.efaps.promotionengine.condition.ICondition;
 import org.efaps.promotionengine.pojo.Document;
+import org.efaps.promotionengine.pojo.Position;
 import org.efaps.promotionengine.promotion.Promotion;
-import org.efaps.promotionengine.promotion.PromotionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +76,8 @@ public class Engine
 
         if (EngineRule.MOSTDISCOUNT.equals(config.getEngineRule())) {
             LOG.info("MOSTDISCOUNT active, checking {} discounts against the document", currentPromotions.size());
-            // check to reduce the possible Promotions by testing them individually
+            // check to reduce the possible Promotions by testing them
+            // individually
             final MultiValuedMap<Integer, Promotion> possiblePromotions = new ArrayListValuedHashMap<>();
             final List<Promotion> stackables = new ArrayList<>();
 
@@ -98,16 +99,18 @@ public class Engine
                             final Set<Integer> indexes = new HashSet<>();
                             BigDecimal discountedAmount = BigDecimal.ZERO;
                             for (final var pos : getProcessData().getDocument().getPositions()) {
-                                if (!((IPosition) pos).getPromotionOids().isEmpty()) {
+                                if (!((IPosition) pos).getPromotionDetails().isEmpty()) {
                                     indexes.add(pos.getIndex());
-                                    discountedAmount = discountedAmount.add(pos.getNetUnitPrice().multiply(pos.getQuantity()));
+                                    discountedAmount = discountedAmount
+                                                    .add(pos.getNetUnitPrice().multiply(pos.getQuantity()));
                                 }
                             }
                             if (BigDecimal.ZERO.compareTo(discountedAmount) < 0) {
                                 BigDecimal orginalAmount = BigDecimal.ZERO;
                                 for (final var pos : document.getPositions()) {
                                     if (indexes.contains(pos.getIndex())) {
-                                        orginalAmount = orginalAmount.add(pos.getNetUnitPrice().multiply(pos.getQuantity()));
+                                        orginalAmount = orginalAmount
+                                                        .add(pos.getNetUnitPrice().multiply(pos.getQuantity()));
                                     }
                                 }
                                 final var discount = orginalAmount.subtract(discountedAmount);
@@ -130,11 +133,11 @@ public class Engine
 
             final var sorted = new ArrayList<Promotion>();
             possiblePromotions.asMap().entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByKey())
-                .forEach(entry -> {
-                    sorted.addAll(entry.getValue());
-                });
+                            .stream()
+                            .sorted(Map.Entry.comparingByKey())
+                            .forEach(entry -> {
+                                sorted.addAll(entry.getValue());
+                            });
             Collections.reverse(sorted);
             LOG.info("Promotion hierarchy: {}", sorted.stream().map(Promotion::getOid).toList());
 
@@ -160,7 +163,7 @@ public class Engine
         final List<Promotion> permutables = new ArrayList<>();
         final List<Promotion> overhang = new ArrayList<>();
         int idx = 0;
-        for (final var promo: sorted) {
+        for (final var promo : sorted) {
             if (idx < 5) {
                 permutables.add(promo);
             } else {
@@ -178,16 +181,20 @@ public class Engine
             getProcessData().setDocument(currentDoc);
             final var currentPermutation = permutationIterator.next();
 
-            final var applieable = Stream.of(currentPermutation, overhang, stackables).flatMap(Collection::stream).toList();
+            final var applieable = Stream.of(currentPermutation, overhang, stackables).flatMap(Collection::stream)
+                            .toList();
             applyInternal(applieable);
             getProcessData().setDocument(document);
 
-            BigDecimal currentDiscount = BigDecimal.ZERO;
-            new org.efaps.abacus.Calculator(getProcessData().getCalculatorConfig()).calc(currentDoc);
-            final var promoInfo = PromotionInfo.evalPromotionInfo(document, currentDoc);
-            if (promoInfo != null) {
-                currentDiscount = promoInfo.getCrossTotalDiscount();
+            BigDecimal currentDiscount = currentDoc.getDocDiscount() != null ? currentDoc.getDocDiscount()
+                            : BigDecimal.ZERO;
+
+            for (final var pos : currentDoc.getPositions()) {
+                for (final var detail : ((Position) pos).getPromotionDetails()) {
+                    currentDiscount = currentDiscount.add(pos.getQuantity().multiply(detail.getNetUnitDiscount()));
+                }
             }
+
             if (mostDiscountDoc == null || mostDiscount.compareTo(currentDiscount) < 0) {
                 mostDiscountDoc = currentDoc;
                 mostDiscount = currentDiscount;

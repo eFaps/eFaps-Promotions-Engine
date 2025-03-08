@@ -18,6 +18,7 @@ package org.efaps.promotionengine.action;
 import java.math.BigDecimal;
 
 import org.efaps.promotionengine.api.IPosition;
+import org.efaps.promotionengine.dto.PromotionDetailDto;
 import org.efaps.promotionengine.process.ProcessData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,12 @@ public class FixedAmountAction
         boolean ret = false;
         if (!position.isBurned(process)) {
             ret = true;
-            position.addPromotionOid(process.getCurrentPromotion().getOid());
+            final var netUnitDiscount = position.getNetUnitPrice().subtract(amount);
+            position.addPromotionDetail(PromotionDetailDto.builder()
+                            .withNetUnitBase(position.getNetUnitPrice())
+                            .withNetUnitDiscount(netUnitDiscount)
+                            .withPromotionOid(process.getCurrentPromotion().getOid())
+                            .build());
             position.setNetUnitPrice(amount);
             LOG.info("Applied action on positon: {}", position);
         }

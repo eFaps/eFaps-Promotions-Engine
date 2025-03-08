@@ -25,9 +25,9 @@ public interface IPosition
     extends ICalcPosition
 {
 
-    void addPromotionOid(final String promotionOid);
+    void addPromotionDetail(final IPromotionDetail detail);
 
-    default List<String> getPromotionOids()
+    default List<IPromotionDetail> getPromotionDetails()
     {
         return Collections.emptyList();
     }

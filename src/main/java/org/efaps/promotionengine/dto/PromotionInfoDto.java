@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -64,6 +65,12 @@ public class PromotionInfoDto
     public List<IPromotionDetail> getDetails()
     {
         return details;
+    }
+
+    @Override
+    public List<IPromotionDetail> findDetailsForPosition(int index)
+    {
+        return getDetails().stream().filter(detail -> detail.getPositionIndex() == index).collect(Collectors.toList());
     }
 
     @Override
