@@ -17,11 +17,17 @@ package org.efaps.promotionengine.api;
 
 import java.util.List;
 
+import org.efaps.promotionengine.dto.PromotionInfoDto;
 import org.efaps.promotionengine.promotion.Promotion;
 import org.efaps.util.EFapsBaseException;
 
 public interface IPromotionsProvider
 {
+
     List<Promotion> getPromotions()
-                    throws EFapsBaseException;
+        throws EFapsBaseException;
+
+    void registerPromotionInfo(final PromotionInfoDto promotionInfoDto,
+                               final String documentOid)
+        throws EFapsBaseException;
 }

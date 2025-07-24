@@ -106,4 +106,23 @@ public class PromotionInfo
         }
         return info;
     }
+
+    public static PromotionInfoDto toDto(final IPromotionInfo promoInfo)
+    {
+        return PromotionInfoDto.builder()
+                        .withNetTotalDiscount(promoInfo.getNetTotalDiscount())
+                        .withCrossTotalDiscount(promoInfo.getCrossTotalDiscount())
+                        .withPromotionOids(promoInfo.getPromotionOids())
+                        .withDetails(promoInfo.getDetails().stream()
+                                        .map(promoDetail -> PromotionDetailDto.builder()
+                                                        .withNetUnitDiscount(promoDetail.getNetUnitDiscount())
+                                                        .withNetDiscount(promoDetail.getNetDiscount())
+                                                        .withCrossUnitDiscount(promoDetail.getCrossUnitDiscount())
+                                                        .withCrossDiscount(promoDetail.getCrossDiscount())
+                                                        .withPositionIndex(promoDetail.getPositionIndex())
+                                                        .withPromotionOid(promoDetail.getPromotionOid())
+                                                        .build())
+                                        .toList())
+                        .build();
+    }
 }

@@ -25,8 +25,10 @@ public interface IDocument
 {
 
     /**
-     * A  discount applied on the amount that the costumer should pay (including tax etc).
-     * e.g. payable amount of 100 minus discount of 20 results in new payable amount of 20
+     * A discount applied on the amount that the costumer should pay (including
+     * tax etc). e.g. payable amount of 100 minus discount of 20 results in new
+     * payable amount of 20
+     *
      * @return
      */
     BigDecimal getDocDiscount();
@@ -35,10 +37,16 @@ public interface IDocument
 
     void setPromotionInfo(IPromotionInfo info);
 
+    default IPromotionInfo getPromotionInfo()
+    {
+        return null;
+    }
+
     void addPromotionOid(String oid);
 
     List<String> getPromotionOids();
 
     @Override
     IDocument clone();
+
 }
