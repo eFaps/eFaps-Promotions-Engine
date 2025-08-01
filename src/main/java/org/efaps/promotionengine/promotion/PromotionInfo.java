@@ -41,7 +41,7 @@ public class PromotionInfo
     {
         PromotionInfoDto info = null;
         if (originalDoc.getCrossTotal().compareTo(promoDoc.getCrossTotal()) != 0) {
-            final List<IPromotionDetail> details = new ArrayList<>();
+            final List<PromotionDetailDto> details = new ArrayList<>();
             for (final ICalcPosition position : promoDoc.getPositions()) {
                 final var promoDocPos = (Position) position;
                 for (final var detail : promoDocPos.getPromotionDetails()) {

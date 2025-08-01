@@ -37,7 +37,7 @@ public class PromotionInfoDto
 
     private final BigDecimal crossTotalDiscount;
 
-    private final List<IPromotionDetail> details;
+    private final List<PromotionDetailDto> details;
 
     private final Set<String> promotionOids;
 
@@ -64,7 +64,7 @@ public class PromotionInfoDto
     @Override
     public List<IPromotionDetail> getDetails()
     {
-        return details;
+        return details.stream().map(detail -> ((IPromotionDetail) detail)).toList();
     }
 
     @Override
@@ -95,7 +95,7 @@ public class PromotionInfoDto
 
         private BigDecimal netTotalDiscount;
         private BigDecimal crossTotalDiscount;
-        private List<IPromotionDetail> details = Collections.emptyList();
+        private List<PromotionDetailDto> details = Collections.emptyList();
         private Set<String> promotionOids = Collections.emptySet();
 
         private Builder()
@@ -114,7 +114,7 @@ public class PromotionInfoDto
             return this;
         }
 
-        public Builder withDetails(List<IPromotionDetail> details)
+        public Builder withDetails(List<PromotionDetailDto> details)
         {
             this.details = details;
             return this;

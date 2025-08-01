@@ -172,7 +172,7 @@ public class PromotionDetailDto
             return this;
         }
 
-        public IPromotionDetail build()
+        public PromotionDetailDto build()
         {
             return new PromotionDetailDto(this);
         }
