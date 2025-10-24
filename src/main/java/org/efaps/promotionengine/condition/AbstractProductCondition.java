@@ -17,15 +17,16 @@ package org.efaps.promotionengine.condition;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.efaps.abacus.api.ICalcPosition;
 import org.efaps.promotionengine.api.IPosition;
 import org.efaps.promotionengine.process.ProcessData;
 import org.efaps.promotionengine.process.Step;
@@ -101,13 +102,13 @@ public abstract class AbstractProductCondition<T>
      */
     protected boolean checkExclude(final ProcessData process)
     {
-        final Set<String> positionProducts = process.getDocument().getPositions().stream()
-                        .map(ICalcPosition::getProductOid)
-                        .distinct().collect(Collectors.toSet());
 
+        final Set<String> positionProducts = process.getDocument().getPositions().stream()
+                        .flatMap(pos -> Arrays.asList(pos.getProductOid(), ((IPosition) pos).getStandInOid()).stream())
+                        .filter(Objects::nonNull).distinct().collect(Collectors.toSet());
         boolean atLeastOneProduct = false;
         for (final var prodOid : positionProducts) {
-            if (!getProducts().contains(prodOid)) {
+            if (!contains(prodOid)) {
                 atLeastOneProduct = true;
                 break;
             }
@@ -131,8 +132,8 @@ public abstract class AbstractProductCondition<T>
     public boolean positionMet(final IPosition position)
     {
         return switch (getEntryOperator()) {
-            case INCLUDES_ANY -> getProducts().contains(position.getProductOid());
-            case EXCLUDES -> !getProducts().contains(position.getProductOid());
+            case INCLUDES_ANY -> contains(position);
+            case EXCLUDES -> !contains(position);
             default -> throw new IllegalArgumentException("Unexpected value: " + getEntryOperator());
         };
     }
@@ -157,7 +158,7 @@ public abstract class AbstractProductCondition<T>
         if (process.getStep().equals(Step.SOURCECONDITION)) {
             for (final var calcPosition : process.getDocument().getPositions()) {
                 final var position = (IPosition) calcPosition;
-                if (!position.isBurned(process) && getProducts().contains(position.getProductOid())) {
+                if (!position.isBurned(process) && contains(position)) {
                     quantity = quantity.subtract(position.getQuantity());
                     LOG.debug("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
 
@@ -191,7 +192,7 @@ public abstract class AbstractProductCondition<T>
             }
             for (final var position : positions) {
                 if (!position.isBurned(process)) {
-                    if (isAllowTargetSameAsSource() && getProducts().contains(position.getProductOid())) {
+                    if (isAllowTargetSameAsSource() && contains(position)) {
                         quantity = quantity.subtract(position.getQuantity());
                         LOG.debug("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
                         process.registerConditionMet(position);
@@ -199,7 +200,7 @@ public abstract class AbstractProductCondition<T>
                         if (checkQuantity && quantity.compareTo(BigDecimal.ZERO) < 1) {
                             break;
                         }
-                    } else if (getProducts().contains(position.getProductOid())
+                    } else if (contains(position)
                                     && canbeUsed(process, positions, position)) {
                         quantity = quantity.subtract(position.getQuantity());
                         LOG.debug("Found product with oid: {} and quantity: {}", position.getProductOid(), quantity);
@@ -232,7 +233,7 @@ public abstract class AbstractProductCondition<T>
             if (index == 0 && positions.size() > 1
                             && positions.get(1).getNetUnitPrice().compareTo(currentPosition.getNetUnitPrice()) > 0) {
                 final var replacementOpt = positions.stream().filter(pos -> !pos.equals(currentPosition)
-                                && getProducts().contains(pos.getProductOid())
+                                && contains(pos)
                                 && !pos.isBurned(processData)).findFirst();
                 if (replacementOpt.isPresent()) {
                     processData.getPositionsUsedForSouce().remove(currentPosition);
@@ -242,6 +243,20 @@ public abstract class AbstractProductCondition<T>
             }
         }
         return ret;
+    }
+
+    protected boolean contains(IPosition position)
+    {
+        var ret = contains(position.getProductOid());
+        if (!ret && position.getStandInOid() != null) {
+            ret = contains(position.getStandInOid());
+        }
+        return ret;
+    }
+
+    protected boolean contains(String oid)
+    {
+        return getProducts().contains(oid);
     }
 
     @Override

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.efaps.abacus.api.ICalcPosition;
+import org.efaps.abacus.api.ITax;
 import org.efaps.abacus.pojo.CalcPosition;
 import org.efaps.abacus.pojo.Tax;
 import org.efaps.promotionengine.api.IPosition;
@@ -64,6 +65,12 @@ public class Position
     }
 
     @Override
+    public Position setStandInOid(String standInOid)
+    {
+        return (Position) super.setStandInOid(standInOid);
+    }
+
+    @Override
     public Position addTax(final Tax tax)
     {
         return (Position) super.addTax(tax);
@@ -72,17 +79,18 @@ public class Position
     @Override
     public Position clone()
     {
-        final var position = new Position();
-        position.setCrossPrice(getCrossPrice());
-        position.setCrossUnitPrice(getCrossUnitPrice());
-        position.setIndex(getIndex());
-        position.setNetPrice(getNetPrice());
-        position.setNetUnitPrice(getNetUnitPrice());
-        position.setProductOid(getProductOid());
-        position.setQuantity(getQuantity());
-        position.setTaxAmount(getTaxAmount());
-        position.setTaxes(getTaxes());
-        return position;
+        final var position = new Position()
+                        .setCrossPrice(getCrossPrice())
+                        .setCrossUnitPrice(getCrossUnitPrice())
+                        .setIndex(getIndex())
+                        .setNetPrice(getNetPrice())
+                        .setNetUnitPrice(getNetUnitPrice())
+                        .setProductOid(getProductOid())
+                        .setStandInOid(getStandInOid())
+                        .setQuantity(getQuantity())
+                        .setTaxAmount(getTaxAmount())
+                        .setTaxes(getTaxes());
+        return (Position) position;
     }
 
     @Override
@@ -100,7 +108,8 @@ public class Position
         // for stackable check that it was not already applied
         if (process.getCurrentPromotion().isStackable()) {
             ret = getPromotionDetails().stream()
-                            .anyMatch(detail -> detail.getPromotionOid().equals(process.getCurrentPromotion().getOid()));
+                            .anyMatch(detail -> detail.getPromotionOid()
+                                            .equals(process.getCurrentPromotion().getOid()));
         } else {
             ret = getPromotionDetails() != null && !getPromotionDetails().isEmpty();
         }
@@ -119,5 +128,17 @@ public class Position
     public void setPromotionDetails(final List<IPromotionDetail> promotionDetails)
     {
         this.promotionDetails = promotionDetails;
+    }
+
+    @Override
+    public Position setTaxes(List<ITax> taxes)
+    {
+        return (Position) super.setTaxes(taxes);
+    }
+
+    @Override
+    public Position setTaxAmount(BigDecimal taxAmount)
+    {
+        return (Position) super.setTaxAmount(taxAmount);
     }
 }
