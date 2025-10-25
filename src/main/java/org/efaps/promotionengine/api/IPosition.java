@@ -34,8 +34,6 @@ public interface IPosition
 
     boolean isBurned(final ProcessData process);
 
-    String getStandInOid();
-
     @Override
     IPosition clone();
 }
