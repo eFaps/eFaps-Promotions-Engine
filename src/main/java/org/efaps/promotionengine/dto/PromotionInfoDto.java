@@ -26,7 +26,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.promotionengine.api.IPromotionDetail;
 import org.efaps.promotionengine.api.IPromotionInfo;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(builder = PromotionInfoDto.Builder.class)
 public class PromotionInfoDto

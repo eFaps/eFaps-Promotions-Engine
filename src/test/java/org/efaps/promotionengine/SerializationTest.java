@@ -23,10 +23,10 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
+
 
 public class SerializationTest
 {
@@ -35,16 +35,14 @@ public class SerializationTest
 
     protected ObjectMapper getObjectMapper()
     {
-        final var objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+        final var objectMapper = JsonMapper.builder()
+                        .enable(SerializationFeature.INDENT_OUTPUT)
+                        .build();
         return objectMapper;
     }
 
     @Test(dataProvider = "promotions")
     public void toJsonAndBack(Promotion promotion)
-        throws JsonProcessingException
     {
         final var objectMapper = getObjectMapper();
         final var jsonStr = objectMapper.writeValueAsString(promotion);

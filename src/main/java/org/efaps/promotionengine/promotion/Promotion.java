@@ -28,7 +28,8 @@ import org.efaps.promotionengine.condition.MaxCondition;
 import org.efaps.promotionengine.condition.StackCondition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(builder = Promotion.Builder.class)
 public class Promotion

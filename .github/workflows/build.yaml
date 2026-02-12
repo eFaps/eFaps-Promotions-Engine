@@ -4,9 +4,9 @@ on:
   schedule:
     - cron: '30 5 * * 1'
   push:
-    branches: [ main ]
+    branches: [ main, jackson-3 ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, jackson-3 ]
 
 jobs:
   build:
