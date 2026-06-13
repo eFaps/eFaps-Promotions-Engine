@@ -28,33 +28,33 @@ public class BINConditionTest
     @Test
     public void conditionAnyIsNotMet()
     {
-        final var storeCondition = new BINCondition()
+        final var binCondition = new BINCondition()
                         .addIdentifier("123456")
                         .addIdentifier("654789");
 
         final var map = new HashMap<String, Object>();
         map.put(BINCondition.KEY, "666666");
         final var processData = new ProcessData(null, null, map);
-        assertFalse(storeCondition.isMet(processData));
+        assertFalse(binCondition.isMet(processData));
     }
 
     @Test
     public void conditionAnyIsMet()
     {
-        final var storeCondition = new BINCondition()
+        final var binCondition = new BINCondition()
                         .addIdentifier("123456")
                         .addIdentifier("654789");
 
         final var map = new HashMap<String, Object>();
         map.put(BINCondition.KEY, "123456");
         final var processData = new ProcessData(null, null, map);
-        assertTrue(storeCondition.isMet(processData));
+        assertTrue(binCondition.isMet(processData));
     }
 
     @Test
     public void conditionExcludeIsNotMet()
     {
-        final var storeCondition = new BINCondition()
+        final var binCondition = new BINCondition()
                         .setEntryOperator(EntryOperator.EXCLUDES)
                         .addIdentifier("123456")
                         .addIdentifier("654789");
@@ -62,13 +62,13 @@ public class BINConditionTest
         final var map = new HashMap<String, Object>();
         map.put(BINCondition.KEY, "658947");
         final var processData = new ProcessData(null, null, map);
-        assertTrue(storeCondition.isMet(processData));
+        assertTrue(binCondition.isMet(processData));
     }
 
     @Test
     public void conditionExcludeIsMet()
     {
-        final var storeCondition = new BINCondition()
+        final var binCondition = new BINCondition()
                         .setEntryOperator(EntryOperator.EXCLUDES)
                         .addIdentifier("123456")
                         .addIdentifier("654789");
@@ -76,7 +76,7 @@ public class BINConditionTest
         final var map = new HashMap<String, Object>();
         map.put(BINCondition.KEY, "123456");
         final var processData = new ProcessData(null, null, map);
-        assertFalse(storeCondition.isMet(processData));
+        assertFalse(binCondition.isMet(processData));
     }
 
 }
