@@ -38,7 +38,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = MaxCondition.class, name = "MaxCondition"),
     @JsonSubTypes.Type(value = OrCondition.class, name = "OrCondition"),
     @JsonSubTypes.Type(value = StackCondition.class, name = "StackCondition"),
-    @JsonSubTypes.Type(value = BINCondition.class, name = "BINCondition")
+    @JsonSubTypes.Type(value = BINCondition.class, name = "BINCondition"),
+    @JsonSubTypes.Type(value = BINRegexCondition.class, name = "BINRegexCondition"),
 })
 public interface ICondition
     extends IAnnotated
